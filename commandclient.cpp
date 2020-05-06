@@ -123,14 +123,22 @@ stringVec returnMatches(std::string str, std::regex reg){
     }
     return sVec;
 }
-
+bool strContainsRegex(const std::string& str, std::string regStr){
+    std::regex reg(regStr);
+    stringVec matches = returnMatches(str, reg);
+    if(matches.size() > 0){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 //Actions:
 void commandClient::toConsoleLog(const std::string &text){
 
     timeObj time = getCurrentTime();
     std::string strtime = std::to_string(time.day) + "/" + std::to_string(time.month) + "/" + std::to_string(time.year) + " " +
-                          std::to_string(time.hour) + "/" + std::to_string(time.minute) + "/" + std::to_string(time.second);
+                          std::to_string(time.hour) + ":" + std::to_string(time.minute) + ":" + std::to_string(time.second);
 
     std::string msg = "[" + strtime + "]: " + text + '\n';
     //Console output:
@@ -310,6 +318,117 @@ void commandClient::sendLectureInfo(SleepyDiscord::Message message, std::string 
         }
     }
 }
+void commandClient::sendDirMessage(const std::string &userName, const std::string &text){
+    auto user = userByName(userName);
+    auto dirChannel = createDirectMessageChannel(user.ID);
+    std::string dirChannelID = dirChannel.cast().ID;
+    sendMessage(dirChannelID, text);
+}
+
+
+
+
+
+
+
+
+
+
+/*
+/cah new        ->  Create new game session with id
+/cah join 0     ->  Join game session 0
+/cah leave      ->  Leave current game session
+/cah start      ->  Start current game session
+
+
+
+*/
+
+
+
+//CAH:
+void commandClient::CAH_processInput(stringVec &command, SleepyDiscord::Message message){
+    //NEW
+    if(command[1] == "new"){
+        //Create game
+        int gameID = CAH_getGameID();
+        CAH_createGame(gameID);
+        //Add creator to game
+        CAH_addPlayer(message.author.username, gameID);
+        return;
+    }
+
+    //JOIN
+    if(command[1] == "join"){
+        if(command.size() < 3){return;}
+        std::regex numReg("\\d+");
+        stringVec numbers = returnMatches(command[2], numReg);
+        if(numbers.size() == 0){return;}
+        int gameID = std::stoi(numbers[0]);
+        CAH_addPlayer(message.author.username, gameID);
+        return;
+    }
+
+    //LEAVE
+    if(command[1] == "leave"){
+
+    }
+}
+void commandClient::CAH_createGame(int gameID){
+    CAHplaySession newSession;
+    newSession.setGameID(gameID);
+    CAH_sessions.push_back(newSession);
+    //Load standard deck:
+    CAH_loadDeck("standard", gameID);
+}
+void commandClient::CAH_loadDeck(const std::string &deckName, int gameID){
+    for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+        if(it->gameID == gameID){
+            cardDeck newDeck;
+            newDeck.importCards(CAH_deckLocation + deckName);
+            it->addDeck(newDeck);
+        }
+    }
+}
+void commandClient::CAH_addPlayer(const std::string &playerName, int gameID){
+    //See if player is already active:
+    for(auto it = CAH_activePlayers.begin(); it != CAH_activePlayers.end(); ++it){
+        if(*it == playerName){
+            sendDirMessage(playerName, "You are already in game `" + std::to_string(gameID) + "`");
+            return;
+        }
+    }
+    for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+        if(it->gameID == gameID){
+            //Get information about user:
+            auto user = userByName(playerName);
+            //Send CAH welcome message:
+            sendDirMessage(playerName, "You now entered CAH game `" + std::to_string(gameID) + "`");
+            //Create and add player:
+            CAHplayer newPlayer;
+            newPlayer.name = playerName;
+            newPlayer.czar = false;
+            it->addPlayer(newPlayer);
+            return;
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+int commandClient::CAH_getGameID(){
+    nextCAHID++;
+    return nextCAHID - 1;
+}
+
+
 
 void commandClient::onMessage(SleepyDiscord::Message message){
     //Look for commands:
@@ -366,6 +485,13 @@ void commandClient::onMessage(SleepyDiscord::Message message){
         //LECTURE INFO
         if(vecContains(command[0], lectureList)){
             sendLectureInfo(message, command[0]);
+            return;
+        }
+
+        //PAPER OPPOSED PEOPLE (CAH)
+        if(command[0] == "cah"){
+            if(command.size() < 2){return;}
+                CAH_processInput(command, message);
             return;
         }
     }

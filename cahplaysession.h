@@ -4,14 +4,17 @@
 #include "cahplayer.h"
 
 
+
 class CAHplaySession
 {
 public:
 
     //Players:
     void addPlayer(CAHplayer& newPlayer);
+    void addPlayer(const std::string& playerName);
     void removePlayer(const std::string& name);
     CAHplayer playerByName(const std::string& playerName);
+    bool playerExists(const std::string& playerName);
     //Decks:
     void addDeck(cardDeck& newDeck);
     void removeDeck(const std::string& deckName);
@@ -21,13 +24,16 @@ public:
     void initCards();
     void shufflePlayers();
     void distributeCards();
-    void assignPlayerActions();
     void determineCzar(int roundCount);
 
     //Card actions:
 
+    //Other:
+    void setGameID(int id) {gameID = id;};
+    int getGameID() {return gameID;};
 
-private:
+
+
     std::vector<CAHplayer> players;
     std::vector<cardDeck> decks;//Mixing multiple decks is possible
 
@@ -45,6 +51,7 @@ private:
 
     //Game info:
     bool gameRunning = false;
+    int gameID;
 };
 
 #endif // CAHPLAYSESSION_H

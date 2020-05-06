@@ -3,7 +3,21 @@
 
 void CAHplaySession::addPlayer(CAHplayer &newPlayer)
 {
+    //See if player already exists:
+    for(auto it = players.begin(); it != players.end(); ++it){
+        if(it->name == newPlayer.name){
+            return;
+        }
+    }
     players.push_back(newPlayer);
+}
+
+void CAHplaySession::addPlayer(const std::string &playerName)
+{
+    CAHplayer newPlayer;
+    newPlayer.name = playerName;
+    newPlayer.czar = false;
+    addPlayer(newPlayer);
 }
 
 void CAHplaySession::removePlayer(const std::string &name)
@@ -34,6 +48,16 @@ CAHplayer CAHplaySession::playerByName(const std::string &playerName)
     return CAHplayer();
 }
 
+bool CAHplaySession::playerExists(const std::string &playerName)
+{
+    for(auto it = players.begin(); it != players.end(); ++it){
+        if(it->name == playerName){
+            return true;
+        }
+    }
+    return false;
+}
+
 void CAHplaySession::addDeck(cardDeck &newDeck)
 {
     decks.push_back(newDeck);
@@ -56,16 +80,15 @@ void CAHplaySession::startGame()
     initCards();
     distributeCards();
     shufflePlayers();
-    for(int i = 0; i < maxRounds; ++i){
-        determineCzar(i);
-        assignPlayerActions();
-
-    }
-    gameRunning = false;
 }
 
 void CAHplaySession::initCards()
 {
+    //Load standard deck:
+    cardDeck stdDeck;
+    stdDeck.importCards("/media/mo/Qt_Projects/discord_bot/CAH_decks/standard");
+    decks.push_back(stdDeck);
+
     //Combine all decks:
     for(int i = 0; i < (int)decks.size(); ++i){
         whiteCards.addStack(decks[i].whiteCards);
@@ -95,11 +118,6 @@ void CAHplaySession::distributeCards()
             whiteCards.pop_back();
         }
     }
-}
-
-void CAHplaySession::assignPlayerActions()
-{
-
 }
 
 void CAHplaySession::determineCzar(int roundCount)

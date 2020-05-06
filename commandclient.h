@@ -3,6 +3,7 @@
 #include "sleepy-discord/include/sleepy_discord/websocketpp_websocket.h"
 #include "sleepy-discord/include/sleepy_discord/client.h"
 #include "sleepy-discord/include/sleepy_discord/server.h"
+#include "cahplaysession.h"
 #include <vector>
 #include <iterator>
 #include <string>
@@ -69,6 +70,28 @@ public:
     void setPrefix(std::string newPrefix);
     void sendRandom(SleepyDiscord::Message message, std::string rawOptions);
     void sendLectureInfo(SleepyDiscord::Message message, std::string name);
+    void sendDirMessage(const std::string& userName, const std::string& text);
+
+    //CAH:
+    void CAH_processInput(stringVec& command, SleepyDiscord::Message message);
+    void CAH_createGame(int gameID);
+    void CAH_loadDeck(const std::string& deckName, int gameID);
+    void CAH_addPlayer(const std::string& playerName, int gameID);
+    void CAH_startNewRound();
+
+
+    int CAH_getGameID();
+
+
+    /*
+    void processCAHInput(stringVec& command, SleepyDiscord::Message message);
+    void joinCAHgame(SleepyDiscord::Message message, int gameID);
+    void startNewCAHRound(int gameID);
+    void CAHSessionByID(int id);
+    int getCAHID();
+    void getGame(int gameID, CAHplaySession& gameSession);
+    void setBlackCard(CAHplaySession& session, const std::string& playerName, const std::string& newCard);
+    void setWhiteCards(CAHplaySession& session, const std::string& playerName, cardStack newCards);*/
 
 private:
     //Vorlesungen:
@@ -84,6 +107,11 @@ private:
     std::string ruleMessageID = "702501801047621681";
     std::string helpMessageID = "702969362679857283";
 
+    //CAH:
+    std::vector<CAHplaySession> CAH_sessions;
+    std::vector<std::string> CAH_activePlayers;
+    int nextCAHID = 0;
+    std::string CAH_deckLocation = "/media/mo/Qt_Projects/discord_bot/CAH_decks/";
 
 };
 
