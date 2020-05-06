@@ -371,8 +371,30 @@ void commandClient::CAH_processInput(stringVec &command, SleepyDiscord::Message 
 
     //LEAVE
     if(command[1] == "leave"){
-
+        std::string playerName = message.author.username;
+        for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+            if(it->playerExists(playerName)){
+                CAH_removePlayer(playerName, it->gameID);
+            }
+        }
+        return;
     }
+
+    //START
+    if(command[1] == "start"){
+        std::string playerName = message.author.username;
+        //Find game and start it
+        for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+            if(it->playerExists(playerName)){
+                it->startGame();
+                CAH_startNewRound(it->gameID);
+                break;
+            }
+        }
+        return;
+    }
+
+
 }
 void commandClient::CAH_createGame(int gameID){
     CAHplaySession newSession;
@@ -413,8 +435,17 @@ void commandClient::CAH_addPlayer(const std::string &playerName, int gameID){
         }
     }
 }
+void commandClient::CAH_removePlayer(const std::string &playerName, int gameID){
+    for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+        if(it->gameID == gameID){
+            it->removePlayer(playerName);
+            break;
+        }
+    }
+}
+void commandClient::CAH_startNewRound(int gameID){
 
-
+}
 
 
 

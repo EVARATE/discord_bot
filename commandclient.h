@@ -77,7 +77,8 @@ public:
     void CAH_createGame(int gameID);
     void CAH_loadDeck(const std::string& deckName, int gameID);
     void CAH_addPlayer(const std::string& playerName, int gameID);
-    void CAH_startNewRound();
+    void CAH_removePlayer(const std::string& playerName, int gameID);
+    void CAH_startNewRound(int gameID);
 
 
     int CAH_getGameID();

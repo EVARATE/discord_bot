@@ -84,10 +84,6 @@ void CAHplaySession::startGame()
 
 void CAHplaySession::initCards()
 {
-    //Load standard deck:
-    cardDeck stdDeck;
-    stdDeck.importCards("/media/mo/Qt_Projects/discord_bot/CAH_decks/standard");
-    decks.push_back(stdDeck);
 
     //Combine all decks:
     for(int i = 0; i < (int)decks.size(); ++i){

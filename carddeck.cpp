@@ -1,5 +1,17 @@
 #include "carddeck.h"
 
+std::vector<std::string> returnMatches(std::string str, std::regex reg){
+    std::vector<std::string> sVec;
+    std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
+    std::sregex_iterator lastMatch;
+    while(currentMatch != lastMatch){
+        std::smatch match = *currentMatch;
+        sVec.push_back(match.str());
+        currentMatch++;
+    }
+    return sVec;
+}
+
 void cardDeck::importCards(const std::string &directoryPath)
 {
     //Import white cards:
@@ -34,8 +46,11 @@ void cardDeck::importCards(const std::string &directoryPath)
     }
     blackFile.close();
 
+    //deck name from path:
+    std::regex nameReg("[^/]+");
+    std::vector<std::string> path = returnMatches(directoryPath, nameReg);
     //Save stacks:
-    deckName = directoryPath;//Change this to something better
+    deckName = path[path.size() - 1];
     whiteCards = wCards;
     blackCards = bCards;
 }
