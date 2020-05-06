@@ -7,6 +7,7 @@
 
 typedef struct{
     bool black;
+    std::string playedBy = "";
     std::string text;
 }card;
 

@@ -1,6 +1,6 @@
 #include "carddeck.h"
 
-std::vector<std::string> returnMatches(std::string str, std::regex reg){
+inline std::vector<std::string> returnMatches(std::string str, std::regex reg){
     std::vector<std::string> sVec;
     std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
     std::sregex_iterator lastMatch;
@@ -32,7 +32,7 @@ void cardDeck::importCards(const std::string &directoryPath)
 
     //import black cards:
     std::ifstream blackFile;
-    blackFile.open(directoryPath + "/white.txt");
+    blackFile.open(directoryPath + "/black.txt");
     if(!blackFile.is_open()){return;}
 
     cardStack bCards;

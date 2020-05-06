@@ -14,6 +14,16 @@ void cardStack::addCard(bool &black, const std::string &text)
     addCard(newCard);
 }
 
+void cardStack::removeCard(const std::string &text)
+{
+    for(auto it = cards.begin(); it != cards.end(); ++it){
+        if(it->text == text){
+            cards.erase(it);
+            break;
+        }
+    }
+}
+
 void cardStack::addStack(cardStack &newStack)
 {
     for(int i = 0; i < (int)newStack.size(); ++i){

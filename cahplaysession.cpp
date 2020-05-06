@@ -80,6 +80,8 @@ void CAHplaySession::startGame()
     initCards();
     distributeCards();
     shufflePlayers();
+    //First player is Czar:
+    players[0].setCzar(true);
 }
 
 void CAHplaySession::initCards()
@@ -116,21 +118,37 @@ void CAHplaySession::distributeCards()
     }
 }
 
-void CAHplaySession::determineCzar(int roundCount)
+std::string CAHplaySession::getCzar()
 {
-    int index;
-    if((int)players.size() < roundCount){
-        index = players.size() % roundCount;
-    }else{
-        index = roundCount;
-    }
-
-    //Unset czar for every player except the determined one
-    for(int i = 0; i < (int)players.size(); ++i){
-        if(i == index){
-            players[i].setCzar(true);
-        }else{
-            players[i].setCzar(false);
+    for(auto it = players.begin(); it != players.end(); ++it){
+        if(it->czar){
+            return it->name;
         }
     }
+    return "Uh, no one I guess...";
+}
+
+std::string CAHplaySession::getCurrBlackCard()
+{
+    return blackCards[blackCards.size() - 1].text;
+}
+
+cardStack CAHplaySession::getPlayerStack(const std::string &playerName)
+{
+    for(auto it = players.begin(); it != players.end(); ++it){
+        if(it->name == playerName){
+            return it->handCards;
+        }
+    }
+    return cardStack();
+}
+
+void CAHplaySession::setRunning(bool state)
+{
+    roundRunning = state;
+}
+
+bool CAHplaySession::isRunning()
+{
+    return roundRunning;
 }

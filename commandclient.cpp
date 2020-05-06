@@ -386,6 +386,7 @@ void commandClient::CAH_processInput(stringVec &command, SleepyDiscord::Message 
         //Find game and start it
         for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
             if(it->playerExists(playerName)){
+                if(CAH_getGame(it->gameID).isRunning()){return;}
                 it->startGame();
                 CAH_startNewRound(it->gameID);
                 break;
@@ -394,12 +395,40 @@ void commandClient::CAH_processInput(stringVec &command, SleepyDiscord::Message 
         return;
     }
 
+    //PLAY A CARD
+    std::regex playReg("\\d+");
+    stringVec cardsPlayed = returnMatches(command[1], playReg);
+    if(cardsPlayed.size() > 0){
+        std::vector<int> played;
+        for(int i = 0; i < (int)cardsPlayed.size(); ++i){
+            CAHplaySession currSession;
+            CAH_getGame(message.author.username, currSession);
+            auto playerHand = currSession.getPlayerStack(message.author.username);
+            int num = std::stoi(cardsPlayed[i]);
+            if((num >= 0) && (num <= currSession.cardsPerPlayer)){
+                played.push_back(num);
+            }
+
+            for(int j = 0; j < currSession.cardsPlayable; ++j){
+                //Play the j'th card
+                playerHand[j].playedBy = message.author.username;
+                currSession.chosenCards.push_back(playerHand[j]);
+                playerHand.removeCard(playerHand[j].text);
+            }
+            std::string logMsg = "Player '" + message.author.username + "' played card(s) [";
+            //for(int j = 0; j < )
+            toConsoleLog("");
+            //======================SOMETHING IS WRONG WITH THE ABOVE!!!===================================
+        }
+
+    }
 
 }
 void commandClient::CAH_createGame(int gameID){
     CAHplaySession newSession;
     newSession.setGameID(gameID);
     CAH_sessions.push_back(newSession);
+    toConsoleLog("New game session was created: CAH#-" + std::to_string(gameID));
     //Load standard deck:
     CAH_loadDeck("standard", gameID);
 }
@@ -409,6 +438,7 @@ void commandClient::CAH_loadDeck(const std::string &deckName, int gameID){
             cardDeck newDeck;
             newDeck.importCards(CAH_deckLocation + deckName);
             it->addDeck(newDeck);
+            toConsoleLog("Deck '" + deckName + "' was added to CAH#-" + std::to_string(gameID));
         }
     }
 }
@@ -417,6 +447,7 @@ void commandClient::CAH_addPlayer(const std::string &playerName, int gameID){
     for(auto it = CAH_activePlayers.begin(); it != CAH_activePlayers.end(); ++it){
         if(*it == playerName){
             sendDirMessage(playerName, "You are already in game `" + std::to_string(gameID) + "`");
+            toConsoleLog("Player '" + playerName + "' couldn't join CAH#-" + std::to_string(gameID));
             return;
         }
     }
@@ -426,6 +457,7 @@ void commandClient::CAH_addPlayer(const std::string &playerName, int gameID){
             auto user = userByName(playerName);
             //Send CAH welcome message:
             sendDirMessage(playerName, "You now entered CAH game `" + std::to_string(gameID) + "`");
+            toConsoleLog("Player '" + playerName + "' was added to CAH#-" + std::to_string(gameID));
             //Create and add player:
             CAHplayer newPlayer;
             newPlayer.name = playerName;
@@ -439,11 +471,42 @@ void commandClient::CAH_removePlayer(const std::string &playerName, int gameID){
     for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
         if(it->gameID == gameID){
             it->removePlayer(playerName);
+            sendDirMessage(playerName, "You were removed from game `" + std::to_string(gameID) + "`");
+            toConsoleLog("Player '" + playerName + "' was removed from CAH#-" + std::to_string(gameID));
             break;
         }
     }
 }
 void commandClient::CAH_startNewRound(int gameID){
+    CAH_updatePlayerHands(gameID);
+    //.............................................
+}
+void commandClient::CAH_updatePlayerHands(int gameID){
+    //Get current game:
+    for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+        if(it->gameID == gameID){
+
+            //Send current Game info to every player:
+            if(it->isRunning()){return;}
+            auto& currPlayers = it->players;
+            for(auto Pit = currPlayers.begin(); Pit != currPlayers.end(); ++Pit){
+                std::string cardMsg = "**\\nCurrent Czar:** " + it->getCzar() + "\\n";
+                cardMsg.append("\\n**BLACK CARD:**\\n```\\n" + it->getCurrBlackCard() + "\\n```\\n");
+                cardMsg.append("\\n**YOUR WHITE CARDS:**\\n");
+                for(int i = 0; i < (int)Pit->handCards.size(); ++i){
+                    std::string line ="**" + std::to_string(i) + ":** " + Pit->handCards[i].text + "\\n";
+                    cardMsg.append(line);
+                }
+                sendDirMessage(Pit->name, cardMsg);
+            }
+            toConsoleLog("Updated CAH round in CAH#-" + std::to_string(gameID));
+            it->setRunning(true);
+
+
+        }
+    }
+
+
 
 }
 
@@ -452,8 +515,22 @@ void commandClient::CAH_startNewRound(int gameID){
 
 
 
-
-
+CAHplaySession commandClient::CAH_getGame(int gameID){
+    for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+        if(it->gameID == gameID){
+            return *it;
+        }
+    }
+    return CAHplaySession();
+}
+CAHplaySession commandClient::CAH_getGame(const std::string& playerName){
+    for(auto it = CAH_sessions.begin(); it != CAH_sessions.end(); ++it){
+        if(it->playerExists(playerName)){
+            return *it;
+        }
+    }
+    return CAHplaySession();
+}
 int commandClient::CAH_getGameID(){
     nextCAHID++;
     return nextCAHID - 1;

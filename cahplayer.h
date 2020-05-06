@@ -10,6 +10,7 @@ public:
 
     std::string name;
     bool czar;
+    bool waiting = false;
     cardStack handCards;
 };
 

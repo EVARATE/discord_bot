@@ -79,20 +79,15 @@ public:
     void CAH_addPlayer(const std::string& playerName, int gameID);
     void CAH_removePlayer(const std::string& playerName, int gameID);
     void CAH_startNewRound(int gameID);
+    void CAH_updatePlayerHands(int gameID);
 
 
+    CAHplaySession CAH_getGame(int gameID);
+    CAHplaySession CAH_getGame(const std::string& playerName);
+    void CAH_getGame(int gameID, CAHplaySession& session);
+    void CAH_getGame(std::string& playerName, CAHplaySession& session);
     int CAH_getGameID();
 
-
-    /*
-    void processCAHInput(stringVec& command, SleepyDiscord::Message message);
-    void joinCAHgame(SleepyDiscord::Message message, int gameID);
-    void startNewCAHRound(int gameID);
-    void CAHSessionByID(int id);
-    int getCAHID();
-    void getGame(int gameID, CAHplaySession& gameSession);
-    void setBlackCard(CAHplaySession& session, const std::string& playerName, const std::string& newCard);
-    void setWhiteCards(CAHplaySession& session, const std::string& playerName, cardStack newCards);*/
 
 private:
     //Vorlesungen:

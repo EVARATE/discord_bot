@@ -24,14 +24,17 @@ public:
     void initCards();
     void shufflePlayers();
     void distributeCards();
-    void determineCzar(int roundCount);
+    std::string getCzar();
 
     //Card actions:
+    std::string getCurrBlackCard();
+    cardStack getPlayerStack(const std::string& playerName);
 
     //Other:
     void setGameID(int id) {gameID = id;};
     int getGameID() {return gameID;};
-
+    void setRunning(bool state);
+    bool isRunning();
 
 
     std::vector<CAHplayer> players;
@@ -40,10 +43,12 @@ public:
     //Settings:
     int maxRounds = 5;
     int cardsPerPlayer = 8;
+    int cardsPlayable = 1;//How many cards can be played at once
     
     //Unused cards:
     cardStack whiteCards;
     cardStack blackCards;
+    cardStack chosenCards;
 
     //Played cards:
     cardStack whitePlayed;
@@ -51,6 +56,7 @@ public:
 
     //Game info:
     bool gameRunning = false;
+    bool roundRunning = false;
     int gameID;
 };
 
