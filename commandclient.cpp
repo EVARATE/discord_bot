@@ -172,7 +172,7 @@ void commandClient::setupData(){
                "Donnerstag, 8:00 - 10:00 Uhr",
                "06.08.20, 08:00 - 10:30 Uhr; N120, B201",
                "unbekannt",
-               "992 2654 3328 | nUmA20m4"
+               "Mo: `992 2654 3328 | nUmA20m4`, Do: `936 5948 3067 | A0fG%do`, ZÜ: `918 1344 4557 | h5Vdf&k`"
                 );
     addLecture("m2",
                "unbekannt, bitte Vorlesungsseite an Mo schicken",
@@ -281,6 +281,7 @@ void commandClient::sendHelpMsg(SleepyDiscord::Message message){
 void commandClient::setPrefix(std::string newPrefix){
     if(prefix.length() > 0){
         prefix = newPrefix;
+        updateHelpMsg();
         toConsoleLog("Changed prefix to '" + newPrefix + "'");
     }
 
@@ -402,7 +403,7 @@ void commandClient::CAH_processInput(stringVec &command, SleepyDiscord::Message 
         std::vector<int> played;
         for(int i = 0; i < (int)cardsPlayed.size(); ++i){
             CAHplaySession currSession;
-            CAH_getGame(message.author.username, currSession);
+            CAH_getGameRef(message.author.username, currSession);
             auto playerHand = currSession.getPlayerStack(message.author.username);
             int num = std::stoi(cardsPlayed[i]);
             if((num >= 0) && (num <= currSession.cardsPerPlayer)){
@@ -417,11 +418,12 @@ void commandClient::CAH_processInput(stringVec &command, SleepyDiscord::Message 
             }
             std::string logMsg = "Player '" + message.author.username + "' played card(s) [";
             //for(int j = 0; j < )
-            toConsoleLog("");
+            toConsoleLog("___");
             //======================SOMETHING IS WRONG WITH THE ABOVE!!!===================================
         }
 
     }
+
 
 }
 void commandClient::CAH_createGame(int gameID){
@@ -530,6 +532,13 @@ CAHplaySession commandClient::CAH_getGame(const std::string& playerName){
         }
     }
     return CAHplaySession();
+}
+void commandClient::CAH_getGameRef(int gameID, CAHplaySession& session){
+    //Needs to be defined
+}
+void commandClient::CAH_getGameRef(std::string playerName, CAHplaySession& session){
+    //Needs to be defined
+
 }
 int commandClient::CAH_getGameID(){
     nextCAHID++;

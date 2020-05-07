@@ -84,8 +84,8 @@ public:
 
     CAHplaySession CAH_getGame(int gameID);
     CAHplaySession CAH_getGame(const std::string& playerName);
-    void CAH_getGame(int gameID, CAHplaySession& session);
-    void CAH_getGame(std::string& playerName, CAHplaySession& session);
+    void CAH_getGameRef(int gameID, CAHplaySession& session);
+    void CAH_getGameRef(std::string playerName, CAHplaySession& session);
     int CAH_getGameID();
 
 
@@ -94,7 +94,7 @@ private:
     std::vector<vorlesung> vorlesungen;
 
     //Bot options:
-    std::string prefix = "t/";
+    std::string prefix = "/";
     std::string helpMessage = "";
 
     //Server:
