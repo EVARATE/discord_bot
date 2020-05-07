@@ -143,6 +143,14 @@ cardStack CAHplaySession::getPlayerStack(const std::string &playerName)
     return cardStack();
 }
 
+void CAHplaySession::getPlayerStack(const std::string &playerName, cardStack &stack){
+    for(auto it = players.begin(); it != players.end(); ++it){
+        if(it->name == playerName){
+            stack = it->handCards;
+        }
+    }
+}
+
 void CAHplaySession::setRunning(bool state)
 {
     roundRunning = state;

@@ -80,6 +80,7 @@ public:
     void CAH_removePlayer(const std::string& playerName, int gameID);
     void CAH_startNewRound(int gameID);
     void CAH_updatePlayerHands(int gameID);
+    void CAH_playCards(SleepyDiscord::Message message, stringVec cardsPlayed);
 
 
     CAHplaySession CAH_getGame(int gameID);
@@ -94,7 +95,7 @@ private:
     std::vector<vorlesung> vorlesungen;
 
     //Bot options:
-    std::string prefix = "/";
+    std::string prefix = "t/";
     std::string helpMessage = "";
 
     //Server:

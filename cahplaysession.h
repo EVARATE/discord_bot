@@ -29,6 +29,7 @@ public:
     //Card actions:
     std::string getCurrBlackCard();
     cardStack getPlayerStack(const std::string& playerName);
+    void getPlayerStack(const std::string& playerName, cardStack& stack);
 
     //Other:
     void setGameID(int id) {gameID = id;};
