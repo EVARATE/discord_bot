@@ -8,6 +8,8 @@
    - [Asio](https://github.com/chriskohlhoff/asio.git):  `git clone https://github.com/chriskohlhoff/asio.git`
    - [CPR](https://github.com/whoshuu/cpr.git):  `git clone https://github.com/whoshuu/cpr.git`
    - [WebSocket++](https://github.com/zaphoyd/websocketpp.git):  `git clone https://github.com/zaphoyd/websocketpp.git`
+ - Now change directory to `sleepy-discord/deps/cpr/opt`. If the folder `curl` is empty clone the following repository:
+   - [curl](https://github.com/curl/curl.git):  `git clone https://github.com/curl/curl.git`
 ## Build
  - Go back to `discord_bot`
  - Create build-folder: `mkdir build`
