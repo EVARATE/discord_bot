@@ -522,7 +522,14 @@ void commandClient::CAH_playCards(SleepyDiscord::Message message, stringVec card
     }
     toConsoleLog("Player '" + message.author.username + "' played card(s) [" + logCardBuffer + "]");
 }
-
+bool commandClient::CAH_isPlaying(const std::string& playerName){
+    for(auto it = CAH_activePlayers.begin(); it != CAH_activePlayers.end(); ++it){
+        if(*it == playerName){
+            return true;
+        }
+    }
+    return false;
+}
 
 
 
@@ -627,10 +634,18 @@ void commandClient::onMessage(SleepyDiscord::Message message){
         }
 
         //PAPER OPPOSED PEOPLE (CAH)
+        auto channel = getChannel(message.channelID);
+        if(channel.cast().type == 1 && CAH_isPlaying(message.author.username)){
+            if(command.size() < 2){return;}
+                CAH_processInput(command, message);
+            return;
+        }
         if(command[0] == "cah"){
             if(command.size() < 2){return;}
                 CAH_processInput(command, message);
             return;
         }
+
+
     }
 }

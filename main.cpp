@@ -14,7 +14,7 @@ int main()
         ifile.close();
     }
     if(token.length() != 59){
-        std::string error = "ERROR: Invalid token: '" + token + "'\n";
+        std::string error = "ERROR: Invalid token: '" + token + "'. Enter token in 'token.txt' file\n";
         fprintf(stderr, error.c_str());
         return 0;
     }

@@ -81,7 +81,7 @@ public:
     void CAH_startNewRound(int gameID);
     void CAH_updatePlayerHands(int gameID);
     void CAH_playCards(SleepyDiscord::Message message, stringVec cardsPlayed);
-
+    bool CAH_isPlaying(const std::string& playerName);
 
     CAHplaySession CAH_getGame(int gameID);
     CAHplaySession CAH_getGame(const std::string& playerName);
