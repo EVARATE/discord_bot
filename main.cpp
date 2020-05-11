@@ -4,7 +4,22 @@
 
 int main()
 {
-    commandClient comClient("NzAyNzU4OTg5MjcxNjYyNjMy.Xq2-Vw.6OODmTwe-lc9QA7VreQHKVPJSCs",2);
+    //Get token from file:
+    std::ifstream ifile;
+    ifile.open("token.txt");
+    std::string token;
+    if(ifile.is_open()){
+        ifile >> token;
+        fprintf(stderr, "Reading token\n");
+        ifile.close();
+    }
+    if(token.length() != 59){
+        std::string error = "ERROR: Invalid token: '" + token + "'\n";
+        fprintf(stderr, error.c_str());
+        return 0;
+    }
+
+    commandClient comClient(token,2);
     comClient.setupData();
     comClient.run();
 
