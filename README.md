@@ -10,6 +10,7 @@
  - Go into that folder: `cd build`
  - Run `cmake ..`
  - Run `make`
+
 **If cmake returned errors** do this:
  - Change directory to `sleepy-discord/deps`. If the folders `asio`, `cpr` and `websocketpp` are empty clone the following repositories:
    - [Asio](https://github.com/chriskohlhoff/asio.git):  `git clone https://github.com/chriskohlhoff/asio.git`
