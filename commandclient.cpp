@@ -269,6 +269,8 @@ timeObj commandClient::getCurrentTime(){
     return currentTime;
 }
 
+
+
 //Commands
 void commandClient::sendRulesMsg(SleepyDiscord::Message message){
     sendMessage(message.channelID, getRuleMsg());
