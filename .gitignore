@@ -1,4 +1,4 @@
 /sleepy-discord
-*.user
+*.user*
 token.txt
 old_*
