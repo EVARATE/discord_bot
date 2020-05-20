@@ -41,6 +41,7 @@ class commandClient : public SleepyDiscord::DiscordClient {
 public:
     using SleepyDiscord::DiscordClient::DiscordClient;
     void onMessage(SleepyDiscord::Message message);
+    void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage);
 
     //Access:
     SleepyDiscord::Channel              channelByName(std::string channelName);
@@ -86,6 +87,8 @@ private:
     //Important messages:
     std::string ruleMessageID = "702501801047621681";
     std::string helpMessageID = "702969362679857283";
+
+    bool isConnected = false;
 
 };
 

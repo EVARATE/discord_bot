@@ -141,10 +141,13 @@ void commandClient::toConsoleLog(const std::string &text){
                           std::to_string(time.hour) + ":" + std::to_string(time.minute) + ":" + std::to_string(time.second);
 
     std::string msg = "[" + strtime + "]: " + text + '\n';
+    std::string discordMsg = "[" + strtime + "]: " + text + "\\n";
     //Console output:
     fprintf(stderr, msg.c_str());
-    //To log chat:
-    sendMessage("712643802996932648", msg);
+    //To log chat (If client is connected):
+    if(isConnected){
+        sendMessage("712643802996932648", discordMsg);
+    }
     //Write to logfile:
     std::ofstream ofile;
     ofile.open("discord_log.txt",std::ios::app);
@@ -207,6 +210,7 @@ void commandClient::setupData(){
 
                  //Setup helpMessage:
                  updateHelpMsg();
+            isConnected = true;
 
 }
 void commandClient::updateHelpMsg(){
@@ -391,8 +395,14 @@ void commandClient::onMessage(SleepyDiscord::Message message){
             return;
         }
 
-
+        //TESTS
+        if(command[0] == "test"){
+            sendMessage("712643802996932648", "testmessage");
+        }
 
 
     }
+}
+void commandClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
+    toConsoleLog(errorMessage);
 }
