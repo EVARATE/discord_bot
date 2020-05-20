@@ -41,7 +41,6 @@ class commandClient : public SleepyDiscord::DiscordClient {
 public:
     using SleepyDiscord::DiscordClient::DiscordClient;
     void onMessage(SleepyDiscord::Message message);
-    void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage);
 
     //Access:
     SleepyDiscord::Channel              channelByName(std::string channelName);
