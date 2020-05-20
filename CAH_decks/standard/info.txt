@@ -1,3 +1,0 @@
-source: https://s3.amazonaws.com/cah/CAH_MainGame.pdf
-
-regex pattern: ([\s]?([\w]|[,;:\-'"/´’$!“”™])[\s]?)+[\.\?]
