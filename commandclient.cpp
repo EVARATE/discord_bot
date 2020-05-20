@@ -397,5 +397,6 @@ void commandClient::onMessage(SleepyDiscord::Message message){
     }
 }
 void commandClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
+    if(errorMessage == "Unknown"){return;}
     toConsoleLog(errorMessage);
 }
