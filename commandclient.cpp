@@ -191,7 +191,7 @@ void commandClient::setupData(){
                "Donnerstag, 14:00 - 16:00 Uhr",
                "unbekannt",
                "unbekannt",
-               "VL: `995 3333 4815 | 444026` ZÜ: `97221197555 | 622587"
+               "VL: `995 3333 4815 | 444026` ZÜ: `97221197555 | 622587`"
                 );
     addLecture("t1",
                "Montag, 10:00 - 12:00 Uhr",
@@ -210,7 +210,6 @@ void commandClient::setupData(){
 
                  //Setup helpMessage:
                  updateHelpMsg();
-            isConnected = true;
 
 }
 void commandClient::updateHelpMsg(){
@@ -405,4 +404,23 @@ void commandClient::onMessage(SleepyDiscord::Message message){
 }
 void commandClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
     toConsoleLog(errorMessage);
+}
+void commandClient::onReady(std::string *jsonMessage){
+    isConnected = true;
+    toConsoleLog("---Started new Session---");
+}
+void commandClient::onDisconnect(){
+    isConnected = false;
+    lastDisconnect = getCurrentTime();
+    toConsoleLog("---Session was disconnected---");
+}
+void commandClient::onResume(){
+    isConnected = true;
+
+    timeObj time = lastDisconnect;
+    std::string strtime = std::to_string(time.day) + "/" + std::to_string(time.month) + "/" + std::to_string(time.year) + " " +
+                          std::to_string(time.hour) + ":" + std::to_string(time.minute) + ":" + std::to_string(time.second);
+    std::string offTime = "[" + strtime + "]: ";
+
+    toConsoleLog("---Reconnected session. Offline since " + offTime + "---");
 }

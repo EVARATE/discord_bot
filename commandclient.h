@@ -42,6 +42,9 @@ public:
     using SleepyDiscord::DiscordClient::DiscordClient;
     void onMessage(SleepyDiscord::Message message);
     void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage);
+    void onReady(std::string* jsonMessage);
+    void onDisconnect();
+    void onResume();
 
     //Access:
     SleepyDiscord::Channel              channelByName(std::string channelName);
@@ -89,7 +92,7 @@ private:
     std::string helpMessageID = "702969362679857283";
 
     bool isConnected = false;
-
+    timeObj lastDisconnect;
 };
 
 #endif // COMMANDCLIENT_H
