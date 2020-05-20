@@ -143,6 +143,8 @@ void commandClient::toConsoleLog(const std::string &text){
     std::string msg = "[" + strtime + "]: " + text + '\n';
     //Console output:
     fprintf(stderr, msg.c_str());
+    //To log chat:
+    sendMessage("712643802996932648", msg);
     //Write to logfile:
     std::ofstream ofile;
     ofile.open("discord_log.txt",std::ios::app);
@@ -186,7 +188,7 @@ void commandClient::setupData(){
                "Donnerstag, 14:00 - 16:00 Uhr",
                "unbekannt",
                "unbekannt",
-               "995 3333 4815 | 444026"
+               "VL: `995 3333 4815 | 444026` ZÜ: `97221197555 | 622587"
                 );
     addLecture("t1",
                "Montag, 10:00 - 12:00 Uhr",
@@ -298,6 +300,7 @@ void commandClient::sendRandom(SleepyDiscord::Message message, std::string rawOp
     }
     std::string smin = limits[0];
     std::string smax = limits[1];
+
     int val1 = std::abs(std::stoi(smin));
     int val2 = std::abs(std::stoi(smax));
     static std::mt19937_64 generator(time(0));
@@ -392,4 +395,7 @@ void commandClient::onMessage(SleepyDiscord::Message message){
 
 
     }
+}
+void commandClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
+    toConsoleLog(errorMessage);
 }
