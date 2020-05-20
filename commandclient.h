@@ -16,13 +16,17 @@ public:
 
     //Commands
     void execTextCommand(stringVec& command, SleepyDiscord::Message& message);
+    void respondTextCommand(textCommand& command, const std::string& channelID);
 
     //Other
     void loadTextCommands();
+    void toLog(const std::string& text);
 
 private:
     //Data:
     std::string prefix = "t/";
-};  std::vector<textCommand> textCommands;
-
+    std::vector<textCommand> textCommands;
+    stringVec offlineLogBuffer;
+    bool isConnected;
+};
 #endif // COMMANDCLIENT_H

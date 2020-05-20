@@ -4,9 +4,13 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <stdlib.h>
+
 
 //=====CONSTANTS=====
-const std::string configPath = "~/.config/discord_bot/";
+
+const std::string homeDir(getenv("HOME"));
+const std::string configPath = homeDir + "/.config/discord_bot/";
 
 //=====TYPEDEFS=====
 typedef std::vector<std::string> stringVec;
@@ -33,7 +37,7 @@ typedef struct{
 }textCommand;
 
 //=====FUNCTIONS=====
-std::string getToken(){
+inline std::string getToken(){
     std::string token;
     std::ifstream ifile;
     ifile.open(configPath + "token.txt");
@@ -74,11 +78,15 @@ std::string getToken(){
     }
 
 }
-std::string toLowerCase(std::string str){
+inline std::string toLowerCase(std::string str){
     std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c){return std::tolower(c);});
     return str;
 }
-stringVec returnMatches(std::string str, std::regex reg){
+inline std::string removeSpaces(std::string& str){
+    std::remove(str.begin(), str.end(), ' ');
+    return str;
+}
+inline stringVec returnMatches(std::string str, std::regex reg){
     stringVec sVec;
     std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
     std::sregex_iterator lastMatch;
@@ -89,7 +97,7 @@ stringVec returnMatches(std::string str, std::regex reg){
     }
     return sVec;
 }
-stringVec toWords(std::string str){
+inline stringVec toWords(std::string str){
     std::regex reg("[^ ]+");
     return returnMatches(str, reg);
 }
