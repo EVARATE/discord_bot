@@ -73,6 +73,9 @@ void commandClient::onResume(){
         offlineLogBuffer.resize(0);
     }
 }
+void commandClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
+    toLog("*ERROR: " + errorMessage + "*");
+}
 
 //Commands
 void commandClient::execTextCommand(stringVec &command, SleepyDiscord::Message &message){
@@ -87,7 +90,7 @@ void commandClient::execTextCommand(stringVec &command, SleepyDiscord::Message &
     }
 }
 void commandClient::respondTextCommand(textCommand &command, const std::string& channelID){
-    std::string text = "**\\n**";
+    std::string text = "\\n";
     for(auto it = command.properties.begin(); it != command.properties.end(); ++it){
         text.append("**" + it->name + "** " + it->value + "\\n");
     }
@@ -237,8 +240,8 @@ void commandClient::updateHelpMsg(){
 void commandClient::toLog(const std::string &text, int status){
     std::string time = getCurrTimeStr();
 
-    std::string msg = time + ": " + text + "\n";
-    std::string discordMsg = "*" + time + ": " + text + "*\\n";
+    std::string msg = "[" + time + "]: " + text + "\n";
+    std::string discordMsg = "[" + time + "]: " + text + "\\n";
 
     //Send to log chat:
     if(isConnected){

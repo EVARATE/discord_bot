@@ -14,6 +14,7 @@ public:
     void onReady(std::string* jsonMessage);
     void onDisconnect();
     void onResume();
+    void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage);
 
     //Commands
     void execTextCommand(stringVec& command, SleepyDiscord::Message& message);
