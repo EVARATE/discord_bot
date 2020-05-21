@@ -32,7 +32,7 @@ typedef struct{
 }property;
 
 typedef struct{
-    stringVec commands;//Multiple commands can trigger this
+    stringVec triggers;//Multiple commands can trigger this
     std::vector<property> properties;
 }textCommand;
 
@@ -100,4 +100,14 @@ inline stringVec returnMatches(std::string str, std::regex reg){
 inline stringVec toWords(std::string str){
     std::regex reg("[^ ]+");
     return returnMatches(str, reg);
+}
+inline void addHelpEntry(std::string& msg, std::string& prefix, const std::string& name, stringVec& triggers){
+    msg.append("*" + name + ":* ");
+    for(auto it = triggers.begin(); it != triggers.end(); ++it){
+        msg.append("`" + prefix + *it + "`, ");
+    }
+    //Delete last characters ', '
+    msg.pop_back();
+    msg.pop_back();
+    msg.append("\\n");
 }
