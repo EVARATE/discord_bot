@@ -235,14 +235,14 @@ void commandClient::updateHelpMsg(){
 }
 
 void commandClient::toLog(const std::string &text, int status){
-    std::string time = "[DUMMY TIME]"; //Placeholder for time==================TO DO===========================
+    std::string time = getCurrTimeStr();
 
     std::string msg = time + ": " + text + "\n";
     std::string discordMsg = "*" + time + ": " + text + "*\\n";
 
     //Send to log chat:
     if(isConnected){
-        //sendMessage(logChannelID, discordMsg);
+        sendMessage(logChannelID, discordMsg);
     }else{
         offlineLogBuffer.push_back(discordMsg);
     }

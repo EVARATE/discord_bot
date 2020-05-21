@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 #include <regex>
+#include <ctime>
+#include <chrono>
 #include <stdlib.h>
 
 
@@ -110,4 +112,56 @@ inline void addHelpEntry(std::string& msg, std::string& prefix, const std::strin
     msg.pop_back();
     msg.pop_back();
     msg.append("\\n");
+}
+inline timeObj getCurrentTime(){
+        auto rawTime = std::chrono::system_clock::now();
+        std::time_t currTime = std::chrono::system_clock::to_time_t(rawTime);
+        std::string time = std::ctime(&currTime);
+
+        //Interpret output:
+        std::regex allReg("[^ ]+");
+        stringVec matches = returnMatches(time, allReg);
+
+        //Example format: Mon Oct  2 00:59:08 2017
+        timeObj currentTime;
+
+        //Weekday:
+        stringVec weekdays = {"Mon","Tue","Wed","Thu","Fri","Sat","Sun"};
+        for(int i = 0; i < (int)weekdays.size(); ++i){
+            if(matches[0] == weekdays[i]){
+                currentTime.weekday = i + 1;
+                break;
+            }
+        }
+        //Day:
+        currentTime.day = std::stoi(matches[2]);
+        //Month:
+        stringVec months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        for(int i = 0; i < (int)months.size(); ++i){
+            if(months[i] == matches[1]){
+                currentTime.month = i + 1;
+                break;
+            }
+        }
+        //Year
+        currentTime.year = std::stoi(matches[4]);
+
+        //Time:
+        std::regex timeReg("\\d+");
+        stringVec timeStrings = returnMatches(matches[3], timeReg);
+        //Format: hh:mm:ss
+        //Second:
+        currentTime.second = std::stoi(timeStrings[2]);
+        //Minute:
+        currentTime.minute = std::stoi(timeStrings[1]);
+        //Hour:
+        currentTime.hour = std::stoi(timeStrings[0]);
+
+        return currentTime;
+}
+inline std::string getCurrTimeStr(){
+    timeObj time = getCurrentTime();
+    std::string strtime = std::to_string(time.day) + "/" + std::to_string(time.month) + "/" + std::to_string(time.year) + " " +
+                          std::to_string(time.hour) + ":" + std::to_string(time.minute) + ":" + std::to_string(time.second);
+    return strtime;
 }
