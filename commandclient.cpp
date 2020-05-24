@@ -46,17 +46,25 @@ void commandClient::onMessage(SleepyDiscord::Message message){
             com_log(message);
             return;
         }
+        //IP
+        if(command[0] == trig_ip[0]){
+            com_ip(message);
+            return;
+        }
 
     }
 }
 void commandClient::onReady(std::string *jsonMessage){
     isConnected = true;
-    toLog("---NEW SESSION---");
+    updateIPInfo();
     static bool firstCall = true;//If 'onReady' is called for the first time
     if(firstCall){
         loadTextCommands();
         updateHelpMsg();
+        toLog("---NEW SESSION---");
         firstCall = false;
+    }else{
+        toLog("---RENEWED SESSION---");
     }
 
 }
@@ -66,11 +74,12 @@ void commandClient::onDisconnect(){
 }
 void commandClient::onResume(){
     isConnected = true;
+    updateIPInfo();
     toLog("---RECONNECTED---");
     if(offlineLogBuffer.size() != 0){
         std::string msgBuffer = "===OFFLINE LOG START===\\n";
         for(auto it = offlineLogBuffer.begin(); it != offlineLogBuffer.end(); ++it){
-            msgBuffer.append(*it + "\n");
+            msgBuffer.append(*it + "\\n");
         }
         msgBuffer.append("===OFFLINE LOG END===");
         toLog(msgBuffer, 1);
@@ -165,6 +174,11 @@ void commandClient::com_log(SleepyDiscord::Message &message){
     }else{
         sendMessage(message.channelID, "Invalid input.");
     }
+}
+void commandClient::com_ip(SleepyDiscord::Message &message){
+    std::string ip = getIP();
+    sendMessage(message.channelID, ip);
+    toLog("Sent IP info to '" + message.author.username + '\'');
 }
 
 //Other
@@ -268,4 +282,8 @@ void commandClient::toLog(const std::string &text, int status){
             fprintf(stderr, "Couldn't open 'log.txt'");
         }
     }
+}
+void commandClient::updateIPInfo(){
+    std::string ip = getIP();
+    sendMessage("702765369940639879", "IP: **" + ip + "**");
 }
