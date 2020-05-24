@@ -51,12 +51,14 @@ void commandClient::onMessage(SleepyDiscord::Message message){
 }
 void commandClient::onReady(std::string *jsonMessage){
     isConnected = true;
-    toLog("---NEW SESSION---");
     static bool firstCall = true;//If 'onReady' is called for the first time
     if(firstCall){
         loadTextCommands();
         updateHelpMsg();
+        toLog("---NEW SESSION---");
         firstCall = false;
+    }else{
+        toLog("---RENEWED SESSION---");
     }
 
 }
@@ -70,7 +72,7 @@ void commandClient::onResume(){
     if(offlineLogBuffer.size() != 0){
         std::string msgBuffer = "===OFFLINE LOG START===\\n";
         for(auto it = offlineLogBuffer.begin(); it != offlineLogBuffer.end(); ++it){
-            msgBuffer.append(*it + "\n");
+            msgBuffer.append(*it + "\\n");
         }
         msgBuffer.append("===OFFLINE LOG END===");
         toLog(msgBuffer, 1);
