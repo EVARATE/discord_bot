@@ -7,6 +7,7 @@
 #include <ctime>
 #include <chrono>
 #include <stdlib.h>
+#include <cstdlib>
 
 
 //=====CONSTANTS=====
@@ -164,4 +165,23 @@ inline std::string getCurrTimeStr(){
     std::string strtime = std::to_string(time.day) + "/" + std::to_string(time.month) + "/" + std::to_string(time.year) + " " +
                           std::to_string(time.hour) + ":" + std::to_string(time.minute) + ":" + std::to_string(time.second);
     return strtime;
+}
+
+
+
+inline std::string getIP(){
+    //Fuck it, I'm too stupid for libcurl. Lets do it like this
+    std::string myIP = "";
+    //Get ip via console command and save it in ip.txt:
+    std::string command = "curl http://api.ipaddress.com/myip?parameters > " + configPath + "ip.txt";
+    std::system(command.c_str());
+
+    //Read ip.txt and return its content:
+    std::ifstream ifile;
+    ifile.open(configPath + "ip.txt");
+    if(ifile.is_open()){
+        ifile >> myIP;
+        ifile.close();
+    }
+    return myIP;
 }

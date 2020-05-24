@@ -25,11 +25,13 @@ public:
     void com_random(SleepyDiscord::Message& message);
     void com_reloadCommands();
     void com_log(SleepyDiscord::Message& message);
+    void com_ip(SleepyDiscord::Message& message);
 
     //Other
     void loadTextCommands();
     void updateHelpMsg();
     void toLog(const std::string& text, int status = 0);//Status: 0='normal', 1='only in discord'
+    void updateIPInfo();
 
 private:
     //Data:
@@ -51,6 +53,7 @@ private:
     stringVec trig_random = {"random"};
     stringVec trig_relComs = {"reloadcmds"};
     stringVec trig_log = {"log"};
+    stringVec trig_ip = {"ip"};
 
 };
 #endif // COMMANDCLIENT_H
