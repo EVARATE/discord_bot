@@ -4,6 +4,7 @@
 #include "sleepy-discord/include/sleepy_discord/client.h"
 #include "sleepy-discord/include/sleepy_discord/server.h"
 #include "miscCode.cpp"
+#include "poll.h"
 
 
 class commandClient : public SleepyDiscord::DiscordClient{
@@ -26,12 +27,20 @@ public:
     void com_reloadCommands();
     void com_log(SleepyDiscord::Message& message);
     void com_ip(SleepyDiscord::Message& message);
+    void com_poll(SleepyDiscord::Message& message, stringVec& command);
+    void com_vote(SleepyDiscord::Message& message, stringVec& command);
+    void com_unvote(SleepyDiscord::Message& message, stringVec& command);
+    void com_pollAdd(SleepyDiscord::Message& message, stringVec& command);
+    void com_pollRem(SleepyDiscord::Message& message, stringVec& command);
+    void com_pollClose(SleepyDiscord::Message& message, stringVec& command);
 
     //Other
     void loadTextCommands();
     void updateHelpMsg();
     void toLog(const std::string& text, int status = 0);//Status: 0='normal', 1='only in discord'
     void updateIPInfo();
+    int getPollID();
+    void updatePollMessage(const int pollID);
 
 private:
     //Data:
@@ -40,6 +49,8 @@ private:
     std::vector<textCommand> lectureCommands;
     stringVec offlineLogBuffer;
     bool isConnected;
+    std::vector<mo_poll> polls;
+    int nextPollID = 0;
 
     //IDs:
     std::string ruleChannelID = "702501123218604102";
@@ -54,6 +65,8 @@ private:
     stringVec trig_relComs = {"reloadcmds"};
     stringVec trig_log = {"log"};
     stringVec trig_ip = {"ip"};
+    stringVec trig_poll = {"poll", "vote", "unvote", "polladd",
+                           "pollrem", "pollclose"};
 
 };
 #endif // COMMANDCLIENT_H

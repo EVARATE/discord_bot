@@ -51,6 +51,36 @@ void commandClient::onMessage(SleepyDiscord::Message message){
             com_ip(message);
             return;
         }
+        //POLL
+        if(command[0] == trig_poll[0]){
+            com_poll(message, command);
+            return;
+        }
+        if(command[0] == trig_poll[1]){
+            //VOTE
+            com_vote(message,command);
+            return;
+        }
+        if(command[0] == trig_poll[2]){
+            //UNVOTE
+            com_unvote(message,command);
+            return;
+        }
+        if(command[0] == trig_poll[3]){
+            //POLLADD
+            com_pollAdd(message,command);
+            return;
+        }
+        if(command[0] == trig_poll[4]){
+            //POLLREM
+            com_pollRem(message,command);
+            return;
+        }
+        if(command[0] == trig_poll[5]){
+            //POLLCLOSE
+            com_pollClose(message,command);
+            return;
+        }
 
     }
 }
@@ -181,6 +211,69 @@ void commandClient::com_ip(SleepyDiscord::Message &message){
     toLog("Sent IP info to '" + message.author.username + '\'');
 }
 
+void commandClient::com_poll(SleepyDiscord::Message &message, stringVec& command)
+{
+    /* POSSIBLE COMMANDS:
+     * /poll "What are the best topics?" "My topic" "Your topic" "their topic"
+     * /poll  <topic>                     <option1>  <option2>    <option3>
+     *
+     * /vote 0 1
+     * /vote <pollID> <optionID>
+     *
+     * /unvote 0 2
+     * /unvote <pollID> <optionID>
+     *
+     * /polladd "another option"
+     * /polladd  <newOption>
+     *
+     * /pollrem 0 4
+     * /pollrem <pollID> <optionID>
+     *
+     * /pollclose 0
+     * /pollclose <pollID>
+     */
+
+    //Find arguments in quotes:
+    std::regex argReg("\".+?\"");
+    stringVec args = returnMatches(message.content, argReg);
+    if(args.size() == 0){return;}
+    //Remove quotes:
+    stringVec options;
+    for(int i = 0; i < (int)args.size(); ++i){
+        args[i].erase(args[i].begin());
+        args[i].pop_back();//delete characters '\"'
+        args[i].pop_back();
+        if(i != 0){
+            options.push_back(args[i]);
+        }
+    }
+
+    //Create poll object
+    mo_poll newPoll(args[0], options);
+    newPoll.author = message.author.username;
+    newPoll.pollChannelID = message.channelID;
+    newPoll.id = getPollID();
+    polls.push_back(newPoll);
+
+    toLog("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
+    updatePollMessage(newPoll.id);
+}
+void commandClient::com_vote(SleepyDiscord::Message& message, stringVec& command){
+
+}
+void commandClient::com_unvote(SleepyDiscord::Message& message, stringVec& command){
+
+}
+void commandClient::com_pollAdd(SleepyDiscord::Message& message, stringVec& command){
+
+}
+void commandClient::com_pollRem(SleepyDiscord::Message& message, stringVec& command){
+
+}
+void commandClient::com_pollClose(SleepyDiscord::Message& message, stringVec& command){
+
+}
+
 //Other
 void commandClient::loadTextCommands(){
     std::ifstream ifile;
@@ -240,7 +333,7 @@ void commandClient::updateHelpMsg(){
     addHelpEntry(msg, prefix, "Regeln", trig_rules);
     addHelpEntry(msg, prefix, "Hilfe", trig_help);
     addHelpEntry(msg, prefix, "Prefix ändern", trig_prefix);
-    addHelpEntry(msg, prefix, "Zufällige Zahl zwischen <min>:<max>", trig_random);
+    addHelpEntry(msg, prefix, "Zufällige Zahl zwischen <min> <max>", trig_random);
     //Textcommands:
     msg.append("Infos zu Vorlesungen: ");
     for(auto it = lectureCommands.begin(); it != lectureCommands.end(); ++it){
@@ -256,6 +349,7 @@ void commandClient::updateHelpMsg(){
 }
 
 void commandClient::toLog(const std::string &text, int status){
+
     std::string time = getCurrTimeStr();
 
     std::string msg = "[" + time + "]: " + text + "\n";
@@ -286,4 +380,43 @@ void commandClient::toLog(const std::string &text, int status){
 void commandClient::updateIPInfo(){
     std::string ip = getIP();
     sendMessage("702765369940639879", "IP: **" + ip + "**");
+}
+int commandClient::getPollID(){
+    nextPollID++;
+    return nextPollID - 1;
+}
+void commandClient::updatePollMessage(const int pollID){
+    //Get poll:
+    mo_poll poll;
+    bool pollExists = false;
+    for(auto it = polls.begin(); it != polls.end(); ++it){
+        if(it->id == pollID){
+            poll = *it;
+            pollExists = true;
+            break;
+        }
+    }
+    if(!pollExists){return;}
+
+    std::string pollMsg = "\\nUmfrage **#" + std::to_string(poll.id) + "** von **" + poll.author + "**\\n";
+    pollMsg.append("```\\n" + poll.topic + "\\n```\\n");
+    for(auto it = poll.options.begin(); it != poll.options.end(); ++it){
+        pollMsg.append("**" + std::to_string(it->id) + ":** " + it->value + "    **" +
+                       std::to_string(poll.getOptPercentage(it->id)) + "%**\\n");
+    }
+    pollMsg.append("\\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(poll.id) + " <option_ID>`");
+
+    if(!poll.messageExists){
+        auto newMessage = sendMessage(poll.pollChannelID, pollMsg);
+        poll.pollMessageID = newMessage.cast().ID;
+        poll.messageExists = true;
+    }else{
+        editMessage(poll.pollChannelID, poll.pollMessageID, pollMsg);
+    }
+    std::string logMsg = "Updated poll#" + std::to_string(poll.id);
+    for(auto it = poll.options.begin(); it != poll.options.end(); ++it){
+        logMsg.append("-" + std::to_string(it->voteCount));
+    }
+    toLog(logMsg);
+
 }
