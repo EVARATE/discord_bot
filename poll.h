@@ -23,10 +23,11 @@ public:
 
     void addOption(const std::string& newOption);
     void removeOption(const int id);
-    void voteForOption(const int id);
-    void unvoteForOption(const int id);
+    void voteForOption(const int id, const std::string& voterID);
+    void unvoteForOption(const int id, const std::string& voterID);
 
     int getOptPercentage(const int id);
+    bool hasVoted(const std::string& voterID);
 
     std::vector<pollOption> getCurrOptions();
 
@@ -34,6 +35,7 @@ public:
     int id;
     std::string topic;
     std::vector<pollOption> options;
+    std::vector<std::string> voterIDs;
 
     //Metadata
     std::string author = "";

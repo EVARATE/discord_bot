@@ -30,8 +30,6 @@ public:
     void com_poll(SleepyDiscord::Message& message, stringVec& command);
     void com_vote(SleepyDiscord::Message& message, stringVec& command);
     void com_unvote(SleepyDiscord::Message& message, stringVec& command);
-    void com_pollAdd(SleepyDiscord::Message& message, stringVec& command);
-    void com_pollRem(SleepyDiscord::Message& message, stringVec& command);
     void com_pollClose(SleepyDiscord::Message& message, stringVec& command);
 
     //Other

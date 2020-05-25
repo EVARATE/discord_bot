@@ -66,16 +66,6 @@ void commandClient::onMessage(SleepyDiscord::Message message){
             com_unvote(message,command);
             return;
         }
-        if(command[0] == trig_poll[3]){
-            //POLLADD
-            com_pollAdd(message,command);
-            return;
-        }
-        if(command[0] == trig_poll[4]){
-            //POLLREM
-            com_pollRem(message,command);
-            return;
-        }
         if(command[0] == trig_poll[5]){
             //POLLCLOSE
             com_pollClose(message,command);
@@ -107,9 +97,9 @@ void commandClient::onResume(){
     updateIPInfo();
     toLog("---RECONNECTED---");
     if(offlineLogBuffer.size() != 0){
-        std::string msgBuffer = "===OFFLINE LOG START===\\n";
+        std::string msgBuffer = "\\n===OFFLINE LOG START===\\n";
         for(auto it = offlineLogBuffer.begin(); it != offlineLogBuffer.end(); ++it){
-            msgBuffer.append(*it + "\\n");
+            msgBuffer.append(*it);
         }
         msgBuffer.append("===OFFLINE LOG END===");
         toLog(msgBuffer, 1);
@@ -259,19 +249,63 @@ void commandClient::com_poll(SleepyDiscord::Message &message, stringVec& command
     updatePollMessage(newPoll.id);
 }
 void commandClient::com_vote(SleepyDiscord::Message& message, stringVec& command){
+    //Get pollID and optionID:
+    std::regex idReg("\\d+");
+    stringVec strIDs = returnMatches(message.content, idReg);
+    if(strIDs.size() < 2){
+        deleteMessage(message.channelID, message.ID);
+        return;
+    }
+    int pollID = std::stoi(strIDs[0]);
+    int optionID = std::stoi(strIDs[1]);
 
+    //Apply vote:
+    for(auto it = polls.begin(); it != polls.end(); ++it){
+        if(it->id == pollID){
+            it->voteForOption(optionID, message.author.ID);
+            updatePollMessage(pollID);
+        }
+    }
+    deleteMessage(message.channelID, message.ID);
 }
 void commandClient::com_unvote(SleepyDiscord::Message& message, stringVec& command){
+    //Get pollID and optionID:
+    std::regex idReg("\\d+");
+    stringVec strIDs = returnMatches(message.content, idReg);
+    if(strIDs.size() < 2){
+        deleteMessage(message.channelID, message.ID);
+        return;
+    }
+    int pollID = std::stoi(strIDs[0]);
+    int optionID = std::stoi(strIDs[1]);
 
-}
-void commandClient::com_pollAdd(SleepyDiscord::Message& message, stringVec& command){
-
-}
-void commandClient::com_pollRem(SleepyDiscord::Message& message, stringVec& command){
-
+    //Apply vote:
+    for(auto it = polls.begin(); it != polls.end(); ++it){
+        if(it->id == pollID){
+            it->unvoteForOption(optionID, message.author.ID);
+            updatePollMessage(pollID);
+        }
+    }
+    deleteMessage(message.channelID, message.ID);
 }
 void commandClient::com_pollClose(SleepyDiscord::Message& message, stringVec& command){
-
+    //Get pollID:
+    std::regex idReg("\\d+");
+    stringVec strIDs = returnMatches(message.content, idReg);
+    if(strIDs.size() == 0){
+        deleteMessage(message.channelID, message.ID);
+        return;
+    }
+    int pollID = std::stoi(strIDs[0]);
+    //Find poll with pollID and delete it:
+    for(auto it = polls.begin(); it != polls.end(); ++it){
+        if(it->id == pollID){
+            polls.erase(it);
+            break;
+        }
+    }
+    deleteMessage(message.channelID, message.ID);
+    toLog("Closed poll#" + std::to_string(pollID));
 }
 
 //Other
@@ -343,6 +377,13 @@ void commandClient::updateHelpMsg(){
     msg.pop_back();
     msg.pop_back();
 
+    //Poll:
+    msg.append("\\n\\n**Abstimmungen:**\\n");
+    msg.append("Neue Abstimmung: `" + prefix + trig_poll[0] + " \\\"<Frage>\\\" \\\"<Option 1>\\\" \\\"<Option 2>\\\" ...`\\n");
+    msg.append("Abstimmen: `" + prefix + trig_poll[1] + " <pollID> <optionID>`\\n");
+    msg.append("Stimme zurücknehmen: `" + prefix + trig_poll[2] + " <pollID> <optionID>`\\n");
+    msg.append("Abstimmung beenden: `" + prefix + trig_poll[5] + " <pollID>`\\n");
+
     //Save new message:
     help_msg = msg;
     toLog("Updated help message.");
@@ -387,36 +428,32 @@ int commandClient::getPollID(){
 }
 void commandClient::updatePollMessage(const int pollID){
     //Get poll:
-    mo_poll poll;
-    bool pollExists = false;
-    for(auto it = polls.begin(); it != polls.end(); ++it){
-        if(it->id == pollID){
-            poll = *it;
-            pollExists = true;
-            break;
+    for(int i = 0; i < (int)polls.size(); ++i){
+        if(polls[i].id == pollID){
+
+            std::string pollMsg = "\\nUmfrage **#" + std::to_string(polls[i].id) + "** von **" + polls[i].author + "**\\n";
+            pollMsg.append("```\\n" + polls[i].topic + "\\n```\\n");
+            for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
+                pollMsg.append("**" + std::to_string(it->id) + ":** " + it->value + "    **" +
+                               std::to_string(polls[i].getOptPercentage(it->id)) + "%**\\n");
+            }
+            pollMsg.append("\\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(polls[i].id) + " <option_ID>`");
+
+            if(!polls[i].messageExists){
+                auto newMessage = sendMessage(polls[i].pollChannelID, pollMsg);
+                polls[i].pollMessageID = newMessage.cast().ID;
+                polls[i].messageExists = true;
+            }else{
+                editMessage(polls[i].pollChannelID, polls[i].pollMessageID, pollMsg);
+            }
+            //Logmessage:
+            std::string logMsg = "Updated poll#" + std::to_string(polls[i].id);
+            for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
+                logMsg.append("-" + std::to_string(it->voteCount));
+            }
+            toLog(logMsg);
+
         }
     }
-    if(!pollExists){return;}
-
-    std::string pollMsg = "\\nUmfrage **#" + std::to_string(poll.id) + "** von **" + poll.author + "**\\n";
-    pollMsg.append("```\\n" + poll.topic + "\\n```\\n");
-    for(auto it = poll.options.begin(); it != poll.options.end(); ++it){
-        pollMsg.append("**" + std::to_string(it->id) + ":** " + it->value + "    **" +
-                       std::to_string(poll.getOptPercentage(it->id)) + "%**\\n");
-    }
-    pollMsg.append("\\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(poll.id) + " <option_ID>`");
-
-    if(!poll.messageExists){
-        auto newMessage = sendMessage(poll.pollChannelID, pollMsg);
-        poll.pollMessageID = newMessage.cast().ID;
-        poll.messageExists = true;
-    }else{
-        editMessage(poll.pollChannelID, poll.pollMessageID, pollMsg);
-    }
-    std::string logMsg = "Updated poll#" + std::to_string(poll.id);
-    for(auto it = poll.options.begin(); it != poll.options.end(); ++it){
-        logMsg.append("-" + std::to_string(it->voteCount));
-    }
-    toLog(logMsg);
 
 }
