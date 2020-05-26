@@ -225,25 +225,6 @@ void commandClient::com_ip(SleepyDiscord::Message &message){
 
 void commandClient::com_poll(SleepyDiscord::Message &message)
 {
-    /* POSSIBLE COMMANDS:
-     * /poll "What are the best topics?" "My topic" "Your topic" "their topic"
-     * /poll  <topic>                     <option1>  <option2>    <option3>
-     *
-     * /vote 0 1
-     * /vote <pollID> <optionID>
-     *
-     * /unvote 0 2
-     * /unvote <pollID> <optionID>
-     *
-     * /polladd "another option"
-     * /polladd  <newOption>
-     *
-     * /pollrem 0 4
-     * /pollrem <pollID> <optionID>
-     *
-     * /pollclose 0
-     * /pollclose <pollID>
-     */
 
     //Find arguments in quotes:
     std::regex argReg("\".+?\"");
@@ -267,6 +248,7 @@ void commandClient::com_poll(SleepyDiscord::Message &message)
     newPoll.id = getPollID();
     polls.push_back(newPoll);
 
+    deleteMessage(message.channelID, message.ID);
     toLog("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
     updatePollMessage(newPoll.id);
 }
