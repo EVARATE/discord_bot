@@ -27,10 +27,13 @@ public:
     void com_reloadCommands();
     void com_log(SleepyDiscord::Message& message);
     void com_ip(SleepyDiscord::Message& message);
-    void com_poll(SleepyDiscord::Message& message, stringVec& command);
-    void com_vote(SleepyDiscord::Message& message, stringVec& command);
-    void com_unvote(SleepyDiscord::Message& message, stringVec& command);
-    void com_pollClose(SleepyDiscord::Message& message, stringVec& command);
+    void com_poll(SleepyDiscord::Message& message);
+    void com_vote(SleepyDiscord::Message& message);
+    void com_unvote(SleepyDiscord::Message& message);
+    void com_pollAdd(SleepyDiscord::Message& message);
+    void com_pollRem(SleepyDiscord::Message& message);
+    void com_pollSet(SleepyDiscord::Message& message);
+    void com_pollClose(SleepyDiscord::Message& message);
 
     //Other
     void loadTextCommands();
@@ -63,8 +66,9 @@ private:
     stringVec trig_relComs = {"reloadcmds"};
     stringVec trig_log = {"log"};
     stringVec trig_ip = {"ip"};
-    stringVec trig_poll = {"poll", "vote", "unvote", "polladd",
-                           "pollrem", "pollclose"};
+    stringVec trig_poll = {"poll", "vote", "unvote",
+                           "polladd", "pollrem", "pollclose",
+                           "pollset", "-custopt", "-multi"};
 
 };
 #endif // COMMANDCLIENT_H

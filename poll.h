@@ -7,12 +7,15 @@ typedef struct{
     int id;
     int voteCount = 0;
     std::string value;
+    std::vector<std::string> voterIDs;
+
+    bool opt_hasVoted(const std::string& voterID);
+
 }pollOption;
 
 class mo_poll
 {
 public:
-    mo_poll();
     mo_poll(const std::string question, std::vector<std::string>& pollOptions):
         topic(question)
     {
@@ -27,6 +30,7 @@ public:
     void unvoteForOption(const int id, const std::string& voterID);
 
     int getOptPercentage(const int id);
+    int totalVotes();
     bool hasVoted(const std::string& voterID);
 
     std::vector<pollOption> getCurrOptions();
@@ -35,13 +39,15 @@ public:
     int id;
     std::string topic;
     std::vector<pollOption> options;
-    std::vector<std::string> voterIDs;
 
     //Metadata
     std::string author = "";
     std::string pollChannelID = "";
     std::string pollMessageID = "";
     bool messageExists = false;
+    bool isClosed = false;
+    bool allowCustOpt = false;
+    bool allowMultipleChoice = false;
 private:
     int nextID = 1;
 };

@@ -185,3 +185,9 @@ inline std::string getIP(){
     }
     return myIP;
 }
+inline bool intToBool(const int val){
+    if(val == 0){
+        return false;
+    }
+    return true;
+}
