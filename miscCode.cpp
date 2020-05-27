@@ -100,7 +100,7 @@ inline stringVec returnMatches(std::string str, std::regex reg){
     }
     return sVec;
 }
-inline stringVec toWords(std::string str){
+inline stringVec strToWords(std::string str){
     std::regex reg("[^ ]+");
     return returnMatches(str, reg);
 }

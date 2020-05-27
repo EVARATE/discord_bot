@@ -1,7 +1,6 @@
 #ifndef POLL_H
 #define POLL_H
-#include <vector>
-#include <string>
+#include "miscCode.cpp"
 
 typedef struct{
     int id;
@@ -33,7 +32,8 @@ public:
     int totalVotes();
     bool hasVoted(const std::string& voterID);
 
-    std::vector<pollOption> getCurrOptions();
+    void loadPoll(const std::string& filePath);
+    void savePoll(const std::string& filePath);
 
     int getOptID();
     int id;

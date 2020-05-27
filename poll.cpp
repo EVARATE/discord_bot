@@ -82,6 +82,75 @@ bool mo_poll::hasVoted(const std::string &voterID){
     return false;
 }
 
+void mo_poll::loadPoll(const std::string &filePath){
+    std::ifstream ifile;
+    ifile.open(filePath);
+    if(!ifile.is_open()){return;}
+    //Load data:
+    ifile >> id;
+    ifile >> nextID;
+    std::string topicStr;
+    getline(ifile, topicStr);
+    topicStr.erase(topicStr.begin());//Delete quotation marks
+    topicStr.pop_back();
+    ifile >> author;
+    ifile >> pollChannelID;
+    ifile >> pollMessageID;
+    ifile >> messageExists;
+    ifile >> isClosed;
+    bool readOptions = true;
+    while(readOptions){
+        std::string line;
+        getline(ifile, line);
+        if(line[0] == '-'){
+            line.erase(line.begin());//Delete '-'
+            //Example: custopt 1
+            stringVec custWords = strToWords(line);
+            if(custWords[0] == "custopt"){
+                allowCustOpt = intToBool(std::stoi(custWords[1]));
+            }
+            if(custWords[0] == "multi"){
+                allowMultipleChoice = intToBool(std::stoi(custWords[1]));
+            }
+        }else{
+            readOptions = false;
+        }
+    }
+    //================CONTINUE HERE===============================================
+
+    ifile.close();
+}
+void mo_poll::savePoll(const std::string &filePath){
+    std::ofstream ofile;
+    ofile.open(filePath);
+    if(!ofile.is_open()){return;}
+    //Save data:
+    ofile << id << "\n";
+    ofile << nextID << "\n";
+    ofile << "'" << topic << "'\n";
+    ofile << author << "\n";
+    ofile << pollChannelID << "\n";
+    ofile << pollMessageID << "\n";
+    ofile << messageExists << "\n";
+    ofile << isClosed << "\n";
+    //Settings:
+    ofile << "-custopt " << allowCustOpt << "\n";
+    ofile << "-multi " << allowMultipleChoice << "\n";
+    //Options:
+    for(auto it = options.begin(); it != options.end(); ++it){
+        ofile << "option\n";
+        ofile << it->id << "\n";
+        ofile << "'" << it->value << "'\n";
+        //Save voterIDs:
+        for(auto v_it = it->voterIDs.begin(); v_it != it->voterIDs.end(); ++v_it){
+            ofile << "v " << *v_it << "\n";
+        }
+    }
+
+
+    ofile.close();
+}
+
 int mo_poll::getOptID(){
     nextID++;
     return nextID - 1;

@@ -6,7 +6,7 @@ void commandClient::onMessage(SleepyDiscord::Message message){
     //Split command into words:
     auto commandLower = toLowerCase(message.content);
     commandLower.erase(0, prefix.size());
-    auto command = toWords(message.content);
+    auto command = strToWords(message.content);
     command[0].erase(0, prefix.size());
 
     //Look for commands:
