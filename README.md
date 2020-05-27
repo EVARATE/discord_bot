@@ -1,7 +1,8 @@
 # Installation:
 
 ## Download
- - Download all files and save them in a directory (e.g. `~/home/discord_bot`)
+ - Download all files and save them in a directory (e.g. `~/discord_bot`)
+ - Or just clone the repo: `git clone https://github.com/EVARATE/discord_bot.git`
  - In the terminal go to that directory
 ## Dependencies
  - Get [sleepy-discord](https://github.com/yourWaifu/sleepy-discord.git):  `git clone https://github.com/yourWaifu/sleepy-discord.git`
