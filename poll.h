@@ -22,8 +22,12 @@ public:
             addOption(*it);
         }
     }
+    mo_poll(const std::string& filePath){
+        loadPoll(filePath);
+    }
 
     void addOption(const std::string& newOption);
+    void addOption(pollOption newOption);//Careful when using this
     void removeOption(const int id);
     void voteForOption(const int id, const std::string& voterID);
     void unvoteForOption(const int id, const std::string& voterID);

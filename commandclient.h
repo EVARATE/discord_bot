@@ -42,6 +42,8 @@ public:
     void updateIPInfo();
     int getPollID();
     void updatePollMessage(const int pollID);
+    void loadAllPolls();
+    void savePoll(const int pollID);
 
 private:
     //Data:

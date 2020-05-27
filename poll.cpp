@@ -98,8 +98,10 @@ void mo_poll::loadPoll(const std::string &filePath){
     ifile >> pollMessageID;
     ifile >> messageExists;
     ifile >> isClosed;
-    bool readOptions = true;
-    while(readOptions){
+    //Read settings:
+    bool readSettings = true;
+    std::string nextLine;
+    while(readSettings){
         std::string line;
         getline(ifile, line);
         if(line[0] == '-'){
@@ -113,10 +115,39 @@ void mo_poll::loadPoll(const std::string &filePath){
                 allowMultipleChoice = intToBool(std::stoi(custWords[1]));
             }
         }else{
-            readOptions = false;
+            nextLine = line;
+            readSettings = false;
         }
     }
-    //================CONTINUE HERE===============================================
+    //Now 'nextLine' contains the next potential line of data
+    //Read Options:
+    bool readOptions = true;
+    while(readOptions){
+        if(nextLine == "option"){
+            //The following lines contain info about this option
+            pollOption currOption;
+            //ID:
+            ifile >> currOption.id;
+            //VALUE:
+            getline(ifile, nextLine);
+            if(nextLine.size() > 2){
+                nextLine.erase(nextLine.begin());
+                nextLine.pop_back();
+                currOption.value = nextLine;
+            }
+            //voterIDs:
+            bool readVoterIDs = true;
+            while(readVoterIDs){
+                getline(ifile, nextLine);
+                if(nextLine[0] == 'v'){
+                    //Remove characters 'v '
+                    nextLine.erase(nextLine.begin(), nextLine.begin() + 1);
+                }else{
+                    readVoterIDs = false;
+                }
+            }
+        }
+    }
 
     ifile.close();
 }

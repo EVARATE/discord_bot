@@ -623,3 +623,7 @@ void commandClient::updatePollMessage(const int pollID){
     }
 
 }
+void commandClient::loadAllPolls(){
+
+}
+
