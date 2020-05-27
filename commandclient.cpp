@@ -7,10 +7,13 @@ void commandClient::onMessage(SleepyDiscord::Message message){
     auto commandLower = toLowerCase(message.content);
     commandLower.erase(0, prefix.size());
     auto command = toWords(message.content);
-    command[0].erase(0, prefix.size());
+
 
     //Look for commands:
     if(message.startsWith(prefix)){
+        //Erase prefix from command[0]:
+        command[0].erase(command[0].begin(), command[0].begin() + prefix.size());
+
         //Check for text commands (if any are called)
         execTextCommand(command, message);
 
