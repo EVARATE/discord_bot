@@ -509,7 +509,7 @@ void commandClient::updateHelpMsg(){
     msg.append("\\nEinstellungen (`<state>` ist `1` oder `0`):\\n");
     msg.append("`" + trig_poll[7] + "<state>`: Andere können Optionen hinzufügen.\\n");
     msg.append("`" + trig_poll[8] + "<state>`: Mehrere Antworten auswählbar.\\n");
-    msg.append("**Bsp.:** `" + prefix + trig_poll[6] + " " + trig_poll[8] + "1`: Multiple Choice aktiv.\\n");
+    msg.append("**Bsp.:** `" + prefix + trig_poll[6] + " 0 " + trig_poll[8] + "1`: Multiple Choice aktiv.\\n");
 
     //Update messages:
     help_msg = msg;
