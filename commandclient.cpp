@@ -95,6 +95,7 @@ void commandClient::onReady(std::string *jsonMessage){
     static bool firstCall = true;//If 'onReady' is called for the first time
     if(firstCall){
         loadTextCommands();
+        loadAllPolls();
         updateHelpMsg();
         toLog("---NEW SESSION---");
         firstCall = false;
@@ -225,26 +226,6 @@ void commandClient::com_ip(SleepyDiscord::Message &message){
 
 void commandClient::com_poll(SleepyDiscord::Message &message)
 {
-    /* POSSIBLE COMMANDS:
-     * /poll "What are the best topics?" "My topic" "Your topic" "their topic"
-     * /poll  <topic>                     <option1>  <option2>    <option3>
-     *
-     * /vote 0 1
-     * /vote <pollID> <optionID>
-     *
-     * /unvote 0 2
-     * /unvote <pollID> <optionID>
-     *
-     * /polladd "another option"
-     * /polladd  <newOption>
-     *
-     * /pollrem 0 4
-     * /pollrem <pollID> <optionID>
-     *
-     * /pollclose 0
-     * /pollclose <pollID>
-     */
-
     //Find arguments in quotes:
     std::regex argReg("\".+?\"");
     stringVec args = returnMatches(message.content, argReg);
@@ -268,7 +249,7 @@ void commandClient::com_poll(SleepyDiscord::Message &message)
     polls.push_back(newPoll);
 
     toLog("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
-    updatePollMessage(newPoll.id);
+    updatePollData(newPoll.id);
 }
 void commandClient::com_vote(SleepyDiscord::Message& message){
     //Get pollID and optionID:
@@ -285,7 +266,7 @@ void commandClient::com_vote(SleepyDiscord::Message& message){
     for(auto it = polls.begin(); it != polls.end(); ++it){
         if(it->id == pollID){
             it->voteForOption(optionID, message.author.ID);
-            updatePollMessage(pollID);
+            updatePollData(pollID);
         }
     }
     deleteMessage(message.channelID, message.ID);
@@ -305,7 +286,7 @@ void commandClient::com_unvote(SleepyDiscord::Message& message){
     for(auto it = polls.begin(); it != polls.end(); ++it){
         if(it->id == pollID){
             it->unvoteForOption(optionID, message.author.ID);
-            updatePollMessage(pollID);
+            updatePollData(pollID);
         }
     }
     deleteMessage(message.channelID, message.ID);
@@ -346,7 +327,7 @@ void commandClient::com_pollAdd(SleepyDiscord::Message &message){
         }
     }
     deleteMessage(message.channelID, message.ID);
-    updatePollMessage(pollID);
+    updatePollData(pollID);
 }
 void commandClient::com_pollRem(SleepyDiscord::Message &message){
     std::regex idReg("\\d+");
@@ -369,7 +350,7 @@ void commandClient::com_pollRem(SleepyDiscord::Message &message){
             //Remove options:
             it->removeOption(optionID);
             deleteMessage(message.channelID, message.ID);
-            updatePollMessage(pollID);
+            updatePollData(pollID);
             return;
 
         }
@@ -416,7 +397,7 @@ void commandClient::com_pollSet(SleepyDiscord::Message &message){
             }
         }
     }
-    updatePollMessage(pollID);
+    updatePollData(pollID);
     deleteMessage(message.channelID, message.ID);
 }
 void commandClient::com_pollClose(SleepyDiscord::Message& message){
@@ -432,7 +413,36 @@ void commandClient::com_pollClose(SleepyDiscord::Message& message){
     for(auto it = polls.begin(); it != polls.end(); ++it){
         if(it->id == pollID){
             it->isClosed = true;
-            updatePollMessage(pollID);
+            updatePollData(pollID);
+
+            //Delete entry from file on disk
+            stringVec pathBuffer;
+            //Read pathFile content into pathBuffer (except the one to delete)
+            std::ifstream inPathFile;
+            inPathFile.open(configPath + "poll_list.txt");
+            if(inPathFile.is_open()){
+                do{
+                    std::string currLine;
+                    inPathFile >> currLine;
+                    if(currLine != "poll_" + std::to_string(it->id) + ".txt"){
+                        pathBuffer.push_back(currLine);
+                    }
+                } while(!inPathFile.eof());
+                inPathFile.close();
+                //Write pathBuffer to back to file, without deleted entry:
+                std::ofstream ofPathFile;
+                ofPathFile.open(configPath + "poll_list.txt");
+                if(ofPathFile.is_open()){
+                    for(auto path_it = pathBuffer.begin(); path_it != pathBuffer.end(); ++path_it){
+                        std::string line = *path_it;
+                        ofPathFile << line << "\n";
+                    }
+                    ofPathFile.close();
+                }
+            }
+            //Delete actual save file:
+            std::remove( (configPath + "polls/" + "poll_" + std::to_string(it->id) + ".txt").c_str() );
+
             polls.erase(it);
             break;
         }
@@ -573,7 +583,7 @@ int commandClient::getPollID(){
     nextPollID++;
     return nextPollID - 1;
 }
-void commandClient::updatePollMessage(const int pollID){
+void commandClient::updatePollData(const int pollID){
     //Get poll:
     for(int i = 0; i < (int)polls.size(); ++i){
         if(polls[i].id == pollID){
@@ -612,6 +622,9 @@ void commandClient::updatePollMessage(const int pollID){
                 editMessage(polls[i].pollChannelID, polls[i].pollMessageID, pollMsg);
             }
 
+            //Save poll to disk:
+            savePoll(polls[i]);
+
             //Logmessage:
             std::string logMsg = "Updated poll#" + std::to_string(polls[i].id);
             for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
@@ -624,6 +637,45 @@ void commandClient::updatePollMessage(const int pollID){
 
 }
 void commandClient::loadAllPolls(){
+    //Get filepaths to all polls:
+    stringVec paths;
+    std::ifstream listFile;
+    listFile.open(configPath + "poll_list.txt");
+    if(!listFile.is_open()){return;}
+    do{
+        std::string currPath;
+        listFile >> currPath;
+        if(currPath.size() > 0){
+            paths.push_back(currPath);
+        }
+    }while(!listFile.eof());
+    listFile.close();
+    if(paths.size() == 0){return;}
 
+
+    //Load all files:
+    for(auto it = paths.begin(); it != paths.end(); ++it){
+        if(it->size() > 0){
+            //Create mo_poll object, load it and save it in commandClient
+            mo_poll currPoll(configPath + "polls/" + *it);
+            currPoll.id = getPollID();
+            polls.push_back(currPoll);
+        }
+    }
+    toLog("Loaded " + std::to_string(paths.size()) + " polls from disk.");
+}
+void commandClient::savePoll(mo_poll& poll){
+    std::string saveName = "poll_" + std::to_string(poll.id) + ".txt";
+    if(!poll.isSaved){
+        //Add entry in overall poll list:
+        std::ofstream listFile;
+        listFile.open(configPath + "poll_list.txt", std::ios::app);
+        if(!listFile.is_open()){return;}
+        listFile << saveName << "\n";
+        listFile.close();
+        poll.isSaved = true;
+    }
+    //Save poll to file in subdirectory:
+    poll.savePoll(configPath + "polls/" + saveName);
 }
 

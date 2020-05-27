@@ -86,13 +86,17 @@ void mo_poll::loadPoll(const std::string &filePath){
     std::ifstream ifile;
     ifile.open(filePath);
     if(!ifile.is_open()){return;}
+
     //Load data:
-    ifile >> id;
-    ifile >> nextID;
+    std::string str_nextID;
+    getline(ifile, str_nextID);
+    nextID = std::stoi(str_nextID);
+
     std::string topicStr;
     getline(ifile, topicStr);
     topicStr.erase(topicStr.begin());//Delete quotation marks
     topicStr.pop_back();
+
     ifile >> author;
     ifile >> pollChannelID;
     ifile >> pollMessageID;
@@ -121,8 +125,7 @@ void mo_poll::loadPoll(const std::string &filePath){
     }
     //Now 'nextLine' contains the next potential line of data
     //Read Options:
-    bool readOptions = true;
-    while(readOptions){
+    do{
         if(nextLine == "option"){
             //The following lines contain info about this option
             pollOption currOption;
@@ -142,12 +145,15 @@ void mo_poll::loadPoll(const std::string &filePath){
                 if(nextLine[0] == 'v'){
                     //Remove characters 'v '
                     nextLine.erase(nextLine.begin(), nextLine.begin() + 1);
+                    currOption.voterIDs.push_back(nextLine);
                 }else{
                     readVoterIDs = false;
                 }
             }
+            currOption.voteCount = (int)currOption.voterIDs.size();
         }
-    }
+        getline(ifile, nextLine);
+    }while(!ifile.eof());
 
     ifile.close();
 }
@@ -156,7 +162,6 @@ void mo_poll::savePoll(const std::string &filePath){
     ofile.open(filePath);
     if(!ofile.is_open()){return;}
     //Save data:
-    ofile << id << "\n";
     ofile << nextID << "\n";
     ofile << "'" << topic << "'\n";
     ofile << author << "\n";

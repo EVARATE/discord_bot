@@ -8,6 +8,7 @@
 #include <chrono>
 #include <stdlib.h>
 #include <cstdlib>
+#include <cstdio>
 
 
 //=====CONSTANTS=====

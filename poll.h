@@ -36,7 +36,7 @@ public:
     int totalVotes();
     bool hasVoted(const std::string& voterID);
 
-    void loadPoll(const std::string& filePath);
+    void loadPoll(const std::string& filePath);//=====NEEDS REWRITE=====
     void savePoll(const std::string& filePath);
 
     int getOptID();
@@ -48,6 +48,7 @@ public:
     std::string author = "";
     std::string pollChannelID = "";
     std::string pollMessageID = "";
+    bool isSaved = false;
     bool messageExists = false;
     bool isClosed = false;
     bool allowCustOpt = false;
