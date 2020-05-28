@@ -87,102 +87,120 @@ void mo_poll::loadPoll(const std::string &filePath){
     ifile.open(filePath);
     if(!ifile.is_open()){return;}
 
-    //Load data:
-    std::string str_nextID;
-    getline(ifile, str_nextID);
-    nextID = std::stoi(str_nextID);
+    //Topic:
+    std::string lineBuffer;
+    getline(ifile, lineBuffer);
+    lineBuffer.erase(lineBuffer.begin());//Remove "'"
+    lineBuffer.pop_back();//Remove last "'"
+    topic = lineBuffer;
+    //Author:
+    getline(ifile, lineBuffer);
+    lineBuffer.erase(lineBuffer.begin());//Remove "'"
+    lineBuffer.pop_back();//Remove last "'"
+    author = lineBuffer;
+    //pollChannelID:
+    getline(ifile, lineBuffer);
+    pollChannelID = lineBuffer;
+    //pollMessageID:
+    getline(ifile, lineBuffer);
+    pollMessageID = lineBuffer;
+    //messageExists:
+    getline(ifile, lineBuffer);
+    messageExists = intToBool(std::stoi(lineBuffer));
+    //isClosed:
+    getline(ifile, lineBuffer);
+    isClosed = intToBool(std::stoi(lineBuffer));
+    //allowCustOpt:
+    getline(ifile, lineBuffer);
+    allowCustOpt = intToBool(std::stoi(lineBuffer));
+    //allowMultipleChoice:
+    getline(ifile, lineBuffer);
+    allowMultipleChoice = intToBool(std::stoi(lineBuffer));
+    //First explicitly saved optionID:
+    getline(ifile, lineBuffer);
+    int lastOptID = std::stoi(lineBuffer);
 
-    std::string topicStr;
-    getline(ifile, topicStr);
-    topicStr.erase(topicStr.begin());//Delete quotation marks
-    topicStr.pop_back();
-
-    ifile >> author;
-    ifile >> pollChannelID;
-    ifile >> pollMessageID;
-    ifile >> messageExists;
-    ifile >> isClosed;
-    //Read settings:
-    bool readSettings = true;
-    std::string nextLine;
-    while(readSettings){
-        std::string line;
-        getline(ifile, line);
-        if(line[0] == '-'){
-            line.erase(line.begin());//Delete '-'
-            //Example: custopt 1
-            stringVec custWords = strToWords(line);
-            if(custWords[0] == "custopt"){
-                allowCustOpt = intToBool(std::stoi(custWords[1]));
-            }
-            if(custWords[0] == "multi"){
-                allowMultipleChoice = intToBool(std::stoi(custWords[1]));
-            }
-        }else{
-            nextLine = line;
-            readSettings = false;
-        }
-    }
-    //Now 'nextLine' contains the next potential line of data
-    //Read Options:
-    do{
-        if(nextLine == "option"){
-            //The following lines contain info about this option
+    //Load all options data:
+    bool firstLineOfOption = true;
+    while(!ifile.eof()){
+        getline(ifile, lineBuffer);
+        if(lineBuffer.size() > 0){
+            //Get optionID and values:
+            std::regex idReg("\\d+");
+            int currOptID = std::stoi(returnMatches(lineBuffer, idReg)[0]);
+            std::regex valReg("'.+'");
+            auto vals = returnMatches(lineBuffer, valReg);
+            std::string currOptValue = vals[0];
+            currOptValue.erase(currOptValue.begin());
+            currOptValue.pop_back();
             pollOption currOption;
-            //ID:
-            ifile >> currOption.id;
-            //VALUE:
-            getline(ifile, nextLine);
-            if(nextLine.size() > 2){
-                nextLine.erase(nextLine.begin());
-                nextLine.pop_back();
-                currOption.value = nextLine;
-            }
-            //voterIDs:
-            bool readVoterIDs = true;
-            while(readVoterIDs){
-                getline(ifile, nextLine);
-                if(nextLine[0] == 'v'){
-                    //Remove characters 'v '
-                    nextLine.erase(nextLine.begin(), nextLine.begin() + 1);
-                    currOption.voterIDs.push_back(nextLine);
+            if(currOptID == lastOptID){
+                currOption.id = currOptID;
+                if(firstLineOfOption){
+                    currOption.value = currOptValue;
+                    firstLineOfOption = false;
                 }else{
-                    readVoterIDs = false;
+                    currOption.voterIDs.push_back(currOptValue);
                 }
             }
-            currOption.voteCount = (int)currOption.voterIDs.size();
+            else{
+                firstLineOfOption = true;
+                options.push_back(currOption);
+                currOption = pollOption();//Empty currOption
+            }
         }
-        getline(ifile, nextLine);
-    }while(!ifile.eof());
-
+    }
     ifile.close();
+
+
+    /* EXAMPLE FILE:
+     *
+     * 'My topic'
+     * 'Username_author'
+     * 492734023423423434
+     * 342348048023948576
+     * 1
+     * 0
+     * 1
+     * 1
+     * 0
+     * o 0 'First option'
+     * o 0 '123412341231232323'
+     * o 0 '442934892348023433'
+     * o 0 '534959359340570349'
+     * o 1 'Second option'
+     * o 1 '243923049820394834'
+     * o 1 '594934759374598023'
+     * o 2 'Third option'
+     * o 3 'Fourth option'
+     * o 3 '230498032840293485'
+     *
+     */
 }
 void mo_poll::savePoll(const std::string &filePath){
     std::ofstream ofile;
     ofile.open(filePath);
     if(!ofile.is_open()){return;}
-    //Save data:
-    ofile << nextID << "\n";
-    ofile << "'" << topic << "'\n";
-    ofile << author << "\n";
-    ofile << pollChannelID << "\n";
-    ofile << pollMessageID << "\n";
+    //Data:
+    ofile << "'" + topic + "'\n";
+    ofile << "'" + author + "'\n";
+    ofile << pollChannelID + "\n";
+    ofile << pollMessageID + "\n";
     ofile << messageExists << "\n";
     ofile << isClosed << "\n";
-    //Settings:
-    ofile << "-custopt " << allowCustOpt << "\n";
-    ofile << "-multi " << allowMultipleChoice << "\n";
-    //Options:
-    for(auto it = options.begin(); it != options.end(); ++it){
-        ofile << "option\n";
-        ofile << it->id << "\n";
-        ofile << "'" << it->value << "'\n";
-        //Save voterIDs:
-        for(auto v_it = it->voterIDs.begin(); v_it != it->voterIDs.end(); ++v_it){
-            ofile << "v " << *v_it << "\n";
+    ofile << allowCustOpt << "\n";
+    ofile << allowMultipleChoice << "\n";
+    ofile << options.begin()->id << "\n";//Save first optionID extra to make loading easier
+
+    //For each option:
+    for(auto currOption = options.begin(); currOption != options.end(); ++currOption){
+        std::string optPrefix = "o " + std::to_string(currOption->id);
+        ofile << optPrefix << " '" + currOption->value + "'\n";
+        //For each voterID in this option:
+        for(auto currVoterID = currOption->voterIDs.begin(); currVoterID != currOption->voterIDs.end(); ++currVoterID){
+            ofile << optPrefix << " '" << *currVoterID << "'\n";
         }
     }
-
 
     ofile.close();
 }
