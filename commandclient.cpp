@@ -549,7 +549,7 @@ void commandClient::toLog(const std::string &text, int status){
     std::string time = getCurrTimeStr();
 
     std::string msg = "[" + time + "]: " + text + "\n";
-    std::string discordMsg = "[" + time + "]: " + text + "\\n";
+    std::string discordMsg = "[" + time + "]: " + text + "\\\n";
 
     //Send to log chat:
     if(isConnected){
@@ -660,6 +660,8 @@ void commandClient::loadAllPolls(){
             mo_poll currPoll(configPath + "polls/" + *it);
             currPoll.id = getPollID();
             polls.push_back(currPoll);
+            //Update all poll messages:
+            updatePollData(currPoll.id);
         }
     }
     toLog("Loaded " + std::to_string(paths.size()) + " polls from disk.");

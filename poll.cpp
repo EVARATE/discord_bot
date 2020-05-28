@@ -116,38 +116,30 @@ void mo_poll::loadPoll(const std::string &filePath){
     //allowMultipleChoice:
     getline(ifile, lineBuffer);
     allowMultipleChoice = intToBool(std::stoi(lineBuffer));
-    //First explicitly saved optionID:
-    getline(ifile, lineBuffer);
-    int lastOptID = std::stoi(lineBuffer);
 
     //Load all options data:
-    bool firstLineOfOption = true;
-    while(!ifile.eof()){
-        getline(ifile, lineBuffer);
-        if(lineBuffer.size() > 0){
-            //Get optionID and values:
+    while(getline(ifile, lineBuffer)){
+        if(lineBuffer[0] == 'o'){
+            //Get optionID:
             std::regex idReg("\\d+");
-            int currOptID = std::stoi(returnMatches(lineBuffer, idReg)[0]);
-            std::regex valReg("'.+'");
-            auto vals = returnMatches(lineBuffer, valReg);
-            std::string currOptValue = vals[0];
-            currOptValue.erase(currOptValue.begin());
-            currOptValue.pop_back();
+            auto idStrVec = returnMatches(lineBuffer, idReg);
+            int optionID = std::stoi(idStrVec[0]);
+            //Get quoted things:
+            std::regex quoteReg("'.+?'");
+            auto quoteVec = returnMatches(lineBuffer, quoteReg);
+            //Create pollOption and save it to the class:
             pollOption currOption;
-            if(currOptID == lastOptID){
-                currOption.id = currOptID;
-                if(firstLineOfOption){
-                    currOption.value = currOptValue;
-                    firstLineOfOption = false;
-                }else{
-                    currOption.voterIDs.push_back(currOptValue);
+            currOption.id = optionID;
+            currOption.value = quoteVec[0].substr(1, quoteVec[0].size() - 2);
+            if(quoteVec.size() > 1){
+                for(auto ID_it = quoteVec.begin(); ID_it != quoteVec.end(); ++ID_it){
+                    std::string currID = *ID_it;
+                    currID.erase(currID.begin());
+                    currID.pop_back();
+                    currOption.voterIDs.push_back(currID);
                 }
             }
-            else{
-                firstLineOfOption = true;
-                options.push_back(currOption);
-                currOption = pollOption();//Empty currOption
-            }
+            options.push_back(currOption);
         }
     }
     ifile.close();
@@ -163,17 +155,10 @@ void mo_poll::loadPoll(const std::string &filePath){
      * 0
      * 1
      * 1
-     * 0
-     * o 0 'First option'
-     * o 0 '123412341231232323'
-     * o 0 '442934892348023433'
-     * o 0 '534959359340570349'
-     * o 1 'Second option'
-     * o 1 '243923049820394834'
-     * o 1 '594934759374598023'
+     * o 0 'First option' '123412341231232323' '442934892348023433' '534959359340570349'
+     * o 1 'Second option' '243923049820394834' '594934759374598023'
      * o 2 'Third option'
-     * o 3 'Fourth option'
-     * o 3 '230498032840293485'
+     * o 3 'Fourth option' '230498032840293485'
      *
      */
 }
@@ -190,18 +175,15 @@ void mo_poll::savePoll(const std::string &filePath){
     ofile << isClosed << "\n";
     ofile << allowCustOpt << "\n";
     ofile << allowMultipleChoice << "\n";
-    ofile << options.begin()->id << "\n";//Save first optionID extra to make loading easier
 
     //For each option:
     for(auto currOption = options.begin(); currOption != options.end(); ++currOption){
-        std::string optPrefix = "o " + std::to_string(currOption->id);
-        ofile << optPrefix << " '" + currOption->value + "'\n";
-        //For each voterID in this option:
-        for(auto currVoterID = currOption->voterIDs.begin(); currVoterID != currOption->voterIDs.end(); ++currVoterID){
-            ofile << optPrefix << " '" << *currVoterID << "'\n";
+        ofile << "o " << currOption->id << " '" << currOption->value << "'";
+        for(auto v_it = currOption->voterIDs.begin(); v_it != currOption->voterIDs.end(); ++v_it){
+            ofile << " '" << *v_it << "'";
         }
+        ofile << "\n";
     }
-
     ofile.close();
 }
 
