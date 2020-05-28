@@ -137,6 +137,7 @@ void mo_poll::loadPoll(const std::string &filePath){
                     currID.erase(currID.begin());
                     currID.pop_back();
                     currOption.voterIDs.push_back(currID);
+                    currOption.voteCount++;
                 }
             }
             options.push_back(currOption);
@@ -163,6 +164,7 @@ void mo_poll::loadPoll(const std::string &filePath){
      */
 }
 void mo_poll::savePoll(const std::string &filePath){
+    std::remove(filePath.c_str());
     std::ofstream ofile;
     ofile.open(filePath);
     if(!ofile.is_open()){return;}

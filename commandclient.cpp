@@ -549,7 +549,7 @@ void commandClient::toLog(const std::string &text, int status){
     std::string time = getCurrTimeStr();
 
     std::string msg = "[" + time + "]: " + text + "\n";
-    std::string discordMsg = "[" + time + "]: " + text + "\\\n";
+    std::string discordMsg = "[" + time + "]: " + text + "\\n";
 
     //Send to log chat:
     if(isConnected){
@@ -652,7 +652,6 @@ void commandClient::loadAllPolls(){
     listFile.close();
     if(paths.size() == 0){return;}
 
-
     //Load all files:
     for(auto it = paths.begin(); it != paths.end(); ++it){
         if(it->size() > 0){
@@ -669,6 +668,20 @@ void commandClient::loadAllPolls(){
 void commandClient::savePoll(mo_poll& poll){
     std::string saveName = "poll_" + std::to_string(poll.id) + ".txt";
     if(!poll.isSaved){
+        //See if entry already exists:
+        std::ifstream ifile;
+        ifile.open(configPath + "poll_list.txt");
+        if(ifile.is_open()){
+            std::string currLine;
+            while(getline(ifile, currLine)){
+                if(currLine == saveName){
+                    //Save poll to file in subdirectory:
+                    poll.savePoll(configPath + "polls/" + saveName);
+                    return;
+                }
+            }
+            ifile.close();
+        }
         //Add entry in overall poll list:
         std::ofstream listFile;
         listFile.open(configPath + "poll_list.txt", std::ios::app);
@@ -680,4 +693,3 @@ void commandClient::savePoll(mo_poll& poll){
     //Save poll to file in subdirectory:
     poll.savePoll(configPath + "polls/" + saveName);
 }
-
