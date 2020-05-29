@@ -69,7 +69,7 @@ private:
     stringVec trig_ip = {"ip"};
     stringVec trig_poll = {"poll", "vote", "unvote",
                            "polladd", "pollrem", "pollclose",
-                           "pollset", "-custopt", "-multi"};
+                           "pollset", "custopt_", "multi_"};
 
 };
 #endif // COMMANDCLIENT_H

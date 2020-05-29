@@ -118,21 +118,21 @@ void mo_poll::loadPoll(const std::string &filePath){
     allowMultipleChoice = intToBool(std::stoi(lineBuffer));
 
     //Load all options data:
+    int highestOptID = 0;
     while(getline(ifile, lineBuffer)){
         if(lineBuffer[0] == 'o'){
             //Get optionID:
-            std::regex idReg("\\d+");
-            auto idStrVec = returnMatches(lineBuffer, idReg);
+            auto idStrVec = returnMatches(lineBuffer, "\\d+");
             int optionID = std::stoi(idStrVec[0]);
+            highestOptID = std::max(highestOptID, optionID);
             //Get quoted things:
-            std::regex quoteReg("'.+?'");
-            auto quoteVec = returnMatches(lineBuffer, quoteReg);
+            auto quoteVec = returnMatches(lineBuffer, "'.+?'");
             //Create pollOption and save it to the class:
             pollOption currOption;
             currOption.id = optionID;
             currOption.value = quoteVec[0].substr(1, quoteVec[0].size() - 2);
             if(quoteVec.size() > 1){
-                for(auto ID_it = quoteVec.begin(); ID_it != quoteVec.end(); ++ID_it){
+                for(auto ID_it = quoteVec.begin() + 1; ID_it != quoteVec.end(); ++ID_it){
                     std::string currID = *ID_it;
                     currID.erase(currID.begin());
                     currID.pop_back();
@@ -144,6 +144,8 @@ void mo_poll::loadPoll(const std::string &filePath){
         }
     }
     ifile.close();
+    //New options must have valid IDs:
+    nextID = highestOptID + 1;
 
 
     /* EXAMPLE FILE:

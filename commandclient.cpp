@@ -96,6 +96,11 @@ void commandClient::onReady(std::string *jsonMessage){
     if(firstCall){
         loadTextCommands();
         loadAllPolls();
+        //Update all poll messages:
+        for(auto it = polls.begin(); it != polls.end(); ++it){
+            updatePollData(it->id);
+        }
+
         updateHelpMsg();
         toLog("---NEW SESSION---");
         firstCall = false;
@@ -377,6 +382,9 @@ void commandClient::com_pollSet(SleepyDiscord::Message &message){
     //Get poll with pollID:
     for(auto it = polls.begin(); it != polls.end(); ++it){
         if(it->id == pollID){
+            //Only poll author can change settings:
+            if(it->author != message.author.username){return;}
+
             //Process settings:
             for(auto s_it = setStrs.begin(); s_it != setStrs.end(); ++s_it){
                 //Find state:
@@ -412,37 +420,39 @@ void commandClient::com_pollClose(SleepyDiscord::Message& message){
     //Find poll with pollID and delete it:
     for(auto it = polls.begin(); it != polls.end(); ++it){
         if(it->id == pollID){
+            //Only poll author can delete it:
+            if(it->author != message.author.username){return;}
+
             it->isClosed = true;
             updatePollData(pollID);
 
-            //Delete entry from file on disk
-            stringVec pathBuffer;
-            //Read pathFile content into pathBuffer (except the one to delete)
-            std::ifstream inPathFile;
-            inPathFile.open(configPath + "poll_list.txt");
-            if(inPathFile.is_open()){
-                do{
-                    std::string currLine;
-                    inPathFile >> currLine;
-                    if(currLine != "poll_" + std::to_string(it->id) + ".txt"){
-                        pathBuffer.push_back(currLine);
+            //DELETE FILE FROM DISK:
+            //Read content of poll_list.txt into memory and write it back except for the line to be deleted:
+            std::ifstream listFile;
+            listFile.open(configPath + "poll_list.txt");
+            if(listFile.is_open()){
+                stringVec listBuffer;
+                std::string currLine;
+                while(getline(listFile, currLine)){
+                    if(currLine != "poll_" + std::to_string(pollID) + ".txt"){
+                        listBuffer.push_back(currLine);
                     }
-                } while(!inPathFile.eof());
-                inPathFile.close();
-                //Write pathBuffer to back to file, without deleted entry:
-                std::ofstream ofPathFile;
-                ofPathFile.open(configPath + "poll_list.txt");
-                if(ofPathFile.is_open()){
-                    for(auto path_it = pathBuffer.begin(); path_it != pathBuffer.end(); ++path_it){
-                        std::string line = *path_it;
-                        ofPathFile << line << "\n";
+                }
+                listFile.close();
+                //Write buffer back:
+                std::ofstream ofListFile;
+                ofListFile.open(configPath + "poll_list.txt");
+                if(ofListFile.is_open()){
+                    for(auto buf_it = listBuffer.begin(); buf_it != listBuffer.end(); ++buf_it){
+                        ofListFile << *buf_it << "\n";
                     }
-                    ofPathFile.close();
+                    ofListFile.close();
                 }
             }
-            //Delete actual save file:
-            std::remove( (configPath + "polls/" + "poll_" + std::to_string(it->id) + ".txt").c_str() );
+            //Delete corresponding file:
+            std::remove((configPath + "polls/poll_" + std::to_string(pollID) + ".txt").c_str());
 
+            //Delete from memory:
             polls.erase(it);
             break;
         }
@@ -512,7 +522,7 @@ void commandClient::updateHelpMsg(){
     addHelpEntry(msg, prefix, "Prefix ändern", trig_prefix);
     addHelpEntry(msg, prefix, "Zufällige Zahl zwischen <min> <max>", trig_random);
     //Textcommands:
-    msg.append("Infos zu Vorlesungen: ");
+    msg.append("Infos zu Vorlesungen:");
     for(auto it = lectureCommands.begin(); it != lectureCommands.end(); ++it){
             msg.append("`" + it->triggers[0] + "`, ");
     }
@@ -527,14 +537,14 @@ void commandClient::updateHelpMsg(){
     msg.append("Stimme zurücknehmen: `" + prefix + trig_poll[2] + " <pollID> <optionID>`\\n");
     msg.append("Optionen hinzufügen: `" + prefix + trig_poll[3] + " <pollID> \\\"<option1>\\\" \\\"<option2>\\\" ...`\\n");
     msg.append("Option löschen: `" + prefix + trig_poll[4] + " <pollID> <optionID>`\\n");
-    msg.append("Einstellung ändern: `" + prefix + trig_poll[6] + " <pollID> -<setting<state>> -<setting<state>> ...`\\n");
+    msg.append("Einstellung ändern: `" + prefix + trig_poll[6] + " <pollID> <setting<state>> <setting<state>> ...`\\n");
     msg.append("Abstimmung beenden: `" + prefix + trig_poll[5] + " <pollID>`\\n");
 
     //Poll settings:
     msg.append("\\nEinstellungen (`<state>` ist `1` oder `0`):\\n");
-    msg.append("`" + trig_poll[7] + "<state>`: Andere können Optionen hinzufügen.\\n");
-    msg.append("`" + trig_poll[8] + "<state>`: Mehrere Antworten auswählbar.\\n");
-    msg.append("**Bsp.:** `" + prefix + trig_poll[6] + " " + trig_poll[8] + "1`: Multiple Choice aktiv.\\n");
+    msg.append("        `" + trig_poll[7] + "<state>`: Andere können Optionen hinzufügen.\\n");
+    msg.append("        `" + trig_poll[8] + "<state>`: Mehrere Antworten auswählbar.\\n");
+    msg.append("**Beispiel:** `" + prefix + trig_poll[6] + " " + trig_poll[8] + "1`: Multiple Choice aktiviert.\\n");
 
     //Update messages:
     help_msg = msg;
@@ -659,37 +669,35 @@ void commandClient::loadAllPolls(){
             mo_poll currPoll(configPath + "polls/" + *it);
             currPoll.id = getPollID();
             polls.push_back(currPoll);
-            //Update all poll messages:
-            updatePollData(currPoll.id);
         }
     }
     toLog("Loaded " + std::to_string(paths.size()) + " polls from disk.");
 }
 void commandClient::savePoll(mo_poll& poll){
     std::string saveName = "poll_" + std::to_string(poll.id) + ".txt";
-    if(!poll.isSaved){
-        //See if entry already exists:
-        std::ifstream ifile;
-        ifile.open(configPath + "poll_list.txt");
-        if(ifile.is_open()){
-            std::string currLine;
-            while(getline(ifile, currLine)){
-                if(currLine == saveName){
-                    //Save poll to file in subdirectory:
-                    poll.savePoll(configPath + "polls/" + saveName);
-                    return;
-                }
+
+    //See if entry already exists:
+    std::ifstream ifile;
+    ifile.open(configPath + "poll_list.txt");
+    if(ifile.is_open()){
+        std::string currLine;
+        while(getline(ifile, currLine)){
+            if(currLine == saveName){
+                //Save poll to file in subdirectory:
+                poll.savePoll(configPath + "polls/" + saveName);
+                return;
             }
-            ifile.close();
         }
-        //Add entry in overall poll list:
-        std::ofstream listFile;
-        listFile.open(configPath + "poll_list.txt", std::ios::app);
-        if(!listFile.is_open()){return;}
-        listFile << saveName << "\n";
-        listFile.close();
-        poll.isSaved = true;
+        ifile.close();
     }
+    //Add entry in overall poll list:
+    std::ofstream listFile;
+    listFile.open(configPath + "poll_list.txt", std::ios::app);
+    if(!listFile.is_open()){return;}
+    listFile << saveName << "\n";
+    listFile.close();
+    poll.isSaved = true;
+
     //Save poll to file in subdirectory:
     poll.savePoll(configPath + "polls/" + saveName);
 }
