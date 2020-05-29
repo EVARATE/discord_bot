@@ -255,6 +255,7 @@ void commandClient::com_poll(SleepyDiscord::Message &message)
 
     toLog("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
     updatePollData(newPoll.id);
+    deleteMessage(message.channelID, message.ID);
 }
 void commandClient::com_vote(SleepyDiscord::Message& message){
     //Get pollID and optionID:
