@@ -91,7 +91,7 @@ void commandClient::onMessage(SleepyDiscord::Message message){
 }
 void commandClient::onReady(std::string *jsonMessage){
     isConnected = true;
-    updateIPInfo();
+    //updateIPInfo();
     static bool firstCall = true;//If 'onReady' is called for the first time
     if(firstCall){
         loadTextCommands();
