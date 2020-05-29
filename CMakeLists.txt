@@ -4,7 +4,6 @@ project(discord_bot LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(discord_bot
     main.cpp
