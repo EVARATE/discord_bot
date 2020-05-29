@@ -428,7 +428,7 @@ void commandClient::com_pollClose(SleepyDiscord::Message& message){
             updatePollData(pollID);
 
 
-            /*
+
             //DELETE FILE FROM DISK:
             //Read content of poll_list.txt into memory and write it back except for the line to be deleted:
             std::ifstream listFile;
@@ -454,7 +454,7 @@ void commandClient::com_pollClose(SleepyDiscord::Message& message){
             }
             //Delete corresponding file:
             std::remove((configPath + "polls/poll_" + std::to_string(pollID) + ".txt").c_str());
-            */
+
 
 
 
@@ -653,7 +653,7 @@ void commandClient::updatePollData(const int pollID){
 
 }
 void commandClient::loadAllPolls(){
-    /*
+
     //Get filepaths to all polls:
     stringVec paths;
     std::ifstream listFile;
@@ -679,10 +679,10 @@ void commandClient::loadAllPolls(){
         }
     }
     toLog("Loaded " + std::to_string(paths.size()) + " polls from disk.");
-    */
+
 }
 void commandClient::savePoll(mo_poll& poll){
-    /*
+
     std::string saveName = "poll_" + std::to_string(poll.id) + ".txt";
 
     //See if entry already exists:
@@ -709,5 +709,5 @@ void commandClient::savePoll(mo_poll& poll){
 
     //Save poll to file in subdirectory:
     poll.savePoll(configPath + "polls/" + saveName);
-    */
+
 }
