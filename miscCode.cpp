@@ -8,6 +8,7 @@
 #include <chrono>
 #include <stdlib.h>
 #include <cstdlib>
+#include <cstdio>
 
 
 //=====CONSTANTS=====
@@ -100,7 +101,11 @@ inline stringVec returnMatches(std::string str, std::regex reg){
     }
     return sVec;
 }
-inline stringVec toWords(std::string str){
+inline stringVec returnMatches(std::string& str, std::string strReg){
+    std::regex reg(strReg);
+    return returnMatches(str, reg);
+}
+inline stringVec strToWords(std::string str){
     std::regex reg("[^ ]+");
     return returnMatches(str, reg);
 }

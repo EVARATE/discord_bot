@@ -3,7 +3,6 @@
 #include "sleepy-discord/include/sleepy_discord/websocketpp_websocket.h"
 #include "sleepy-discord/include/sleepy_discord/client.h"
 #include "sleepy-discord/include/sleepy_discord/server.h"
-#include "miscCode.cpp"
 #include "poll.h"
 
 
@@ -41,7 +40,9 @@ public:
     void toLog(const std::string& text, int status = 0);//Status: 0='normal', 1='only in discord'
     void updateIPInfo();
     int getPollID();
-    void updatePollMessage(const int pollID);
+    void updatePollData(const int pollID);
+    void loadAllPolls();
+    void savePoll(mo_poll& poll);
 
 private:
     //Data:
@@ -68,7 +69,7 @@ private:
     stringVec trig_ip = {"ip"};
     stringVec trig_poll = {"poll", "vote", "unvote",
                            "polladd", "pollrem", "pollclose",
-                           "pollset", "-custopt", "-multi"};
+                           "pollset", "custopt_", "multi_"};
 
 };
 #endif // COMMANDCLIENT_H

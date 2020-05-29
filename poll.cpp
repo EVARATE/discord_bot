@@ -82,6 +82,115 @@ bool mo_poll::hasVoted(const std::string &voterID){
     return false;
 }
 
+void mo_poll::loadPoll(const std::string &filePath){
+    std::ifstream ifile;
+    ifile.open(filePath);
+    if(!ifile.is_open()){return;}
+
+    //Topic:
+    std::string lineBuffer;
+    getline(ifile, lineBuffer);
+    lineBuffer.erase(lineBuffer.begin());//Remove "'"
+    lineBuffer.pop_back();//Remove last "'"
+    topic = lineBuffer;
+    //Author:
+    getline(ifile, lineBuffer);
+    lineBuffer.erase(lineBuffer.begin());//Remove "'"
+    lineBuffer.pop_back();//Remove last "'"
+    author = lineBuffer;
+    //pollChannelID:
+    getline(ifile, lineBuffer);
+    pollChannelID = lineBuffer;
+    //pollMessageID:
+    getline(ifile, lineBuffer);
+    pollMessageID = lineBuffer;
+    //messageExists:
+    getline(ifile, lineBuffer);
+    messageExists = intToBool(std::stoi(lineBuffer));
+    //isClosed:
+    getline(ifile, lineBuffer);
+    isClosed = intToBool(std::stoi(lineBuffer));
+    //allowCustOpt:
+    getline(ifile, lineBuffer);
+    allowCustOpt = intToBool(std::stoi(lineBuffer));
+    //allowMultipleChoice:
+    getline(ifile, lineBuffer);
+    allowMultipleChoice = intToBool(std::stoi(lineBuffer));
+
+    //Load all options data:
+    int highestOptID = 0;
+    while(getline(ifile, lineBuffer)){
+        if(lineBuffer[0] == 'o'){
+            //Get optionID:
+            auto idStrVec = returnMatches(lineBuffer, "\\d+");
+            int optionID = std::stoi(idStrVec[0]);
+            highestOptID = std::max(highestOptID, optionID);
+            //Get quoted things:
+            auto quoteVec = returnMatches(lineBuffer, "'.+?'");
+            //Create pollOption and save it to the class:
+            pollOption currOption;
+            currOption.id = optionID;
+            currOption.value = quoteVec[0].substr(1, quoteVec[0].size() - 2);
+            if(quoteVec.size() > 1){
+                for(auto ID_it = quoteVec.begin() + 1; ID_it != quoteVec.end(); ++ID_it){
+                    std::string currID = *ID_it;
+                    currID.erase(currID.begin());
+                    currID.pop_back();
+                    currOption.voterIDs.push_back(currID);
+                    currOption.voteCount++;
+                }
+            }
+            options.push_back(currOption);
+        }
+    }
+    ifile.close();
+    //New options must have valid IDs:
+    nextID = highestOptID + 1;
+
+
+    /* EXAMPLE FILE:
+     *
+     * 'My topic'
+     * 'Username_author'
+     * 492734023423423434
+     * 342348048023948576
+     * 1
+     * 0
+     * 1
+     * 1
+     * o 0 'First option' '123412341231232323' '442934892348023433' '534959359340570349'
+     * o 1 'Second option' '243923049820394834' '594934759374598023'
+     * o 2 'Third option'
+     * o 3 'Fourth option' '230498032840293485'
+     *
+     */
+}
+void mo_poll::savePoll(const std::string &filePath){
+    std::remove(filePath.c_str());
+    std::ofstream ofile;
+    ofile.open(filePath);
+    if(!ofile.is_open()){return;}
+    //Data:
+    ofile << "'" + topic + "'\n";
+    ofile << "'" + author + "'\n";
+    ofile << pollChannelID + "\n";
+    ofile << pollMessageID + "\n";
+    ofile << messageExists << "\n";
+    ofile << isClosed << "\n";
+    ofile << allowCustOpt << "\n";
+    ofile << allowMultipleChoice << "\n";
+
+    //For each option:
+    for(auto currOption = options.begin(); currOption != options.end(); ++currOption){
+        ofile << "o " << currOption->id << " '" << currOption->value << "'";
+        for(auto v_it = currOption->voterIDs.begin(); v_it != currOption->voterIDs.end(); ++v_it){
+            ofile << " '" << *v_it << "'";
+        }
+        ofile << "\n";
+    }
+    ofile.close();
+}
+
 int mo_poll::getOptID(){
     nextID++;
     return nextID - 1;

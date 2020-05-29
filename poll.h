@@ -1,7 +1,6 @@
 #ifndef POLL_H
 #define POLL_H
-#include <vector>
-#include <string>
+#include "miscCode.cpp"
 
 typedef struct{
     int id;
@@ -23,8 +22,12 @@ public:
             addOption(*it);
         }
     }
+    mo_poll(const std::string& filePath){
+        loadPoll(filePath);
+    }
 
     void addOption(const std::string& newOption);
+    void addOption(pollOption newOption);//Careful when using this
     void removeOption(const int id);
     void voteForOption(const int id, const std::string& voterID);
     void unvoteForOption(const int id, const std::string& voterID);
@@ -33,7 +36,8 @@ public:
     int totalVotes();
     bool hasVoted(const std::string& voterID);
 
-    std::vector<pollOption> getCurrOptions();
+    void loadPoll(const std::string& filePath);//=====NEEDS REWRITE=====
+    void savePoll(const std::string& filePath);
 
     int getOptID();
     int id;
@@ -44,6 +48,7 @@ public:
     std::string author = "";
     std::string pollChannelID = "";
     std::string pollMessageID = "";
+    bool isSaved = false;
     bool messageExists = false;
     bool isClosed = false;
     bool allowCustOpt = false;
