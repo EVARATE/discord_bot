@@ -86,12 +86,17 @@ void commandClient::onMessage(SleepyDiscord::Message message){
             com_pollSet(message);
             return;
         }
+        if(command[0] == trig_quote[0]){
+            //QUOTE
+            com_quote(message);
+            return;
+        }
 
     }
 }
 void commandClient::onReady(std::string *jsonMessage){
     isConnected = true;
-    //updateIPInfo();
+    updateIPInfo();
     static bool firstCall = true;//If 'onReady' is called for the first time
     if(firstCall){
         loadTextCommands();
@@ -172,8 +177,13 @@ void commandClient::com_prefix(SleepyDiscord::Message &message)
     auto command = returnMatches(message.content, reg);
     if(command.size() >= 2){
         prefix = command[1];
+        sendMessage(message.channelID, "Changed prefix to `" + command[1] + "`");
         toLog("Changed prefix to '" + command[1] + "'");
         updateHelpMsg();
+    }
+    //Update poll messages:
+    for(auto it = polls.begin(); it != polls.end(); ++it){
+        updatePollData(it->id);
     }
 }
 
@@ -190,7 +200,7 @@ void commandClient::com_random(SleepyDiscord::Message &message)
     //Make sure values aren't out of range:
     int ll_maxLength = 19;
     if( ((int)strLimits[0].length() >= ll_maxLength) || ((int)strLimits[1].length() >= ll_maxLength) ){
-        sendMessage(message.channelID, "Error: Value out of range.");
+        sendMessage(message.channelID, "Error: Limits out of range.");
         toLog("Invalid 'random' call. Value out of range");
         return;
     }
@@ -373,7 +383,7 @@ void commandClient::com_pollSet(SleepyDiscord::Message &message){
     int pollID = std::stoi(idStrs[0]);
 
     //Get settings:
-    std::regex setReg("-\\w+\\d+");
+    std::regex setReg("\\w+");
     stringVec setStrs = returnMatches(message.content, setReg);
     if(setStrs.size() == 0){
         deleteMessage(message.channelID, message.ID);
@@ -388,21 +398,15 @@ void commandClient::com_pollSet(SleepyDiscord::Message &message){
 
             //Process settings:
             for(auto s_it = setStrs.begin(); s_it != setStrs.end(); ++s_it){
-                //Find state:
-                std::regex stateReg("\\d+");
-                stringVec stateStrs = returnMatches(*s_it, stateReg);
-                int state = std::stoi(stateStrs[0]);
-
-                //Apply settings based on state:
-                if(*s_it == trig_poll[7] + stateStrs[0]){
+                //Toggle named settings:
+                if(*s_it == trig_poll[7]){
                     //CUSTOPT
-                    it->allowCustOpt = intToBool(state);//I think int to bool conversion works here
+                    it->allowCustOpt = !it->allowCustOpt;
                 }
-                if(*s_it == trig_poll[8] + stateStrs[0]){
+                else if(*s_it == trig_poll[8]){
                     //MULTI
-                    it->allowMultipleChoice = intToBool(state);
+                    it->allowMultipleChoice = !it->allowMultipleChoice;
                 }
-                //INTERPRET FUTURE SETTINGS HERE ASWELL
             }
         }
     }
@@ -466,6 +470,37 @@ void commandClient::com_pollClose(SleepyDiscord::Message& message){
     deleteMessage(message.channelID, message.ID);
     toLog("Closed poll#" + std::to_string(pollID));
 }
+void commandClient::com_quote(SleepyDiscord::Message &message){
+    //Example command: /quote "Name" "Super zitat" "Optionaler Kontext"
+    stringVec quoted = returnMatches(message.content, "\".+?\"");
+    if(quoted.size() < 2 || quoted.size() > 3){
+        sendMessage(message.channelID, "Error: Invalid input.");
+        return;
+    }
+    //Save quote to file:
+    std::ofstream ofile;
+    ofile.open(configPath + "prof_quotes.txt", std::ios::app);
+    if(ofile.is_open()){
+        std::string quote = "";
+        for(auto it = quoted.begin(); it != quoted.end(); ++it){
+            it->erase(it->begin());
+            it->pop_back();
+            it->pop_back();
+            quote.append(" \"" + *it + "\"");
+        }
+        ofile << quote << "\n";
+        ofile.close();
+    }
+    //Send quote to prof-quote channel:
+    std::string msg = "**\\nPerson:** " + quoted[0];
+    msg.append("\\n**Zitat:** " + quoted[1]);
+    if(quoted.size() == 3){
+        msg.append("\\n**Kontext:** " + quoted[2]);
+    }
+    sendMessage("716682386947047455", msg);
+    sendMessage(message.channelID, "Saved quote.");
+    toLog("Saved new quote");
+}
 
 //Other
 void commandClient::loadTextCommands(){
@@ -520,6 +555,9 @@ void commandClient::loadTextCommands(){
     toLog("Loaded text commands.");
 }
 void commandClient::updateHelpMsg(){
+
+#ifndef Debug
+
     std::string msg;
     msg.append("**\\nHILFE MENÜ**\\n\\n");
     //Triggers:
@@ -527,6 +565,7 @@ void commandClient::updateHelpMsg(){
     addHelpEntry(msg, prefix, "Hilfe", trig_help);
     addHelpEntry(msg, prefix, "Prefix ändern", trig_prefix);
     addHelpEntry(msg, prefix, "Zufällige Zahl zwischen <min> <max>", trig_random);
+    addHelpEntry(msg, prefix, "Zitat speichern", trig_quote);
     //Textcommands:
     msg.append("Infos zu Vorlesungen:");
     for(auto it = lectureCommands.begin(); it != lectureCommands.end(); ++it){
@@ -538,29 +577,31 @@ void commandClient::updateHelpMsg(){
 
     //Poll:
     msg.append("\\n\\n**Abstimmungen:**\\n");
-    msg.append("Neue Abstimmung: `" + prefix + trig_poll[0] + " \\\"<Frage>\\\" \\\"<Option 1>\\\" \\\"<Option 2>\\\" ...`\\n");
+    msg.append("Neue Abstimmung: `" + prefix + trig_poll[0] + " \\\"<Frage>\\\" \\\"<option1>\\\" \\\"<option2>\\\" ...`\\n");
     msg.append("Abstimmen: `" + prefix + trig_poll[1] + " <pollID> <optionID>`\\n");
     msg.append("Stimme zurücknehmen: `" + prefix + trig_poll[2] + " <pollID> <optionID>`\\n");
     msg.append("Optionen hinzufügen: `" + prefix + trig_poll[3] + " <pollID> \\\"<option1>\\\" \\\"<option2>\\\" ...`\\n");
     msg.append("Option löschen: `" + prefix + trig_poll[4] + " <pollID> <optionID>`\\n");
-    msg.append("Einstellung ändern: `" + prefix + trig_poll[6] + " <pollID> <setting<state>> <setting<state>> ...`\\n");
+    msg.append("*Einstellung umschalten: `" + prefix + trig_poll[6] + " <pollID> <setting1> <setting2> ...`\\n");
     msg.append("Abstimmung beenden: `" + prefix + trig_poll[5] + " <pollID>`\\n");
 
     //Poll settings:
-    msg.append("\\nEinstellungen (`<state>` ist `1` oder `0`):\\n");
-    msg.append("        `" + trig_poll[7] + "<state>`: Andere können Optionen hinzufügen.\\n");
-    msg.append("        `" + trig_poll[8] + "<state>`: Mehrere Antworten auswählbar.\\n");
-    msg.append("**Beispiel:** `" + prefix + trig_poll[6] + " " + trig_poll[8] + "1`: Multiple Choice aktiviert.\\n");
+    msg.append("\\n*Einstellungen an - oder ausschalten:\\n");
+    msg.append("        `" + trig_poll[7] + "`: Andere können Optionen hinzufügen.\\n");
+    msg.append("        `" + trig_poll[8] + "`: Mehrere Antworten auswählbar.\\n");
+    msg.append("**Beispiel:** `" + prefix + trig_poll[6] + " 0 " + trig_poll[8] + "`: Multiple Choice umgeschalten.\\n");
 
     //Update messages:
     help_msg = msg;
     editMessage("702968771735978194", "702969362679857283", msg);
     toLog("Updated help message.");
+
+#endif
 }
 
 void commandClient::toLog(const std::string &text, int status){
 
-#ifndef QT_DEBUG
+#ifndef Debug
 
     std::string time = getCurrTimeStr();
 
@@ -592,8 +633,10 @@ void commandClient::toLog(const std::string &text, int status){
 #endif
 }
 void commandClient::updateIPInfo(){
+#ifndef Debug
     std::string ip = getIP();
     sendMessage("702765369940639879", "IP: **" + ip + "**");
+#endif
 }
 int commandClient::getPollID(){
     nextPollID++;
@@ -612,13 +655,13 @@ void commandClient::updatePollData(const int pollID){
                                std::to_string(it->voteCount) + "/" + std::to_string(polls[i].totalVotes()) + ")\\n");
             }
 
-            pollMsg.append("\\nMultiple Choice: ");
+            pollMsg.append("\\nMultiple Choice (`" + trig_poll[8] + "`): ");
             if(polls[i].allowMultipleChoice){
                 pollMsg.append("Ja.\\n");
             }else{
                 pollMsg.append("Nein.\\n");
             }
-            pollMsg.append("Eigene Antworten erlaubt: ");
+            pollMsg.append("Eigene Antworten erlaubt (`" + trig_poll[7] + "`): ");
             if(polls[i].allowCustOpt){
                 pollMsg.append("Ja.\\n");
             }else{
@@ -626,7 +669,8 @@ void commandClient::updatePollData(const int pollID){
             }
 
             if(!polls[i].isClosed){
-                pollMsg.append("\\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(polls[i].id) + " <option_ID>`");
+                pollMsg.append("\\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(polls[i].id) + " <option_ID>`\\n");
+                pollMsg.append("Einstellungen ändern mit `" + prefix + trig_poll[6] + " " + std::to_string(polls[i].id) + " <setting1> <setting2> ...`");
             }else{
                 pollMsg.append("\\nUmfrage wurde geschlossen.");
             }

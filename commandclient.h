@@ -33,6 +33,7 @@ public:
     void com_pollRem(SleepyDiscord::Message& message);
     void com_pollSet(SleepyDiscord::Message& message);
     void com_pollClose(SleepyDiscord::Message& message);
+    void com_quote(SleepyDiscord::Message& message);
 
     //Other
     void loadTextCommands();
@@ -69,7 +70,8 @@ private:
     stringVec trig_ip = {"ip"};
     stringVec trig_poll = {"poll", "vote", "unvote",
                            "polladd", "pollrem", "pollclose",
-                           "pollset", "custopt_", "multi_"};
+                           "pollset", "custopt", "multi"};
+    stringVec trig_quote = {"quote"};
 
 };
 #endif // COMMANDCLIENT_H
