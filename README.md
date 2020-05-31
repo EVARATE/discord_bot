@@ -4,7 +4,7 @@ This repository contains the source code to my discord bot. I have written it pr
 
 ## Branches
 
-To get the lowest possibility of bugs and crashes then you should only use the master branch. I only commit code there if I at least feel like it works half stable, which doesn't mean that it is free of bugs or doesn't crash.
+To get the lowest possibility of bugs and crashes then you should only use the master branch. I only commit code there if I at least feel like it is half stable, which doesn't mean that it is free of bugs or doesn't crash.
 
 # Installation:
 
