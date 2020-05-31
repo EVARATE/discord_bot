@@ -110,7 +110,7 @@ inline stringVec strToWords(std::string str){
     return returnMatches(str, reg);
 }
 inline void addHelpEntry(std::string& msg, std::string& prefix, const std::string& name, stringVec& triggers){
-    msg.append("*" + name + ":* ");
+    msg.append(name + ": ");
     for(auto it = triggers.begin(); it != triggers.end(); ++it){
         msg.append("`" + prefix + *it + "`, ");
     }
