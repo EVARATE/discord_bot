@@ -1,3 +1,11 @@
+# About
+
+This repository contains the source code to my discord bot. I have written it primarly to fit my own needs so others can't just use this code as is. There are functions that e.g. send messages to hard coded channel-IDs. If you really want to use this code and you don't know or don't want to go through all of it then we can talk about making it more accessible, no promises though.
+
+## Branches
+
+To get the lowest possibility of bugs and crashes then you should only use the master branch. I only commit code there if I at least feel like it works half stable, which doesn't mean that it is free of bugs or doesn't crash.
+
 # Installation:
 
 ## Download
