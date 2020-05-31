@@ -4,8 +4,6 @@
 //Session actions
 void commandClient::onMessage(SleepyDiscord::Message message){
     //Split command into words:
-    auto commandLower = toLowerCase(message.content);
-    commandLower.erase(0, prefix.size());
     auto command = strToWords(message.content);
     command[0].erase(0, prefix.size());
 
@@ -565,7 +563,7 @@ void commandClient::updateHelpMsg(){
     addHelpEntry(msg, prefix, "Hilfe", trig_help);
     addHelpEntry(msg, prefix, "Prefix ändern", trig_prefix);
     addHelpEntry(msg, prefix, "Zufällige Zahl zwischen <min> <max>", trig_random);
-    msg.append("Zitat speichern: `" + trig_quote[0] + " \\\"<Dozent>\\\" \\\"<Zitat>\\\" \\\"<Optionaler Kontext>\\\"\\n");
+    msg.append("Zitat speichern: `" + trig_quote[0] + " \\\"<Dozent>\\\" \\\"<Zitat>\\\" \\\"<Optionaler Kontext>`\\\"\\n");
     //Textcommands:
     msg.append("Infos zu Vorlesungen:");
     for(auto it = lectureCommands.begin(); it != lectureCommands.end(); ++it){
