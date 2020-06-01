@@ -34,6 +34,7 @@ public:
     void com_pollSet(SleepyDiscord::Message& message);
     void com_pollClose(SleepyDiscord::Message& message);
     void com_quote(SleepyDiscord::Message& message);
+    void com_updhelp(SleepyDiscord::Message& message);
 
     //Other
     void loadTextCommands();
@@ -61,17 +62,22 @@ private:
     std::string logChannelID = "712643802996932648";
 
     //TRIGGERS:
-    stringVec trig_rules = {"rules", "regeln"};
-    stringVec trig_help = {"help", "hilfe"};
-    stringVec trig_prefix = {"setprefix"};
-    stringVec trig_random = {"random"};
-    stringVec trig_relComs = {"reloadcmds"};
-    stringVec trig_log = {"log"};
-    stringVec trig_ip = {"ip"};
-    stringVec trig_poll = {"poll", "vote", "unvote",
+    Ctrigger trig_rules {"rules", "regeln"};
+    Ctrigger trig_help = {"help", "hilfe"};
+    Ctrigger trig_prefix = {"setprefix"};
+    Ctrigger trig_random = {"random"};
+    Ctrigger trig_relComs = {"reloadcmds"};
+    Ctrigger trig_log = {"log"};
+    Ctrigger trig_ip = {"ip"};
+    Ctrigger trig_poll = {"poll", "vote", "unvote",
                            "polladd", "pollrem", "pollclose",
                            "pollset", "custopt", "multi"};
-    stringVec trig_quote = {"quote"};
+    Ctrigger trig_quote = {"quote"};
+    Ctrigger trig_updHelp = {"updhelp"};
+
+    std::vector<Ctrigger> triggerList = {trig_rules, trig_help, trig_prefix,
+                                         trig_random, trig_relComs, trig_log,
+                                         trig_ip, trig_poll, trig_quote};
 
 };
 #endif // COMMANDCLIENT_H

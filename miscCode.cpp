@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <cstdio>
+#include <initializer_list>
 
 
 //=====CONSTANTS=====
@@ -196,3 +197,65 @@ inline bool intToBool(const int val){
     }
     return true;
 }
+inline bool starts_with(const std::string& sample, const std::string& pref){
+    if (sample.rfind(pref, 0) == 0) {
+      return true;
+    }
+    return false;
+}
+inline void findAndReplaceAll(std::string & data, std::string toSearch, std::string replaceStr)
+{
+    // Get the first occurrence
+    size_t pos = data.find(toSearch);
+
+    // Repeat till end is reached
+    while( pos != std::string::npos)
+    {
+        // Replace this occurrence of Sub String
+        data.replace(pos, toSearch.size(), replaceStr);
+        // Get the next occurrence from the current position
+        pos =data.find(toSearch, pos + replaceStr.size());
+    }
+}
+inline std::string findAndReplaceFirst(std::string str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return str;
+    str.replace(start_pos, from.length(), to);
+    return str;
+}
+
+//===STRUCTS THAT NEED ABOVE FUNCTIONS===
+
+struct Ctrigger{
+    std::string identifier;
+    stringVec triggers;
+
+    std::string operator[](unsigned int index) {return triggers[index];};
+    Ctrigger(std::initializer_list<std::string> il): triggers(il) {
+        if(il.size() > 0){
+            identifier = triggers[0];
+        }
+    };
+
+    std::string triggerByID(std::string& searchID){
+        //See if identifier exists and return it
+        //Possible identifiers: '<identifier>', '<identifier><trigger_index>'
+
+        //See if searchID starts with identifier:
+        if(!starts_with(searchID, identifier)){return "";}
+
+        //Get trigger_index if exists:
+        stringVec indices = returnMatches(searchID, "\\d+");
+        if(indices.size() > 0){
+            int index = std::stoi(indices[0]);
+            //Return trigger at index if exists
+            if((int)triggers.size() - 1 >= index){
+                return triggers[index];
+            }
+        }else{
+            return  triggers[0];
+        }
+        return "";
+    }
+};

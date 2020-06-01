@@ -89,6 +89,11 @@ void commandClient::onMessage(SleepyDiscord::Message message){
             com_quote(message);
             return;
         }
+        if(command[0] == trig_updHelp[0]){
+            //UPDHELP
+            com_updhelp(message);
+            return;
+        }
 
     }
 }
@@ -499,6 +504,10 @@ void commandClient::com_quote(SleepyDiscord::Message &message){
     sendMessage(message.channelID, "Saved quote.");
     toLog("Saved new quote");
 }
+void commandClient::com_updhelp(SleepyDiscord::Message &message){
+    updateHelpMsg();
+    sendMessage(message.channelID, "Help message has been updated.");
+}
 
 //Other
 void commandClient::loadTextCommands(){
@@ -554,47 +563,108 @@ void commandClient::loadTextCommands(){
 }
 void commandClient::updateHelpMsg(){
 
-#ifndef Debug
 
-    std::string msg;
-    msg.append("**\\nHILFE MENÜ**\\n\\n");
-    //Triggers:
-    addHelpEntry(msg, prefix, "Regeln", trig_rules);
-    addHelpEntry(msg, prefix, "Hilfe", trig_help);
-    addHelpEntry(msg, prefix, "Prefix ändern", trig_prefix);
-    addHelpEntry(msg, prefix, "Zufällige Zahl zwischen <min> <max>", trig_random);
-    msg.append("Zitat speichern: `" + trig_quote[0] + " \\\"<Dozent>\\\" \\\"<Zitat>\\\" \\\"<Optionaler Kontext>`\\\"\\n");
-    //Textcommands:
-    msg.append("Infos zu Vorlesungen:");
-    for(auto it = lectureCommands.begin(); it != lectureCommands.end(); ++it){
-            msg.append("`" + it->triggers[0] + "`, ");
+    //Read help_msg.txt and replace matches:
+    // '#' are commented lines
+    std::string *msg = new std::string();
+    std::ifstream ifile;
+    ifile.open(configPath + "help_msg.txt");
+    if(ifile.is_open()){
+        std::string line;
+        while(getline(ifile, line)){
+            //Process non-empty line:
+            if( (line.size() > 0) && (line[0] != '#') ){
+                //---Process syntax: '$${<content>}'---
+                //Transformation order:
+                //    $${`${prefix}${rules}`, }
+                //1 =>    `${prefix}${rules}`,
+                //2 =>    `$&`,
+                //3 =>    `$&`, `$&`, `$&`, ...
+                //4 =>    `${prefix}rules`, `${prefix}regeln`, ...
+                //Find all multi-identifiers:
+                stringVec markedMultiIDs = returnMatches(line, "\\$\\$\\{.+\\}");
+                for(auto it = markedMultiIDs.begin(); it != markedMultiIDs.end(); ++it){
+                    std::string raw_markedID = *it;
+                    //step 1:
+                    it->erase(it->begin(), it->begin() + 3);//rem '&&{'
+                    it->pop_back();//rem '}'
+                    //Find identifier and its Ctrigger:
+                    stringVec identifiers = returnMatches(*it, "\\$\\{\\w+\\}"); //Only sequence second element
+                    identifiers[1].erase(identifiers[1].begin(), identifiers[1].begin() + 2);
+                    identifiers[1].pop_back();
+                    //step 2:
+                    findAndReplaceAll(*it, "${prefix}${" + identifiers[1] + "}", "$&");
+                    std::string replacePattern;
+                    for(auto tr_it = triggerList.begin(); tr_it != triggerList.end(); ++tr_it){
+                        if(tr_it->identifier == identifiers[1]){
+                            int triggerCount = tr_it->triggers.size();
+
+                            //step 3:
+                            for(int i = 0; i < triggerCount; ++i){replacePattern.append(*it);}
+                            //step 4:
+                            //std::regex reg("$&");
+                            for(int i = 0; i < (int)tr_it->triggers.size(); ++i){
+                                //Replace first '$&' each loop:
+                                *it = findAndReplaceFirst(replacePattern, "$&", "${prefix}" + tr_it->triggers[i]);
+                                replacePattern = *it;
+                                //*it = std::regex_replace(replacePattern, reg, "${prefix}" + tr_it->triggers[i], std::regex_constants::format_first_only);
+                            }
+                        }
+                    }
+                    //Not dynamic but I don't want to think about it too much right now:
+                    //Delete last two characters ', ' from *it:
+                    it->pop_back();
+                    it->pop_back();
+
+                    //Finally, replace multi-identifier with new sequence:
+                    findAndReplaceAll(line, raw_markedID, *it);
+                }
+
+                //---Process syntax: '${<identifier>}'---
+                //Find all identifiers and get their triggers:
+                stringVec markedIDs = returnMatches(line, "\\$\\{\\w+\\}");
+                for(auto currIdentifier : markedIDs){
+                    if(currIdentifier != "${prefix}"){
+                        currIdentifier.erase(currIdentifier.begin(), currIdentifier.begin() + 2);//rem '${'
+                        currIdentifier.pop_back();//rem '}'
+                        std::string newTrigger;
+                        //Loop through triggerList and get triggers if identifier fits:
+                        for(auto it = triggerList.begin(); it != triggerList.end(); ++it){
+                            //Get trigger based on identifier if any exists:
+                            std::string currTrigger = it->triggerByID(currIdentifier);
+                            if(currTrigger.size() > 0 || it == triggerList.end()){
+                                newTrigger = currTrigger;
+                                break;
+                            }
+                        }
+                        //Replace all occurrences with newTrigger:
+                        findAndReplaceAll(line, "${" + currIdentifier + "}", newTrigger);
+                    }
+                }
+
+                //---Replace prefix---
+                findAndReplaceAll(line, "${prefix}", prefix);
+
+            }
+            if(line.size() == 0){
+                msg->append("\\n");
+            }
+            else if(line[0] != '#'){
+                msg->append(line + "\\n");
+            }
+        }
     }
-    //Delete last characters ', '
-    msg.pop_back();
-    msg.pop_back();
 
-    //Poll:
-    msg.append("\\n\\n**Abstimmungen:**\\n");
-    msg.append("Neue Abstimmung: `" + prefix + trig_poll[0] + " \\\"<Frage>\\\" \\\"<option1>\\\" \\\"<option2>\\\" ...`\\n");
-    msg.append("Abstimmen: `" + prefix + trig_poll[1] + " <pollID> <optionID>`\\n");
-    msg.append("Stimme zurücknehmen: `" + prefix + trig_poll[2] + " <pollID> <optionID>`\\n");
-    msg.append("Optionen hinzufügen: `" + prefix + trig_poll[3] + " <pollID> \\\"<option1>\\\" \\\"<option2>\\\" ...`\\n");
-    msg.append("Option löschen: `" + prefix + trig_poll[4] + " <pollID> <optionID>`\\n");
-    msg.append("*Einstellung umschalten: `" + prefix + trig_poll[6] + " <pollID> <setting1> <setting2> ...`\\n");
-    msg.append("Abstimmung beenden: `" + prefix + trig_poll[5] + " <pollID>`\\n");
-
-    //Poll settings:
-    msg.append("\\n*Einstellungen an - oder ausschalten:\\n");
-    msg.append("        `" + trig_poll[7] + "`: Andere können Optionen hinzufügen.\\n");
-    msg.append("        `" + trig_poll[8] + "`: Mehrere Antworten auswählbar.\\n");
-    msg.append("**Beispiel:** `" + prefix + trig_poll[6] + " 0 " + trig_poll[8] + "`: Multiple Choice umgeschalten.\\n");
+    //Turn all '\t' into '\\t'
+    findAndReplaceAll(*msg, "\t", "\\t");
+    //Turn all '"' into '\"'
+    findAndReplaceAll(*msg, "\"", "\\\"");
 
     //Update messages:
-    help_msg = msg;
-    editMessage("702968771735978194", "702969362679857283", msg);
+    help_msg = *msg;
+    editMessage("702968771735978194", "702969362679857283", *msg);
+    //delete msg;
     toLog("Updated help message.");
-
-#endif
 }
 
 void commandClient::toLog(const std::string &text, int status){
