@@ -36,7 +36,7 @@ public:
     int totalVotes();
     bool hasVoted(const std::string& voterID);
 
-    void loadPoll(const std::string& filePath);//=====NEEDS REWRITE=====
+    void loadPoll(const std::string& filePath);
     void savePoll(const std::string& filePath);
 
     int getOptID();

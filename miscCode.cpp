@@ -231,12 +231,14 @@ struct Ctrigger{
     std::string identifier;
     stringVec triggers;
 
-    std::string operator[](unsigned int index) {return triggers[index];};
     Ctrigger(std::initializer_list<std::string> il): triggers(il) {
         if(il.size() > 0){
             identifier = triggers[0];
         }
     };
+    Ctrigger(std::string id, stringVec trgs): identifier(id), triggers(trgs) {};
+
+    std::string operator[](unsigned int index) {return triggers[index];};
 
     std::string triggerByID(std::string& searchID){
         //See if identifier exists and return it

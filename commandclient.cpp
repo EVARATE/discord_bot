@@ -559,11 +559,17 @@ void commandClient::loadTextCommands(){
             lectureCommands.push_back(currCommand);
         }
     }
+    //Turn all textCommands into Ctriggers:
+    stringVec triggers;
+    for(auto tCom : lectureCommands){
+        triggers.push_back(tCom.triggers[0]);
+    }
+    Ctrigger textCmd("textcmd", triggers);
+    triggerList.push_back(textCmd);
+
     toLog("Loaded text commands.");
 }
 void commandClient::updateHelpMsg(){
-
-
     //Read help_msg.txt and replace matches:
     // '#' are commented lines
     std::string *msg = new std::string();
@@ -607,10 +613,9 @@ void commandClient::updateHelpMsg(){
                                 //Replace first '$&' each loop:
                                 *it = findAndReplaceFirst(replacePattern, "$&", "${prefix}" + tr_it->triggers[i]);
                                 replacePattern = *it;
-                                //*it = std::regex_replace(replacePattern, reg, "${prefix}" + tr_it->triggers[i], std::regex_constants::format_first_only);
                             }
                         }
-                    }
+                    }                    
                     //Not dynamic but I don't want to think about it too much right now:
                     //Delete last two characters ', ' from *it:
                     it->pop_back();
