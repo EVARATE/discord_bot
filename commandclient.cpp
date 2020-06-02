@@ -688,6 +688,7 @@ void commandClient::toLog(const std::string &text, int status){
 
     static int check = 0;
     fprintf(stderr, ("////CHECK: " + std::to_string(check) + "\n").c_str());
+    check++;
 
     if(status != 1){
         //Write to console:
