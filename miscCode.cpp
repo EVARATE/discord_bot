@@ -122,6 +122,8 @@ inline void addHelpEntry(std::string& msg, std::string& prefix, const std::strin
 }
 
 inline std::string getCurrTimeStr(){
+    //This caused segmentation faults for some reason. Therefor dummy_time
+
     //time_t now = time(0);
     //tm *ltm = localtime(&now);
 

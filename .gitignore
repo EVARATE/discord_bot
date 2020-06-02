@@ -2,3 +2,4 @@ sleepy-discord
 *.user
 token.txt
 old_*
+cmake
