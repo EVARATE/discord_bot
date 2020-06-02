@@ -676,7 +676,8 @@ void commandClient::toLog(const std::string &text, int status){
 
     std::string time = getCurrTimeStr();
 
-    std::string msg = "[" + time + "]: " + text + "\n";
+    std::string *msg = new std::string();
+    *msg = "[" + time + "]: " + text + "\n";
     std::string discordMsg = "[" + time + "]: " + text + "\\n";
 
     //Send to log chat:
@@ -692,7 +693,7 @@ void commandClient::toLog(const std::string &text, int status){
 
     if(status != 1){
         //Write to console:
-        fprintf(stderr, msg.c_str());
+        fprintf(stderr, (*msg).c_str());
 
         //Write to log file:
         std::ofstream ofile;
@@ -704,7 +705,7 @@ void commandClient::toLog(const std::string &text, int status){
             fprintf(stderr, "Couldn't open 'log.txt'");
         }
     }
-
+    delete msg;
 }
 void commandClient::updateIPInfo(){
     std::string ip = getIP();
