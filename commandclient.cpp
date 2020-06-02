@@ -674,8 +674,6 @@ void commandClient::updateHelpMsg(){
 
 void commandClient::toLog(const std::string &text, int status){
 
-#ifndef Debug
-
     std::string time = getCurrTimeStr();
 
     std::string msg = "[" + time + "]: " + text + "\n";
@@ -687,6 +685,9 @@ void commandClient::toLog(const std::string &text, int status){
     }else{
         offlineLogBuffer.push_back(discordMsg);
     }
+
+    static int check = 0;
+    fprintf(stderr, ("////CHECK: " + std::to_string(check) + "\n").c_str());
 
     if(status != 1){
         //Write to console:
@@ -703,13 +704,10 @@ void commandClient::toLog(const std::string &text, int status){
         }
     }
 
-#endif
 }
 void commandClient::updateIPInfo(){
-#ifndef Debug
     std::string ip = getIP();
     sendMessage("702765369940639879", "IP: **" + ip + "**");
-#endif
 }
 int commandClient::getPollID(){
     nextPollID++;
