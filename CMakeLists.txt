@@ -7,8 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(discord_bot
     main.cpp
-    commandclient.cpp
-    commandclient.h
+    dc_botClient.cpp
+    dc_botClient.h
     miscCode.cpp
     poll.h
     poll.cpp

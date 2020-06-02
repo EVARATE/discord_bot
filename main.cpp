@@ -1,9 +1,9 @@
-#include "commandclient.h"
+#include "dc_botClient.h"
 
 int main()
 {
     std::string token = getToken();
-    commandClient comClient(token,2);
+    dc_botClient comClient(token,2);
     comClient.run();
 
 
