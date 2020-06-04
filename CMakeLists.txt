@@ -12,6 +12,8 @@ add_executable(discord_bot
     miscCode.cpp
     poll.h
     poll.cpp
+    event_log.h
+    event_log.cpp
     )
 
 add_subdirectory(sleepy-discord/)

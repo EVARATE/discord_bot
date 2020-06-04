@@ -99,9 +99,9 @@ void dc_botClient::onMessage(SleepyDiscord::Message message){
 }
 void dc_botClient::onReady(std::string* jsonMessage){
     isConnected = true;
-    updateIPInfo();
     static bool firstCall = true;//If 'onReady' is called for the first time
     if(firstCall){
+        evLog.init(configPath + "log.txt", 50);
         loadTextCommands();
         loadAllPolls();
         //Update all poll messages:
@@ -110,34 +110,24 @@ void dc_botClient::onReady(std::string* jsonMessage){
         }
 
         updateHelpMsg();
-        toLog("---NEW SESSION---");
+        evLog.log("---NEW SESSION---");
         firstCall = false;
     }else{
-        toLog("---RENEWED SESSION---");
+        evLog.log("---RENEWED SESSION---");
     }
 
 }
 void dc_botClient::onDisconnect(){
     isConnected = false;
-    toLog("---DISCONNECTED---");
+    evLog.log("---DISCONNECTED---", event_log::Level::WARNING);
 }
 void dc_botClient::onResume(){
     isConnected = true;
     updateIPInfo();
-    toLog("---RECONNECTED---");
-    if(offlineLogBuffer.size() != 0){
-        std::string msgBuffer = "\\n===OFFLINE LOG START===\\n";
-        for(auto it = offlineLogBuffer.begin(); it != offlineLogBuffer.end(); ++it){
-            msgBuffer.append(*it);
-        }
-        msgBuffer.append("===OFFLINE LOG END===");
-        toLog(msgBuffer, 1);
-        offlineLogBuffer.resize(0);
-    }
+    evLog.log("---RECONNECTED---");
 }
 void dc_botClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
-    //Causes crash
-    //toLog("ERROR: " + errorMessage);
+    evLog.log(errorMessage, event_log::Level::ERROR);
 }
 
 //Commands
@@ -158,7 +148,7 @@ void dc_botClient::respondTextCommand(textCommand &command, const std::string& c
         text.append("**" + it->name + "** " + it->value + "\\n");
     }
     sendMessage(channelID, text);
-    toLog("Responded to '" + command.triggers[0] + '\'');
+    evLog.log("Responded to '" + command.triggers[0] + '\'');
 }
 void dc_botClient::com_rules(SleepyDiscord::Message &message){
     //Read message:
@@ -166,13 +156,13 @@ void dc_botClient::com_rules(SleepyDiscord::Message &message){
     //Send rules:
     sendMessage(message.channelID, ruleMessage.content);
     //Log:
-    toLog("Sent rule message.");
+    evLog.log("Sent rule message.");
 }
 
 void dc_botClient::com_help(SleepyDiscord::Message &message)
 {
     sendMessage(message.channelID, help_msg);
-    toLog("Sent help message.");
+    evLog.log("Sent help message.");
 }
 
 void dc_botClient::com_prefix(SleepyDiscord::Message &message)
@@ -182,7 +172,7 @@ void dc_botClient::com_prefix(SleepyDiscord::Message &message)
     if(command.size() >= 2){
         prefix = command[1];
         sendMessage(message.channelID, "Changed prefix to `" + command[1] + "`");
-        toLog("Changed prefix to '" + command[1] + "'");
+        evLog.log("Changed prefix to '" + command[1] + "'");
         updateHelpMsg();
     }
     //Update poll messages:
@@ -198,14 +188,14 @@ void dc_botClient::com_random(SleepyDiscord::Message &message)
     stringVec strLimits = returnMatches(message.content, numReg);
     if(strLimits.size() < 2){
         sendMessage(message.channelID, "Error: Invalid input");
-        toLog("Invalid 'random' call");
+        evLog.log("Invalid 'random' call", event_log::Level::BAD_INPUT);
         return;
     }
     //Make sure values aren't out of range:
     int ll_maxLength = 19;
     if( ((int)strLimits[0].length() >= ll_maxLength) || ((int)strLimits[1].length() >= ll_maxLength) ){
         sendMessage(message.channelID, "Error: Limits out of range.");
-        toLog("Invalid 'random' call. Value out of range");
+        evLog.log("Invalid 'random' call. Value out of range", event_log::Level::BAD_INPUT);
         return;
     }
     //To long long:
@@ -218,7 +208,7 @@ void dc_botClient::com_random(SleepyDiscord::Message &message)
     std::uniform_int_distribution<long long> distribution(std::min(val1, val2), std::max(val1, val2));
     auto rNumber = distribution(generator);
     sendMessage(message.channelID, "**" + std::to_string(rNumber) + "**");
-    toLog("Generated Random number: " + std::to_string(rNumber));
+    evLog.log("Generated Random number: " + std::to_string(rNumber));
 }
 
 void dc_botClient::com_reloadCommands()
@@ -231,7 +221,7 @@ void dc_botClient::com_log(SleepyDiscord::Message &message){
     if(command.size() >= 2){
         std::string msg = message.content;
         msg.erase(0, command[0].size() + 1);
-        toLog(msg);
+        evLog.log(msg);
         sendMessage(message.channelID, "Logged message.");
     }else{
         sendMessage(message.channelID, "Invalid input.");
@@ -240,7 +230,7 @@ void dc_botClient::com_log(SleepyDiscord::Message &message){
 void dc_botClient::com_ip(SleepyDiscord::Message &message){
     std::string ip = getIP();
     sendMessage(message.channelID, ip);
-    toLog("Sent IP info to '" + message.author.username + '\'');
+    evLog.log("Sent bot_server IP info to '" + message.author.username + '\'');
 }
 
 void dc_botClient::com_poll(SleepyDiscord::Message &message)
@@ -267,7 +257,7 @@ void dc_botClient::com_poll(SleepyDiscord::Message &message)
     newPoll.id = getPollID();
     polls.push_back(newPoll);
 
-    toLog("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
+    evLog.log("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
     updatePollData(newPoll.id);
     deleteMessage(message.channelID, message.ID);
 }
@@ -472,7 +462,7 @@ void dc_botClient::com_pollClose(SleepyDiscord::Message& message){
         }
     }
     deleteMessage(message.channelID, message.ID);
-    toLog("Closed poll#" + std::to_string(pollID));
+    evLog.log("Closed poll#" + std::to_string(pollID));
 }
 void dc_botClient::com_quote(SleepyDiscord::Message &message){
     //Example command: /quote "Name" "Super zitat" "Optionaler Kontext"
@@ -503,7 +493,7 @@ void dc_botClient::com_quote(SleepyDiscord::Message &message){
     }
     sendMessage("716682386947047455", msg);
     sendMessage(message.channelID, "Saved quote.");
-    toLog("Saved new quote");
+    evLog.log("Saved new quote");
 }
 void dc_botClient::com_updhelp(SleepyDiscord::Message &message){
     updateHelpMsg();
@@ -568,7 +558,7 @@ void dc_botClient::loadTextCommands(){
     Ctrigger textCmd("textcmd", triggers);
     triggerList.push_back(textCmd);
 
-    toLog("Loaded text commands.");
+    evLog.log("Loaded text commands.");
 }
 void dc_botClient::updateHelpMsg(){
     //Read help_msg.txt and replace matches:
@@ -670,40 +660,9 @@ void dc_botClient::updateHelpMsg(){
     help_msg = *msg;
     editMessage("702968771735978194", "702969362679857283", *msg);
     //delete msg;
-    toLog("Updated help message.");
+    evLog.log("Updated help message.");
 }
 
-void dc_botClient::toLog(const std::string &text, int status){
-
-    std::string time = getCurrTimeStr();
-
-    std::string *msg = new std::string();
-    *msg = "[" + time + "]: " + text + "\n";
-    std::string discordMsg = "[" + time + "]: " + text + "\\n";
-
-    //Send to log chat:
-    if(isConnected){
-        sendMessage(logChannelID, discordMsg);
-    }else{
-        offlineLogBuffer.push_back(discordMsg);
-    }
-
-    if(status != 1){
-        //Write to console:
-        fprintf(stderr, (*msg).c_str());
-
-        //Write to log file:
-        std::ofstream ofile;
-        ofile.open(configPath + "log.txt", std::ios::app);
-        if(ofile.is_open()){
-            ofile << msg;
-            ofile.close();
-        }else{
-            fprintf(stderr, "Couldn't open 'log.txt'");
-        }
-    }
-    delete msg;
-}
 void dc_botClient::updateIPInfo(){
     std::string ip = getIP();
     sendMessage("702765369940639879", "IP: **" + ip + "**");
@@ -766,7 +725,7 @@ void dc_botClient::updatePollData(const int pollID){
             for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
                 logMsg.append("-" + std::to_string(it->voteCount));
             }
-            toLog(logMsg);
+            evLog.log(logMsg);
 
         }
     }
@@ -842,7 +801,7 @@ void dc_botClient::loadAllPolls(){
         }
     }
 
-    toLog("Loaded " + std::to_string(paths.size()) + " polls from disk.");
+    evLog.log("Loaded " + std::to_string(paths.size()) + " polls from disk.");
 
 }
 void dc_botClient::savePoll(mo_poll& poll){

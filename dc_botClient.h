@@ -4,6 +4,7 @@
 #include "sleepy-discord/include/sleepy_discord/client.h"
 #include "sleepy-discord/include/sleepy_discord/server.h"
 #include "poll.h"
+#include"event_log.h"
 
 
 class dc_botClient : public SleepyDiscord::DiscordClient{
@@ -39,7 +40,6 @@ public:
     //Other
     void loadTextCommands();
     void updateHelpMsg();
-    void toLog(const std::string& text, int status = 0);//Status: 0='normal', 1='only in discord'
     void updateIPInfo();
     int getPollID();
     void updatePollData(const int pollID);
@@ -47,6 +47,9 @@ public:
     void savePoll(mo_poll& poll);
 
 private:
+    //Log:
+    event_log evLog;
+
     //Data:
     std::string prefix = "t/";
     std::string help_msg;
