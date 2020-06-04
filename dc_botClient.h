@@ -4,7 +4,7 @@
 #include "sleepy-discord/include/sleepy_discord/client.h"
 #include "sleepy-discord/include/sleepy_discord/server.h"
 #include "poll.h"
-#include"event_log.h"
+#include "ev_log.h"
 
 
 class dc_botClient : public SleepyDiscord::DiscordClient{
@@ -36,6 +36,7 @@ public:
     void com_pollClose(SleepyDiscord::Message& message);
     void com_quote(SleepyDiscord::Message& message);
     void com_updhelp(SleepyDiscord::Message& message);
+    void com_getLog(SleepyDiscord::Message& message);
 
     //Other
     void loadTextCommands();
@@ -48,7 +49,7 @@ public:
 
 private:
     //Log:
-    event_log evLog;
+    ev_log evLog;
 
     //Data:
     std::string prefix = "t/";
@@ -77,10 +78,12 @@ private:
                            "pollset", "custopt", "multi"};
     Ctrigger trig_quote = {"quote"};
     Ctrigger trig_updHelp = {"updhelp"};
+    Ctrigger trig_getlog = {"getlog", "file"};
 
     std::vector<Ctrigger> triggerList = {trig_rules, trig_help, trig_prefix,
                                          trig_random, trig_relComs, trig_log,
-                                         trig_ip, trig_poll, trig_quote};
+                                         trig_ip, trig_poll, trig_quote,
+                                        trig_updHelp, trig_getlog};
 
 };
 #endif // COMMANDCLIENT_H

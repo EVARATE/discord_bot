@@ -94,6 +94,11 @@ void dc_botClient::onMessage(SleepyDiscord::Message message){
             com_updhelp(message);
             return;
         }
+        if(command[0] == trig_getlog[0]){
+            //GETLOG
+            com_getLog(message);
+            return;
+        }
 
     }
 }
@@ -115,11 +120,10 @@ void dc_botClient::onReady(std::string* jsonMessage){
     }else{
         evLog.log("---RENEWED SESSION---");
     }
-
 }
 void dc_botClient::onDisconnect(){
     isConnected = false;
-    evLog.log("---DISCONNECTED---", event_log::Level::WARNING);
+    evLog.log("---DISCONNECTED---", ev_log::Level::WARNING);
 }
 void dc_botClient::onResume(){
     isConnected = true;
@@ -127,7 +131,7 @@ void dc_botClient::onResume(){
     evLog.log("---RECONNECTED---");
 }
 void dc_botClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
-    evLog.log(errorMessage, event_log::Level::ERROR);
+    evLog.log(errorMessage, ev_log::Level::ERROR);
 }
 
 //Commands
@@ -188,14 +192,14 @@ void dc_botClient::com_random(SleepyDiscord::Message &message)
     stringVec strLimits = returnMatches(message.content, numReg);
     if(strLimits.size() < 2){
         sendMessage(message.channelID, "Error: Invalid input");
-        evLog.log("Invalid 'random' call", event_log::Level::BAD_INPUT);
+        evLog.log("Invalid 'random' call", ev_log::Level::BAD_INPUT);
         return;
     }
     //Make sure values aren't out of range:
     int ll_maxLength = 19;
     if( ((int)strLimits[0].length() >= ll_maxLength) || ((int)strLimits[1].length() >= ll_maxLength) ){
         sendMessage(message.channelID, "Error: Limits out of range.");
-        evLog.log("Invalid 'random' call. Value out of range", event_log::Level::BAD_INPUT);
+        evLog.log("Invalid 'random' call. Value out of range", ev_log::Level::BAD_INPUT);
         return;
     }
     //To long long:
@@ -498,6 +502,70 @@ void dc_botClient::com_quote(SleepyDiscord::Message &message){
 void dc_botClient::com_updhelp(SleepyDiscord::Message &message){
     updateHelpMsg();
     sendMessage(message.channelID, "Help message has been updated.");
+}
+
+void dc_botClient::com_getLog(SleepyDiscord::Message &message)
+{
+    /* /getlog
+     * /getlog 20
+     * /getlog file
+     */
+    std::list<std::string> events;
+    stringVec args = strToWords(message.content);
+    bool requestedTooManyEvents = false;
+    if(args.size() < 2){
+        //Assume eventCount = 10
+        events = evLog.getRecentEvents(10);
+    }
+    else if(args[1] == trig_getlog[1]){
+        try {
+            uploadFile(message.channelID, configPath + "log.txt", "This file contains all logged events.");
+        } catch (...) {
+            sendMessage(message.channelID, "Couldn't send log file.");
+            evLog.log("Couldn't send log file", ev_log::Level::ERROR);
+        }
+        return;
+    }
+    else{
+        //Look for numbers in args[1]:
+        stringVec nums = returnMatches(args[1], "\\d+");
+        if(nums.size() > 0){
+            int evCount = std::stoi(nums[0]);
+            events = evLog.getRecentEvents(evCount);
+            if(evCount > evLog.getMaxBufferSize()){
+                requestedTooManyEvents = true;
+            }
+        }
+        else{
+            sendMessage(message.channelID, "Invalid argument: '" + args[0] + "'");
+            return;
+        }
+    }
+
+    //At this point 'events' contains all available requested events
+
+    std::string msg;
+    for(auto ev : events){
+        if(msg.size() + ev.size() >= 2000){
+            //Don't exceed max discord message length of 2000 characters!
+            break;
+        }
+        msg.append(ev + " \\n");
+    }
+
+    if(requestedTooManyEvents){
+        msg.append("**There are only " + std::to_string(evLog.getMaxBufferSize()) + " in memory. To download the entire log enter** `" + prefix +
+                   trig_getlog[0] + " " + trig_getlog[1] + "`.");
+    }
+    msg.shrink_to_fit();
+    try {
+        sendMessage(message.channelID, msg);
+    } catch (...) {
+        sendMessage(message.channelID, "You have requested too many events. Try fewer or download the entire log via `" + prefix +
+                    trig_getlog[0] + " " + trig_getlog[1] + "`.");
+        evLog.log("Command '" + message.content + "' failed. Requested too many events.", ev_log::Level::ERROR);
+    }
+
 }
 
 //Other
