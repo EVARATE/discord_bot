@@ -10,12 +10,15 @@
 class dc_botClient : public SleepyDiscord::DiscordClient{
 public:
     using SleepyDiscord::DiscordClient::DiscordClient;
+
+    void userInit();//Call this before anything else
+
     //Session actions
-    void onMessage(SleepyDiscord::Message message);
-    void onReady(std::string* jsonMessage);
-    void onDisconnect();
-    void onResume();
-    void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage);
+    void onMessage(SleepyDiscord::Message message) override;
+    void onReady(SleepyDiscord::Ready readyData) override;
+    void onDisconnect() override;
+    void onResume() override;
+    void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage) override;
 
     //Commands
     void execTextCommand(stringVec& command, SleepyDiscord::Message& message);
@@ -52,11 +55,10 @@ private:
     ev_log evLog;
 
     //Data:
-    std::string prefix = "t/";
+    std::string prefix = "/";
     std::string help_msg;
     std::vector<textCommand> lectureCommands;
     stringVec offlineLogBuffer;
-    bool isConnected;
     std::vector<mo_poll> polls;
     int nextPollID = 0;
 

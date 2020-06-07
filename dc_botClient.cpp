@@ -2,6 +2,19 @@
 
 
 //Session actions
+void dc_botClient::userInit()
+{
+    evLog.init(configPath + "log.txt", 50);
+    loadTextCommands();
+    loadAllPolls();
+#ifndef NDEBUG
+    //If cmake is in debug mode
+    evLog.log("===DEBUG SESSION===", ev_log::Level::DEBUG);
+    evLog.log("Note: prefix is 't/'", ev_log::Level::DEBUG);
+    prefix = "t/";
+#endif
+}
+
 void dc_botClient::onMessage(SleepyDiscord::Message message){
     //Split command into words:
     auto command = strToWords(message.content);
@@ -102,36 +115,32 @@ void dc_botClient::onMessage(SleepyDiscord::Message message){
 
     }
 }
-void dc_botClient::onReady(std::string* jsonMessage){
-    isConnected = true;
-    static bool firstCall = true;//If 'onReady' is called for the first time
+void dc_botClient::onReady(SleepyDiscord::Ready readyData){
+    static bool firstCall = true;
     if(firstCall){
-        evLog.init(configPath + "log.txt", 50);
-        loadTextCommands();
-        loadAllPolls();
-        //Update all poll messages:
-        for(auto it = polls.begin(); it != polls.end(); ++it){
-            updatePollData(it->id);
-        }
-
-        updateHelpMsg();
-        evLog.log("---NEW SESSION---");
         firstCall = false;
-    }else{
-        evLog.log("---RENEWED SESSION---");
+        //Update all poll messages:
+        for(auto poll : polls){updatePollData(poll.id);}
+        #ifdef NDEBUG
+        updateHelpMsg();
+        #endif
+        evLog.log("===NEW SESSION: '" + readyData.sessionID + "' ===");
     }
+    else{
+        evLog.log("===RENEWED SESSION: '" + readyData.sessionID + "' ===");
+    }
+
 }
 void dc_botClient::onDisconnect(){
-    isConnected = false;
-    evLog.log("---DISCONNECTED---", ev_log::Level::WARNING);
+    evLog.log("===DISCONNECTED===", ev_log::Level::WARNING);
 }
 void dc_botClient::onResume(){
-    isConnected = true;
     updateIPInfo();
-    evLog.log("---RECONNECTED---");
+    evLog.log("===RECONNECTED===");
 }
 void dc_botClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
-    evLog.log(errorMessage, ev_log::Level::ERROR);
+    int code = static_cast<int>(errorCode);
+    evLog.log("[" + std::to_string(code) + "] " + errorMessage, ev_log::Level::SLEEPY_ERROR);
 }
 
 //Commands
@@ -192,14 +201,12 @@ void dc_botClient::com_random(SleepyDiscord::Message &message)
     stringVec strLimits = returnMatches(message.content, numReg);
     if(strLimits.size() < 2){
         sendMessage(message.channelID, "Error: Invalid input");
-        evLog.log("Invalid 'random' call", ev_log::Level::BAD_INPUT);
         return;
     }
     //Make sure values aren't out of range:
     int ll_maxLength = 19;
     if( ((int)strLimits[0].length() >= ll_maxLength) || ((int)strLimits[1].length() >= ll_maxLength) ){
         sendMessage(message.channelID, "Error: Limits out of range.");
-        evLog.log("Invalid 'random' call. Value out of range", ev_log::Level::BAD_INPUT);
         return;
     }
     //To long long:

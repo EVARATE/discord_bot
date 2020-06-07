@@ -3,8 +3,7 @@
 int main()
 {
     std::string token = getToken();
-    dc_botClient comClient(token,2);
+    dc_botClient comClient(token,SleepyDiscord::USER_CONTROLED_THREADS);
+    comClient.userInit();
     comClient.run();
-
-
 }
