@@ -113,29 +113,6 @@ inline stringVec strToWords(std::string str){
     std::regex reg("[^ ]+");
     return returnMatches(str, reg);
 }
-inline void addHelpEntry(std::string& msg, std::string& prefix, const std::string& name, stringVec& triggers){
-    msg.append(name + ": ");
-    for(auto it = triggers.begin(); it != triggers.end(); ++it){
-        msg.append("`" + prefix + *it + "`, ");
-    }
-    //Delete last characters ', '
-    msg.pop_back();
-    msg.pop_back();
-    msg.append("\n");
-}
-
-inline std::string getCurrTimeStr(){
-    //This caused segmentation faults for some reason. Therefor dummy_time
-
-    //time_t now = time(0);
-    //tm *ltm = localtime(&now);
-
-    //return std::to_string(ltm->tm_mday) + "/" + std::to_string(1 + ltm->tm_mon) + "/" + std::to_string(1900 + ltm->tm_year).substr(2, 3) + " " +
-    //      std::to_string(1 + ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec);
-    return "dummy_time";
-}
-
-
 
 inline std::string getIP(){
     //Fuck it, I'm too stupid for libcurl. Lets do it like this

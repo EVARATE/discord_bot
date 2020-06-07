@@ -213,7 +213,7 @@ void dc_botClient::com_random(SleepyDiscord::Message &message)
     long long val1 = std::abs(std::stoll(strMin));
     long long val2 = std::abs(std::stoll(strMax));
     //Generate number:
-    static std::mt19937_64 generator;
+    static std::mt19937_64 generator(static_cast<long unsigned int>(time(0)));
     std::uniform_int_distribution<long long> distribution(std::min(val1, val2), std::max(val1, val2));
     auto rNumber = distribution(generator);
     sendMessage(message.channelID, "**" + std::to_string(rNumber) + "**");
@@ -330,7 +330,6 @@ void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
             for(auto o_it = optStrs.begin(); o_it != optStrs.end(); ++o_it){
                 if(o_it->size() >= 4){
                     o_it->erase(o_it->begin());
-                    o_it->pop_back();
                     o_it->pop_back();
                     it->addOption(*o_it);
                 }
@@ -477,7 +476,6 @@ void dc_botClient::com_quote(SleepyDiscord::Message &message){
         for(auto it = quoted.begin(); it != quoted.end(); ++it){
             it->erase(it->begin());
             it->pop_back();
-            it->pop_back();
             quote.append(" \"" + *it + "\"");
         }
         ofile << quote << "\n";
@@ -500,10 +498,6 @@ void dc_botClient::com_updhelp(SleepyDiscord::Message &message){
 
 void dc_botClient::com_getLog(SleepyDiscord::Message &message)
 {
-    /* /getlog
-     * /getlog 20
-     * /getlog file
-     */
     std::list<std::string> events;
     stringVec args = strToWords(message.content);
     bool requestedTooManyEvents = false;
@@ -786,14 +780,14 @@ void dc_botClient::updatePollData(const int pollID){
 
             //Save poll to disk:
             savePoll(polls[i]);
-
+#ifndef NDEBUG
             //Logmessage:
             std::string logMsg = "Updated poll#" + std::to_string(polls[i].id);
             for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
                 logMsg.append("-" + std::to_string(it->voteCount));
             }
             evLog.log(logMsg);
-
+#endif
         }
     }
 
