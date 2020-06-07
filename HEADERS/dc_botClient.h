@@ -1,8 +1,8 @@
 #ifndef COMMANDCLIENT_H
 #define COMMANDCLIENT_H
-#include "sleepy-discord/include/sleepy_discord/websocketpp_websocket.h"
-#include "sleepy-discord/include/sleepy_discord/client.h"
-#include "sleepy-discord/include/sleepy_discord/server.h"
+#include "../deps/sleepy-discord/include/sleepy_discord/websocketpp_websocket.h"
+#include "../deps/sleepy-discord/include/sleepy_discord/client.h"
+#include "../deps/sleepy-discord/include/sleepy_discord/server.h"
 #include "poll.h"
 #include "ev_log.h"
 

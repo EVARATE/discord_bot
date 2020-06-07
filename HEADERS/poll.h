@@ -1,6 +1,6 @@
 #ifndef POLL_H
 #define POLL_H
-#include "miscCode.cpp"
+#include "../SOURCES/miscCode.cpp"
 
 typedef struct{
     int id;

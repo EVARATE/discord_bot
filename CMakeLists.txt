@@ -6,16 +6,16 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(discord_bot
-    main.cpp
-    dc_botClient.cpp
-    dc_botClient.h
-    miscCode.cpp
-    poll.h
-    poll.cpp
-    ev_log.cpp
-    ev_log.h
+    HEADERS/dc_botClient.h
+    HEADERS/poll.h
+    HEADERS/ev_log.h
+    SOURCES/main.cpp
+    SOURCES/miscCode.cpp
+    SOURCES/dc_botClient.cpp
+    SOURCES/poll.cpp
+    SOURCES/ev_log.cpp
     )
 
-add_subdirectory(sleepy-discord/)
+add_subdirectory(deps/sleepy-discord/)
 target_link_libraries(discord_bot sleepy-discord)
 
