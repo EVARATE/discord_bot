@@ -4,15 +4,17 @@
 //Session actions
 void dc_botClient::userInit()
 {
+#ifndef NDEBUG
+    //If cmake is in debug mode
+    evLog.log("===INIT DEBUG SESSION===", ev_log::Level::DEBUG);
+    evLog.log("Note: prefix is 't/'", ev_log::Level::DEBUG);
+    prefix = "t/";
+#else
+    evLog.log("=== INIT NEW SESSION===");
+#endif
     evLog.init(configPath + "log.txt", 50);
     loadTextCommands();
     loadAllPolls();
-#ifndef NDEBUG
-    //If cmake is in debug mode
-    evLog.log("===DEBUG SESSION===", ev_log::Level::DEBUG);
-    evLog.log("Note: prefix is 't/'", ev_log::Level::DEBUG);
-    prefix = "t/";
-#endif
 }
 
 void dc_botClient::onMessage(SleepyDiscord::Message message){
@@ -121,13 +123,11 @@ void dc_botClient::onReady(SleepyDiscord::Ready readyData){
         firstCall = false;
         //Update all poll messages:
         for(auto poll : polls){updatePollData(poll.id);}
-        #ifdef NDEBUG
         updateHelpMsg();
-        #endif
-        evLog.log("===NEW SESSION: '" + readyData.sessionID + "' ===");
+        evLog.log("===CONNECTED SESSION: '" + readyData.sessionID + "' ===");
     }
     else{
-        evLog.log("===RENEWED SESSION: '" + readyData.sessionID + "' ===");
+        evLog.log("===RECONNECTED SESSION: '" + readyData.sessionID + "' ===");
     }
 
 }
@@ -156,9 +156,9 @@ void dc_botClient::execTextCommand(stringVec &command, SleepyDiscord::Message &m
     }
 }
 void dc_botClient::respondTextCommand(textCommand &command, const std::string& channelID){
-    std::string text = "\\n";
+    std::string text = "\n";
     for(auto it = command.properties.begin(); it != command.properties.end(); ++it){
-        text.append("**" + it->name + "** " + it->value + "\\n");
+        text.append("**" + it->name + "** " + it->value + "\n");
     }
     sendMessage(channelID, text);
     evLog.log("Responded to '" + command.triggers[0] + '\'');
@@ -180,8 +180,7 @@ void dc_botClient::com_help(SleepyDiscord::Message &message)
 
 void dc_botClient::com_prefix(SleepyDiscord::Message &message)
 {
-    std::regex reg("[^ ]+");
-    auto command = returnMatches(message.content, reg);
+    auto command = returnMatches(message.content, "[^ ]+");
     if(command.size() >= 2){
         prefix = command[1];
         sendMessage(message.channelID, "Changed prefix to `" + command[1] + "`");
@@ -197,8 +196,7 @@ void dc_botClient::com_prefix(SleepyDiscord::Message &message)
 void dc_botClient::com_random(SleepyDiscord::Message &message)
 {
     //Get numbers from command:
-    std::regex numReg("\\d+");
-    stringVec strLimits = returnMatches(message.content, numReg);
+    stringVec strLimits = returnMatches(message.content, "\\d+");
     if(strLimits.size() < 2){
         sendMessage(message.channelID, "Error: Invalid input");
         return;
@@ -227,8 +225,7 @@ void dc_botClient::com_reloadCommands()
     loadTextCommands();
 }
 void dc_botClient::com_log(SleepyDiscord::Message &message){
-    std::regex reg("[^ ]+");
-    stringVec command = returnMatches(message.content, reg);
+    stringVec command = returnMatches(message.content, "[^ ]+");
     if(command.size() >= 2){
         std::string msg = message.content;
         msg.erase(0, command[0].size() + 1);
@@ -247,15 +244,13 @@ void dc_botClient::com_ip(SleepyDiscord::Message &message){
 void dc_botClient::com_poll(SleepyDiscord::Message &message)
 {
     //Find arguments in quotes:
-    std::regex argReg("\".+?\"");
-    stringVec args = returnMatches(message.content, argReg);
+    stringVec args = returnMatches(message.content, "\".+?\"");
     if(args.size() == 0){return;}
     //Remove quotes:
     stringVec options;
     for(int i = 0; i < (int)args.size(); ++i){
         args[i].erase(args[i].begin());
         args[i].pop_back();//delete characters '\"'
-        args[i].pop_back();
         if(i != 0){
             options.push_back(args[i]);
         }
@@ -274,8 +269,7 @@ void dc_botClient::com_poll(SleepyDiscord::Message &message)
 }
 void dc_botClient::com_vote(SleepyDiscord::Message& message){
     //Get pollID and optionID:
-    std::regex idReg("\\d+");
-    stringVec strIDs = returnMatches(message.content, idReg);
+    stringVec strIDs = returnMatches(message.content, "\\d+");
     if(strIDs.size() < 2){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -294,8 +288,7 @@ void dc_botClient::com_vote(SleepyDiscord::Message& message){
 }
 void dc_botClient::com_unvote(SleepyDiscord::Message& message){
     //Get pollID and optionID:
-    std::regex idReg("\\d+");
-    stringVec strIDs = returnMatches(message.content, idReg);
+    stringVec strIDs = returnMatches(message.content, "\\d+");
     if(strIDs.size() < 2){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -313,8 +306,7 @@ void dc_botClient::com_unvote(SleepyDiscord::Message& message){
     deleteMessage(message.channelID, message.ID);
 }
 void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
-    std::regex idReg("\\d+");
-    stringVec idStr = returnMatches(message.content, idReg);
+    stringVec idStr = returnMatches(message.content, "\\d+");
     if(idStr.size() == 0){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -329,8 +321,7 @@ void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
                 return;
             }
             //Find all options to be added:
-            std::regex newOptReg("\".+?\"");
-            stringVec optStrs = returnMatches(message.content, newOptReg);
+            stringVec optStrs = returnMatches(message.content, "\".+?\"");
             if(optStrs.size() == 0){
                 deleteMessage(message.channelID, message.ID);
                 return;
@@ -351,8 +342,7 @@ void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
     updatePollData(pollID);
 }
 void dc_botClient::com_pollRem(SleepyDiscord::Message &message){
-    std::regex idReg("\\d+");
-    stringVec idStr = returnMatches(message.content, idReg);
+    stringVec idStr = returnMatches(message.content, "\\d+");
     if(idStr.size() < 2){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -379,8 +369,7 @@ void dc_botClient::com_pollRem(SleepyDiscord::Message &message){
 }
 void dc_botClient::com_pollSet(SleepyDiscord::Message &message){
     //Get pollID:
-    std::regex idReg("\\d+");
-    stringVec idStrs = returnMatches(message.content, idReg);
+    stringVec idStrs = returnMatches(message.content, "\\d+");
     if(idStrs.size() == 0){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -388,8 +377,7 @@ void dc_botClient::com_pollSet(SleepyDiscord::Message &message){
     int pollID = std::stoi(idStrs[0]);
 
     //Get settings:
-    std::regex setReg("\\w+");
-    stringVec setStrs = returnMatches(message.content, setReg);
+    stringVec setStrs = returnMatches(message.content, "\\w+");
     if(setStrs.size() == 0){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -420,8 +408,7 @@ void dc_botClient::com_pollSet(SleepyDiscord::Message &message){
 }
 void dc_botClient::com_pollClose(SleepyDiscord::Message& message){
     //Get pollID:
-    std::regex idReg("\\d+");
-    stringVec strIDs = returnMatches(message.content, idReg);
+    stringVec strIDs = returnMatches(message.content, "\\d+");
     if(strIDs.size() == 0){
         deleteMessage(message.channelID, message.ID);
         return;
@@ -497,10 +484,10 @@ void dc_botClient::com_quote(SleepyDiscord::Message &message){
         ofile.close();
     }
     //Send quote to prof-quote channel:
-    std::string msg = "**\\nPerson:** " + quoted[0];
-    msg.append("\\n**Zitat:** " + quoted[1]);
+    std::string msg = "**\nPerson:** " + quoted[0];
+    msg.append("\n**Zitat:** " + quoted[1]);
     if(quoted.size() == 3){
-        msg.append("\\n**Kontext:** " + quoted[2]);
+        msg.append("\n**Kontext:** " + quoted[2]);
     }
     sendMessage("716682386947047455", msg);
     sendMessage(message.channelID, "Saved quote.");
@@ -557,7 +544,7 @@ void dc_botClient::com_getLog(SleepyDiscord::Message &message)
             //Don't exceed max discord message length of 2000 characters!
             break;
         }
-        msg.append(ev + " \\n");
+        msg.append(ev + " \n");
     }
 
     if(requestedTooManyEvents){
@@ -592,8 +579,7 @@ void dc_botClient::loadTextCommands(){
         if(currLine[0] == 'c'){
             //current line is a command
             //Find commands:
-            std::regex comReg("'(.*?)'");
-            stringVec commands = returnMatches(currLine, comReg);
+            stringVec commands = returnMatches(currLine, "'(.*?)'");
             //Remove quotes:
             for(auto it = commands.begin(); it != commands.end(); ++it){
                 it->erase(it->begin());
@@ -608,8 +594,7 @@ void dc_botClient::loadTextCommands(){
                 std::string pLine;
                 getline(ifile, pLine);
                 if(pLine[0] == 'p'){
-                    std::regex comReg("'(.*?)'");
-                    stringVec props = returnMatches(pLine, comReg);
+                    stringVec props = returnMatches(pLine, "'(.*?)'");
                     for(auto it = props.begin(); it != props.end(); ++it){
                         it->erase(it->begin());
                         it->pop_back();
@@ -674,7 +659,6 @@ void dc_botClient::updateHelpMsg(){
                             //step 3:
                             for(int i = 0; i < triggerCount; ++i){replacePattern.append(*it);}
                             //step 4:
-                            //std::regex reg("$&");
                             for(int i = 0; i < (int)tr_it->triggers.size(); ++i){
                                 //Replace first '$&' each loop:
                                 *it = findAndReplaceFirst(replacePattern, "$&", "${prefix}" + tr_it->triggers[i]);
@@ -718,22 +702,19 @@ void dc_botClient::updateHelpMsg(){
 
             }
             if(line.size() == 0){
-                msg->append("\\n");
+                msg->append("\n");
             }
             else if(line[0] != '#'){
-                msg->append(line + "\\n");
+                msg->append(line + "\n");
             }
         }
     }
 
-    //Turn all '\t' into '\\t'
-    findAndReplaceAll(*msg, "\t", "\\t");
-    //Turn all '"' into '\"'
-    findAndReplaceAll(*msg, "\"", "\\\"");
-
     //Update messages:
     help_msg = *msg;
+#ifdef NDEBUG
     editMessage("702968771735978194", "702969362679857283", *msg);
+#endif
     //delete msg;
     evLog.log("Updated help message.");
 }
@@ -751,32 +732,43 @@ void dc_botClient::updatePollData(const int pollID){
     for(int i = 0; i < (int)polls.size(); ++i){
         if(polls[i].id == pollID){
 
-            std::string pollMsg = "\\nUmfrage **#" + std::to_string(polls[i].id) + "** von **" + polls[i].author + "**\\n";
-            pollMsg.append("```\\n" + polls[i].topic + "\\n```\\n");
+            std::string topicPre;
+            std::string topicSuf;
+            if(polls[i].isClosed){
+                topicPre = "```diff\n- [GESCHLOSSEN] \""; // ```css \n"
+                topicSuf = "\"\n```";    // " \n ```
+            }
+            else{
+                topicPre = "```css\n\""; // ```css \n"
+                topicSuf = "\"\n```";    // " \n ```
+            }
+
+            std::string pollMsg = "\nUmfrage **#" + std::to_string(polls[i].id) + "** von **" + polls[i].author + "**\n";
+            pollMsg.append(topicPre + polls[i].topic + topicSuf);
             for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
                 pollMsg.append("**" + std::to_string(it->id) + ":** " + it->value + "    **" +
                                std::to_string(polls[i].getOptPercentage(it->id)) + "%** (" +
-                               std::to_string(it->voteCount) + "/" + std::to_string(polls[i].totalVotes()) + ")\\n");
+                               std::to_string(it->voteCount) + "/" + std::to_string(polls[i].totalVotes()) + ")\n");
             }
 
-            pollMsg.append("\\nMultiple Choice (`" + trig_poll[8] + "`): ");
+            pollMsg.append("\nMultiple Choice (`" + trig_poll[8] + "`): ");
             if(polls[i].allowMultipleChoice){
-                pollMsg.append("Ja.\\n");
+                pollMsg.append("Ja.\n");
             }else{
-                pollMsg.append("Nein.\\n");
+                pollMsg.append("Nein.\n");
             }
             pollMsg.append("Eigene Antworten erlaubt (`" + trig_poll[7] + "`): ");
             if(polls[i].allowCustOpt){
-                pollMsg.append("Ja.\\n");
+                pollMsg.append("Ja.\n");
             }else{
-                pollMsg.append("Nein.\\n");
+                pollMsg.append("Nein.\n");
             }
 
             if(!polls[i].isClosed){
-                pollMsg.append("\\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(polls[i].id) + " <option_ID>`\\n");
+                pollMsg.append("\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(polls[i].id) + " <option_ID>`\n");
                 pollMsg.append("Einstellungen ändern mit `" + prefix + trig_poll[6] + " " + std::to_string(polls[i].id) + " <setting1> <setting2> ...`");
             }else{
-                pollMsg.append("\\nUmfrage wurde geschlossen.");
+                pollMsg.append("\nUmfrage wurde geschlossen.");
             }
             if(!polls[i].messageExists){
                 auto newMessage = sendMessage(polls[i].pollChannelID, pollMsg);

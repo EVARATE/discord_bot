@@ -1,3 +1,6 @@
+#ifndef MISC_CODE
+#define MISC_CODE
+
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -118,7 +121,7 @@ inline void addHelpEntry(std::string& msg, std::string& prefix, const std::strin
     //Delete last characters ', '
     msg.pop_back();
     msg.pop_back();
-    msg.append("\\n");
+    msg.append("\n");
 }
 
 inline std::string getCurrTimeStr(){
@@ -220,3 +223,4 @@ struct Ctrigger{
         return "";
     }
 };
+#endif //MISC_CODE
