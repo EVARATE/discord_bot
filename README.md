@@ -13,7 +13,8 @@ To get the lowest possibility of bugs and crashes then you should only use the m
  - Or just clone the repo: `git clone https://github.com/EVARATE/discord_bot.git`
  - In the terminal go to that directory
 ## Dependencies
- - Get [sleepy-discord](https://github.com/yourWaifu/sleepy-discord.git):  `git clone https://github.com/yourWaifu/sleepy-discord.git`
+ - Create new folder "deps"
+ - Get [sleepy-discord](https://github.com/yourWaifu/sleepy-discord.git):  `git clone https://github.com/yourWaifu/sleepy-discord.git` and save it in "deps"
 ## Build
  - Create build-folder: `mkdir build`
  - Go into that folder: `cd build`
