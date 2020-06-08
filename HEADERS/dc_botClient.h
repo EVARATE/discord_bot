@@ -9,13 +9,12 @@ class dc_botClient : public SleepyDiscord::DiscordClient{
 public:
     using SleepyDiscord::DiscordClient::DiscordClient;
 
-    void userInit();//Call this before anything else
+    void preInit(ev_log& log);//Call this before anything else
 
     //Session actions
     void onMessage(SleepyDiscord::Message message) override;
     void onReady(SleepyDiscord::Ready readyData) override;
     void onDisconnect() override;
-    void onResume() override;
     void onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage) override;
 
     //Commands
@@ -47,6 +46,7 @@ public:
     void updatePollData(const int pollID);
     void loadAllPolls();
     void savePoll(mo_poll& poll);
+    void checkExpiredPolls();   // IMPLEMENT THIS
 
 private:
     //Log:

@@ -122,11 +122,11 @@ void mo_poll::loadPoll(const std::string &filePath){
     while(getline(ifile, lineBuffer)){
         if(lineBuffer[0] == 'o'){
             //Get optionID:
-            auto idStrVec = returnMatches(lineBuffer, "\\d+");
+            auto idStrVec = regex_FindAll(lineBuffer, "\\d+");
             int optionID = std::stoi(idStrVec[0]);
             highestOptID = std::max(highestOptID, optionID);
             //Get quoted things:
-            auto quoteVec = returnMatches(lineBuffer, "'.+?'");
+            auto quoteVec = regex_FindAll(lineBuffer, "'.+?'");
             //Create pollOption and save it to the class:
             pollOption currOption;
             currOption.id = optionID;

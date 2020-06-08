@@ -2,8 +2,9 @@
 
 
 //Session actions
-void dc_botClient::userInit()
+void dc_botClient::preInit(ev_log &log)
 {
+    evLog = log;
 #ifndef NDEBUG
     //If cmake is in debug mode
     evLog.log("===INIT DEBUG SESSION===", ev_log::Level::DEBUG);
@@ -11,8 +12,9 @@ void dc_botClient::userInit()
     prefix = "t/";
 #else
     evLog.log("=== INIT NEW SESSION===");
+    prefix = "/";
 #endif
-    evLog.init(configPath + "log.txt", 50);
+    checkExpiredPolls();
     loadTextCommands();
     loadAllPolls();
 }
@@ -134,10 +136,7 @@ void dc_botClient::onReady(SleepyDiscord::Ready readyData){
 void dc_botClient::onDisconnect(){
     evLog.log("===DISCONNECTED===", ev_log::Level::WARNING);
 }
-void dc_botClient::onResume(){
-    updateIPInfo();
-    evLog.log("===RECONNECTED===");
-}
+
 void dc_botClient::onError(SleepyDiscord::ErrorCode errorCode, const std::string errorMessage){
     int code = static_cast<int>(errorCode);
     evLog.log("[" + std::to_string(code) + "] " + errorMessage, ev_log::Level::SLEEPY_ERROR);
@@ -180,7 +179,7 @@ void dc_botClient::com_help(SleepyDiscord::Message &message)
 
 void dc_botClient::com_prefix(SleepyDiscord::Message &message)
 {
-    auto command = returnMatches(message.content, "[^ ]+");
+    auto command = regex_FindAll(message.content, "[^ ]+");
     if(command.size() >= 2){
         prefix = command[1];
         sendMessage(message.channelID, "Changed prefix to `" + command[1] + "`");
@@ -196,7 +195,7 @@ void dc_botClient::com_prefix(SleepyDiscord::Message &message)
 void dc_botClient::com_random(SleepyDiscord::Message &message)
 {
     //Get numbers from command:
-    stringVec strLimits = returnMatches(message.content, "\\d+");
+    stringVec strLimits = regex_FindAll(message.content, "\\d+");
     if(strLimits.size() < 2){
         sendMessage(message.channelID, "Error: Invalid input");
         return;
@@ -225,7 +224,7 @@ void dc_botClient::com_reloadCommands()
     loadTextCommands();
 }
 void dc_botClient::com_log(SleepyDiscord::Message &message){
-    stringVec command = returnMatches(message.content, "[^ ]+");
+    stringVec command = regex_FindAll(message.content, "[^ ]+");
     if(command.size() >= 2){
         std::string msg = message.content;
         msg.erase(0, command[0].size() + 1);
@@ -244,7 +243,7 @@ void dc_botClient::com_ip(SleepyDiscord::Message &message){
 void dc_botClient::com_poll(SleepyDiscord::Message &message)
 {
     //Find arguments in quotes:
-    stringVec args = returnMatches(message.content, "\".+?\"");
+    stringVec args = regex_FindAll(message.content, "\".+?\"");
     if(args.size() == 0){return;}
     //Remove quotes:
     stringVec options;
@@ -265,13 +264,21 @@ void dc_botClient::com_poll(SleepyDiscord::Message &message)
 
     evLog.log("Created poll#" + std::to_string(newPoll.id) + ":" + std::to_string(newPoll.options.size()));
     updatePollData(newPoll.id);
-    deleteMessage(message.channelID, message.ID);
+    try {
+        deleteMessage(message.channelID, message.ID);
+    } catch (...) {
+        //Already logged through onError()
+    }
 }
 void dc_botClient::com_vote(SleepyDiscord::Message& message){
     //Get pollID and optionID:
-    stringVec strIDs = returnMatches(message.content, "\\d+");
+    stringVec strIDs = regex_FindAll(message.content, "\\d+");
     if(strIDs.size() < 2){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
     int pollID = std::stoi(strIDs[0]);
@@ -284,13 +291,21 @@ void dc_botClient::com_vote(SleepyDiscord::Message& message){
             updatePollData(pollID);
         }
     }
-    deleteMessage(message.channelID, message.ID);
+    try {
+        deleteMessage(message.channelID, message.ID);
+    } catch (...) {
+        //Already logged through onError()
+    }
 }
 void dc_botClient::com_unvote(SleepyDiscord::Message& message){
     //Get pollID and optionID:
-    stringVec strIDs = returnMatches(message.content, "\\d+");
+    stringVec strIDs = regex_FindAll(message.content, "\\d+");
     if(strIDs.size() < 2){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
     int pollID = std::stoi(strIDs[0]);
@@ -303,12 +318,20 @@ void dc_botClient::com_unvote(SleepyDiscord::Message& message){
             updatePollData(pollID);
         }
     }
-    deleteMessage(message.channelID, message.ID);
+    try {
+        deleteMessage(message.channelID, message.ID);
+    } catch (...) {
+        //Already logged through onError()
+    }
 }
 void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
-    stringVec idStr = returnMatches(message.content, "\\d+");
+    stringVec idStr = regex_FindAll(message.content, "\\d+");
     if(idStr.size() == 0){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
     int pollID = std::stoi(idStr[0]);
@@ -317,13 +340,21 @@ void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
         if(it->id == pollID){
             //Check if poll accepts new entries:
             if( !(it->allowCustOpt || message.author.username == it->author) ){
-                deleteMessage(message.channelID, message.ID);
+                try {
+                    deleteMessage(message.channelID, message.ID);
+                } catch (...) {
+                    //Already logged through onError()
+                }
                 return;
             }
             //Find all options to be added:
-            stringVec optStrs = returnMatches(message.content, "\".+?\"");
+            stringVec optStrs = regex_FindAll(message.content, "\".+?\"");
             if(optStrs.size() == 0){
-                deleteMessage(message.channelID, message.ID);
+                try {
+                    deleteMessage(message.channelID, message.ID);
+                } catch (...) {
+                    //Already logged through onError()
+                }
                 return;
             }
             //Add all options to the poll:
@@ -337,13 +368,21 @@ void dc_botClient::com_pollAdd(SleepyDiscord::Message &message){
 
         }
     }
-    deleteMessage(message.channelID, message.ID);
+    try {
+        deleteMessage(message.channelID, message.ID);
+    } catch (...) {
+        //Already logged through onError()
+    }
     updatePollData(pollID);
 }
 void dc_botClient::com_pollRem(SleepyDiscord::Message &message){
-    stringVec idStr = returnMatches(message.content, "\\d+");
+    stringVec idStr = regex_FindAll(message.content, "\\d+");
     if(idStr.size() < 2){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
     int pollID = std::stoi(idStr[0]);
@@ -353,13 +392,21 @@ void dc_botClient::com_pollRem(SleepyDiscord::Message &message){
         if(it->id == pollID){
             //Check if user can remove options:
             if(!(it->author == message.author.username)){
-                deleteMessage(message.channelID, message.ID);
+                try {
+                    deleteMessage(message.channelID, message.ID);
+                } catch (...) {
+                    //Already logged through onError()
+                }
                 return;
             }
 
             //Remove options:
             it->removeOption(optionID);
-            deleteMessage(message.channelID, message.ID);
+            try {
+                deleteMessage(message.channelID, message.ID);
+            } catch (...) {
+                //Already logged through onError()
+            }
             updatePollData(pollID);
             return;
 
@@ -368,17 +415,25 @@ void dc_botClient::com_pollRem(SleepyDiscord::Message &message){
 }
 void dc_botClient::com_pollSet(SleepyDiscord::Message &message){
     //Get pollID:
-    stringVec idStrs = returnMatches(message.content, "\\d+");
+    stringVec idStrs = regex_FindAll(message.content, "\\d+");
     if(idStrs.size() == 0){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
     int pollID = std::stoi(idStrs[0]);
 
     //Get settings:
-    stringVec setStrs = returnMatches(message.content, "\\w+");
+    stringVec setStrs = regex_FindAll(message.content, "\\w+");
     if(setStrs.size() == 0){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
 
@@ -403,13 +458,21 @@ void dc_botClient::com_pollSet(SleepyDiscord::Message &message){
         }
     }
     updatePollData(pollID);
-    deleteMessage(message.channelID, message.ID);
+    try {
+        deleteMessage(message.channelID, message.ID);
+    } catch (...) {
+        //Already logged through onError()
+    }
 }
 void dc_botClient::com_pollClose(SleepyDiscord::Message& message){
     //Get pollID:
-    stringVec strIDs = returnMatches(message.content, "\\d+");
+    stringVec strIDs = regex_FindAll(message.content, "\\d+");
     if(strIDs.size() == 0){
-        deleteMessage(message.channelID, message.ID);
+        try {
+            deleteMessage(message.channelID, message.ID);
+        } catch (...) {
+            //Already logged through onError()
+        }
         return;
     }
     int pollID = std::stoi(strIDs[0]);
@@ -458,12 +521,16 @@ void dc_botClient::com_pollClose(SleepyDiscord::Message& message){
             break;
         }
     }
-    deleteMessage(message.channelID, message.ID);
+    try {
+        deleteMessage(message.channelID, message.ID);
+    } catch (...) {
+        //Already logged through onError()
+    }
     evLog.log("Closed poll#" + std::to_string(pollID));
 }
 void dc_botClient::com_quote(SleepyDiscord::Message &message){
     //Example command: /quote "Name" "Super zitat" "Optionaler Kontext"
-    stringVec quoted = returnMatches(message.content, "\".+?\"");
+    stringVec quoted = regex_FindAll(message.content, "\".+?\"");
     if(quoted.size() < 2 || quoted.size() > 3){
         sendMessage(message.channelID, "Error: Invalid input.");
         return;
@@ -502,10 +569,10 @@ void dc_botClient::com_getLog(SleepyDiscord::Message &message)
     stringVec args = strToWords(message.content);
     bool requestedTooManyEvents = false;
     if(args.size() < 2){
-        //Assume eventCount = 10
+        //No amount given. Assume eventCount = 10
         events = evLog.getRecentEvents(10);
     }
-    else if(args[1] == trig_getlog[1]){
+    else if(args[1] == trig_getlog[1]){//trig_getlog[1] = "file"
         try {
             uploadFile(message.channelID, configPath + "log.txt", "This file contains all logged events.");
         } catch (...) {
@@ -516,7 +583,7 @@ void dc_botClient::com_getLog(SleepyDiscord::Message &message)
     }
     else{
         //Look for numbers in args[1]:
-        stringVec nums = returnMatches(args[1], "\\d+");
+        stringVec nums = regex_FindAll(args[1], "\\d+");
         if(nums.size() > 0){
             int evCount = std::stoi(nums[0]);
             events = evLog.getRecentEvents(evCount);
@@ -573,7 +640,7 @@ void dc_botClient::loadTextCommands(){
         if(currLine[0] == 'c'){
             //current line is a command
             //Find commands:
-            stringVec commands = returnMatches(currLine, "'(.*?)'");
+            stringVec commands = regex_FindAll(currLine, "'(.*?)'");
             //Remove quotes:
             for(auto it = commands.begin(); it != commands.end(); ++it){
                 it->erase(it->begin());
@@ -588,7 +655,7 @@ void dc_botClient::loadTextCommands(){
                 std::string pLine;
                 getline(ifile, pLine);
                 if(pLine[0] == 'p'){
-                    stringVec props = returnMatches(pLine, "'(.*?)'");
+                    stringVec props = regex_FindAll(pLine, "'(.*?)'");
                     for(auto it = props.begin(); it != props.end(); ++it){
                         it->erase(it->begin());
                         it->pop_back();
@@ -633,14 +700,14 @@ void dc_botClient::updateHelpMsg(){
                 //3 =>    `$&`, `$&`, `$&`, ...
                 //4 =>    `${prefix}rules`, `${prefix}regeln`, ...
                 //Find all multi-identifiers:
-                stringVec markedMultiIDs = returnMatches(line, "\\$\\$\\{.+\\}");
+                stringVec markedMultiIDs = regex_FindAll(line, "\\$\\$\\{.+\\}");
                 for(auto it = markedMultiIDs.begin(); it != markedMultiIDs.end(); ++it){
                     std::string raw_markedID = *it;
                     //step 1:
                     it->erase(it->begin(), it->begin() + 3);//rem '&&{'
                     it->pop_back();//rem '}'
                     //Find identifier and its Ctrigger:
-                    stringVec identifiers = returnMatches(*it, "\\$\\{\\w+\\}"); //Only sequence second element
+                    stringVec identifiers = regex_FindAll(*it, "\\$\\{\\w+\\}"); //Only sequence second element
                     identifiers[1].erase(identifiers[1].begin(), identifiers[1].begin() + 2);
                     identifiers[1].pop_back();
                     //step 2:
@@ -671,7 +738,7 @@ void dc_botClient::updateHelpMsg(){
 
                 //---Process syntax: '${<identifier>}'---
                 //Find all identifiers and get their triggers:
-                stringVec markedIDs = returnMatches(line, "\\$\\{\\w+\\}");
+                stringVec markedIDs = regex_FindAll(line, "\\$\\{\\w+\\}");
                 for(auto currIdentifier : markedIDs){
                     if(currIdentifier != "${prefix}"){
                         currIdentifier.erase(currIdentifier.begin(), currIdentifier.begin() + 2);//rem '${'
@@ -723,12 +790,12 @@ int dc_botClient::getPollID(){
 }
 void dc_botClient::updatePollData(const int pollID){
     //Get poll:
-    for(int i = 0; i < (int)polls.size(); ++i){
-        if(polls[i].id == pollID){
+    for(auto poll : polls){
+        if(poll.id == pollID){
 
             std::string topicPre;
             std::string topicSuf;
-            if(polls[i].isClosed){
+            if(poll.isClosed){
                 topicPre = "```diff\n- [GESCHLOSSEN] \""; // ```css \n"
                 topicSuf = "\"\n```";    // " \n ```
             }
@@ -737,53 +804,53 @@ void dc_botClient::updatePollData(const int pollID){
                 topicSuf = "\"\n```";    // " \n ```
             }
 
-            std::string pollMsg = "\nUmfrage **#" + std::to_string(polls[i].id) + "** von **" + polls[i].author + "**\n";
-            pollMsg.append(topicPre + polls[i].topic + topicSuf);
-            for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
-                pollMsg.append("**" + std::to_string(it->id) + ":** " + it->value + "    **" +
-                               std::to_string(polls[i].getOptPercentage(it->id)) + "%** (" +
-                               std::to_string(it->voteCount) + "/" + std::to_string(polls[i].totalVotes()) + ")\n");
+            std::string pollMsg = "\nUmfrage **#" + std::to_string(poll.id) + "** von **" + poll.author + "**\n";
+            pollMsg.append(topicPre + poll.topic + topicSuf);
+            for(auto option : poll.options){
+                pollMsg.append("**" + std::to_string(option.id) + ":** " + option.value + "    **" +
+                               std::to_string(poll.getOptPercentage(option.id)) + "%** (" +
+                               std::to_string(option.voteCount) + "/" + std::to_string(poll.totalVotes()) + ")\n");
             }
 
             pollMsg.append("\nMultiple Choice (`" + trig_poll[8] + "`): ");
-            if(polls[i].allowMultipleChoice){
+            if(poll.allowMultipleChoice){
                 pollMsg.append("Ja.\n");
             }else{
                 pollMsg.append("Nein.\n");
             }
             pollMsg.append("Eigene Antworten erlaubt (`" + trig_poll[7] + "`): ");
-            if(polls[i].allowCustOpt){
+            if(poll.allowCustOpt){
                 pollMsg.append("Ja.\n");
             }else{
                 pollMsg.append("Nein.\n");
             }
 
-            if(!polls[i].isClosed){
-                pollMsg.append("\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(polls[i].id) + " <option_ID>`\n");
-                pollMsg.append("Einstellungen ändern mit `" + prefix + trig_poll[6] + " " + std::to_string(polls[i].id) + " <setting1> <setting2> ...`");
+            if(!poll.isClosed){
+                pollMsg.append("\nAuswahl mit `" + prefix + trig_poll[1] + " " + std::to_string(poll.id) + " <option_ID>`\n");
+                pollMsg.append("Einstellungen ändern mit `" + prefix + trig_poll[6] + " " + std::to_string(poll.id) + " <setting1> <setting2> ...`");
             }else{
                 pollMsg.append("\nUmfrage wurde geschlossen.");
             }
-            if(!polls[i].messageExists){
-                auto newMessage = sendMessage(polls[i].pollChannelID, pollMsg);
-                polls[i].pollMessageID = newMessage.cast().ID;
-                polls[i].messageExists = true;
+            if(!poll.messageExists){
+                auto newMessage = sendMessage(poll.pollChannelID, pollMsg);
+                poll.pollMessageID = newMessage.cast().ID;
+                poll.messageExists = true;
             }else{
                 try {
-                    editMessage(polls[i].pollChannelID, polls[i].pollMessageID, pollMsg);
+                    editMessage(poll.pollChannelID, poll.pollMessageID, pollMsg);
                 } catch (...) {
-                    auto newMessage = sendMessage(polls[i].pollChannelID, pollMsg);
-                    polls[i].pollMessageID = newMessage.cast().channelID;
-                    polls[i].pollMessageID = newMessage.cast().ID;
+                    auto newMessage = sendMessage(poll.pollChannelID, pollMsg);
+                    poll.pollMessageID = newMessage.cast().channelID;
+                    poll.pollMessageID = newMessage.cast().ID;
                 }
             }
 
             //Save poll to disk:
-            savePoll(polls[i]);
+            savePoll(poll);
 #ifndef NDEBUG
             //Logmessage:
-            std::string logMsg = "Updated poll#" + std::to_string(polls[i].id);
-            for(auto it = polls[i].options.begin(); it != polls[i].options.end(); ++it){
+            std::string logMsg = "Updated poll#" + std::to_string(poll.id);
+            for(auto it = poll.options.begin(); it != poll.options.end(); ++it){
                 logMsg.append("-" + std::to_string(it->voteCount));
             }
             evLog.log(logMsg);
@@ -831,7 +898,7 @@ void dc_botClient::loadAllPolls(){
     pollList.open(configPath + "poll_list.txt");
     if(pollList.is_open()){
         while(getline(pollList, currLine)){
-            stringVec IDStrs = returnMatches(currLine, "\\d+");
+            stringVec IDStrs = regex_FindAll(currLine, "\\d+");
             bool pollIsInMemory = false;
             if(IDStrs.size() > 0){
                 int currID = std::stoi(IDStrs[0]);
@@ -892,4 +959,10 @@ void dc_botClient::savePoll(mo_poll& poll){
     //Save poll to file in subdirectory:
     poll.savePoll(configPath + "polls/" + saveName);
 
+}
+
+void dc_botClient::checkExpiredPolls()
+{
+    schedule([this](){this->checkExpiredPolls();}, 2000);
+    evLog.log("Timer repeats.", ev_log::Level::DEBUG);
 }

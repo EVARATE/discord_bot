@@ -94,24 +94,16 @@ inline std::string removeSpaces(std::string& str){
     std::remove(str.begin(), str.end(), ' ');
     return str;
 }
-inline stringVec returnMatches(std::string str, std::regex reg){
-    stringVec sVec;
-    std::sregex_iterator currentMatch(str.begin(), str.end(), reg);
-    std::sregex_iterator lastMatch;
-    while(currentMatch != lastMatch){
-        std::smatch match = *currentMatch;
-        sVec.push_back(match.str());
-        currentMatch++;
-    }
-    return sVec;
-}
-inline stringVec returnMatches(std::string& str, std::string strReg){
-    std::regex reg(strReg);
-    return returnMatches(str, reg);
+inline stringVec regex_FindAll(std::string& str, std::string pattern){
+    stringVec strVec;
+        std::regex reg(pattern);
+        for(auto it = std::sregex_iterator(str.begin(), str.end(), reg); it != std::sregex_iterator(); it++){
+            strVec.push_back(it->str());
+        }
+        return strVec;
 }
 inline stringVec strToWords(std::string str){
-    std::regex reg("[^ ]+");
-    return returnMatches(str, reg);
+    return regex_FindAll(str, "[^ ]+");
 }
 
 inline std::string getIP(){
@@ -187,7 +179,7 @@ struct Ctrigger{
         if(!starts_with(searchID, identifier)){return "";}
 
         //Get trigger_index if exists:
-        stringVec indices = returnMatches(searchID, "\\d+");
+        stringVec indices = regex_FindAll(searchID, "\\d+");
         if(indices.size() > 0){
             int index = std::stoi(indices[0]);
             //Return trigger at index if exists
