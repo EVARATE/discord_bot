@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <fstream>
+#include "../SOURCES/miscCode.cpp"
 
 class ev_log
 {

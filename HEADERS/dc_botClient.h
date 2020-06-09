@@ -47,6 +47,7 @@ public:
     void loadAllPolls();
     void savePoll(mo_poll& poll);
     void checkExpiredPolls();   // IMPLEMENT THIS
+    void deletePoll(const int pollID);
 
 private:
     //Log:

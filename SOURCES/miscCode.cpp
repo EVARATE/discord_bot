@@ -155,6 +155,12 @@ inline std::string findAndReplaceFirst(std::string str, const std::string& from,
     str.replace(start_pos, from.length(), to);
     return str;
 }
+inline std::string getTimeStr(time_t time){
+    tm *ltm = localtime(&time);
+    return std::to_string(ltm->tm_mday) + "/" + std::to_string(1 + ltm->tm_mon) + "/" + std::to_string(1900 + ltm->tm_year).substr(2, 3) + " " +
+           std::to_string(1 + ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec);
+
+}
 
 //===STRUCTS THAT NEED ABOVE FUNCTIONS===
 

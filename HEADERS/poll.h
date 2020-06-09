@@ -48,6 +48,7 @@ public:
     std::string author = "";
     std::string pollChannelID = "";
     std::string pollMessageID = "";
+    time_t expiryTime;
     bool isSaved = false;
     bool messageExists = false;
     bool isClosed = false;

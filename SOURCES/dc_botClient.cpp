@@ -124,7 +124,7 @@ void dc_botClient::onReady(SleepyDiscord::Ready readyData){
     if(firstCall){
         firstCall = false;
         //Update all poll messages:
-        for(auto poll : polls){updatePollData(poll.id);}
+        for(auto& poll : polls){updatePollData(poll.id);}
         updateHelpMsg();
         evLog.log("===CONNECTED SESSION: '" + readyData.sessionID + "' ===");
     }
@@ -259,6 +259,7 @@ void dc_botClient::com_poll(SleepyDiscord::Message &message)
     mo_poll newPoll(args[0], options);
     newPoll.author = message.author.username;
     newPoll.pollChannelID = message.channelID;
+    newPoll.expiryTime = time(0) + 1209600; //Expires in 2 weeks
     newPoll.id = getPollID();
     polls.push_back(newPoll);
 
@@ -476,51 +477,20 @@ void dc_botClient::com_pollClose(SleepyDiscord::Message& message){
         return;
     }
     int pollID = std::stoi(strIDs[0]);
-    //Find poll with pollID and delete it:
-    for(auto it = polls.begin(); it != polls.end(); ++it){
-        if(it->id == pollID){
-            //Only poll author can delete it:
-            if(it->author != message.author.username){return;}
-
-            it->isClosed = true;
-            updatePollData(pollID);
-
-
-
-            //DELETE FILE FROM DISK:
-            //Read content of poll_list.txt into memory and write it back except for the line to be deleted:
-            std::ifstream listFile;
-            listFile.open(configPath + "poll_list.txt");
-            if(listFile.is_open()){
-                stringVec listBuffer;
-                std::string currLine;
-                while(getline(listFile, currLine)){
-                    if(currLine != "poll_" + std::to_string(pollID) + ".txt"){
-                        listBuffer.push_back(currLine);
-                    }
-                }
-                listFile.close();
-                //Write buffer back:
-                std::ofstream ofListFile;
-                ofListFile.open(configPath + "poll_list.txt");
-                if(ofListFile.is_open()){
-                    for(auto buf_it = listBuffer.begin(); buf_it != listBuffer.end(); ++buf_it){
-                        ofListFile << *buf_it << "\n";
-                    }
-                    ofListFile.close();
-                }
+    //Only poll author can delete poll:
+    for(auto& poll : polls){
+        if(poll.id == pollID && poll.author != message.author.username){
+            try {
+                deleteMessage(message.channelID, message.ID);
+            } catch (...) {
+                //Already logged through onError()
             }
-            //Delete corresponding file:
-            std::remove((configPath + "polls/poll_" + std::to_string(pollID) + ".txt").c_str());
-
-
-
-
-            //Delete from memory:
-            polls.erase(it);
-            break;
         }
     }
+
+    //Actually delete poll:
+    deletePoll(pollID);
+
     try {
         deleteMessage(message.channelID, message.ID);
     } catch (...) {
@@ -600,7 +570,7 @@ void dc_botClient::com_getLog(SleepyDiscord::Message &message)
     //At this point 'events' contains all available requested events
 
     std::string msg;
-    for(auto ev : events){
+    for(auto& ev : events){
         if(msg.size() + ev.size() >= 2000){
             //Don't exceed max discord message length of 2000 characters!
             break;
@@ -673,7 +643,7 @@ void dc_botClient::loadTextCommands(){
     }
     //Turn all textCommands into Ctriggers:
     stringVec triggers;
-    for(auto tCom : lectureCommands){
+    for(auto& tCom : lectureCommands){
         triggers.push_back(tCom.triggers[0]);
     }
     Ctrigger textCmd("textcmd", triggers);
@@ -796,17 +766,17 @@ void dc_botClient::updatePollData(const int pollID){
             std::string topicPre;
             std::string topicSuf;
             if(poll.isClosed){
-                topicPre = "```diff\n- [GESCHLOSSEN] \""; // ```css \n"
-                topicSuf = "\"\n```";    // " \n ```
+                topicPre = "```diff\n- [GESCHLOSSEN] ";
+                topicSuf = "\n```";
             }
             else{
-                topicPre = "```css\n\""; // ```css \n"
-                topicSuf = "\"\n```";    // " \n ```
+                topicPre = "```diff\n+ ";
+                topicSuf = "\n```";
             }
 
             std::string pollMsg = "\nUmfrage **#" + std::to_string(poll.id) + "** von **" + poll.author + "**\n";
-            pollMsg.append(topicPre + poll.topic + topicSuf);
-            for(auto option : poll.options){
+            pollMsg.append(topicPre + poll.topic + topicSuf + "\n");
+            for(auto& option : poll.options){
                 pollMsg.append("**" + std::to_string(option.id) + ":** " + option.value + "    **" +
                                std::to_string(poll.getOptPercentage(option.id)) + "%** (" +
                                std::to_string(option.voteCount) + "/" + std::to_string(poll.totalVotes()) + ")\n");
@@ -902,7 +872,7 @@ void dc_botClient::loadAllPolls(){
             bool pollIsInMemory = false;
             if(IDStrs.size() > 0){
                 int currID = std::stoi(IDStrs[0]);
-                for(auto currPoll : polls){
+                for(auto& currPoll : polls){
                     if(currPoll.id == currID){
                         pollIsInMemory = true;
                         break;
@@ -922,7 +892,7 @@ void dc_botClient::loadAllPolls(){
         std::ofstream newList;
         newList.open(configPath + "poll_list.txt");
         if(newList.is_open()){
-            for(auto entry : newEntryList){
+            for(auto& entry : newEntryList){
                 newList << entry << "\n";
             }
             newList.close();
@@ -963,6 +933,62 @@ void dc_botClient::savePoll(mo_poll& poll){
 
 void dc_botClient::checkExpiredPolls()
 {
-    schedule([this](){this->checkExpiredPolls();}, 2000);
-    evLog.log("Timer repeats.", ev_log::Level::DEBUG);
+    schedule([this](){this->checkExpiredPolls();}, 600000);//Execute every 10 minutes
+    evLog.log("Checking for expired polls.");
+    time_t currTime = time(0);
+    for(auto& poll : polls){
+#ifndef NDEBUG
+        evLog.log("Poll#" + std::to_string(poll.id) +
+                  " expires in " + std::to_string(difftime(poll.expiryTime, currTime)), ev_log::Level::DEBUG);
+#endif
+        if(difftime(poll.expiryTime, currTime) < 0){
+            //Poll has expired
+            deletePoll(poll.id);
+        }
+    }
+}
+void dc_botClient::deletePoll(const int pollID){
+    //Find poll with pollID:
+    for(auto it = polls.begin(); it != polls.end(); ++it){
+        if(it->id == pollID){
+            it->isClosed = true;
+
+            //Delete from disk:
+            //Read poll_list.txt into memory and write it back
+            //except for the entry to be deleted:
+            std::ifstream poll_inFile;
+            poll_inFile.open(configPath + "poll_list.txt");
+            if(poll_inFile.is_open()){
+                stringVec listBuffer;
+                std::string line;
+                while(getline(poll_inFile, line)){
+                    if(line != "poll_" + std::to_string(pollID) + ".txt"){
+                        listBuffer.push_back(line);
+                    }
+                }
+                poll_inFile.close();
+                //Delete file and rewrite it:
+                std::remove((configPath + "poll_list.txt").c_str());
+                std::ofstream poll_ofFile;
+                poll_ofFile.open(configPath + "poll_list.txt");
+                if(poll_ofFile.is_open()){
+                    for(auto& line : listBuffer){
+                        poll_ofFile << line << "\n";
+                    }
+                    poll_ofFile.close();
+                }
+            }
+
+            //Delete actual poll file:
+            std::remove((configPath + "polls/poll_" + std::to_string(pollID) + ".txt").c_str());
+
+            //Update poll message one last time:
+            updatePollData(pollID);
+
+            //Delete from memory:
+            polls.erase(it);
+            evLog.log("Deleted poll#" + std::to_string(pollID));
+            return;
+        }
+    }
 }

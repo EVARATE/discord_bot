@@ -58,10 +58,7 @@ std::string ev_log::levelToStr(Level level){
     }
 }
 std::string ev_log::getCurrTime(){
-    time_t now = time(0);
-    tm *ltm = localtime(&now);
-    return std::to_string(ltm->tm_mday) + "/" + std::to_string(1 + ltm->tm_mon) + "/" + std::to_string(1900 + ltm->tm_year).substr(2, 3) + " " +
-           std::to_string(1 + ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec);
+    return getTimeStr(time(0));
 }
 std::list<std::string> ev_log::getRecentEvents(const unsigned int eventCount){
     if(eventCount >= logBuffer.size() || logBuffer.size() == 0){

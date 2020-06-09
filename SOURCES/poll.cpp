@@ -104,6 +104,9 @@ void mo_poll::loadPoll(const std::string &filePath){
     //pollMessageID:
     getline(ifile, lineBuffer);
     pollMessageID = lineBuffer;
+    //expiryTime:
+    getline(ifile, lineBuffer);
+    expiryTime = std::stol(lineBuffer);
     //messageExists:
     getline(ifile, lineBuffer);
     messageExists = intToBool(std::stoi(lineBuffer));
@@ -154,6 +157,7 @@ void mo_poll::loadPoll(const std::string &filePath){
      * 'Username_author'
      * 492734023423423434
      * 342348048023948576
+     * 12349387489273
      * 1
      * 0
      * 1
@@ -175,6 +179,7 @@ void mo_poll::savePoll(const std::string &filePath){
     ofile << "'" + author + "'\n";
     ofile << pollChannelID + "\n";
     ofile << pollMessageID + "\n";
+    ofile << expiryTime << "\n";
     ofile << messageExists << "\n";
     ofile << isClosed << "\n";
     ofile << allowCustOpt << "\n";
