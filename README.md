@@ -14,7 +14,9 @@ To get the lowest possibility of bugs and crashes then you should only use the m
  - In the terminal go to that directory
 ## Dependencies
  - Create new folder "deps"
- - Get [sleepy-discord](https://github.com/yourWaifu/sleepy-discord.git):  `git clone https://github.com/yourWaifu/sleepy-discord.git` and save it in "deps" **Important: Use the develop branch of sleepy-discord!**
+ - Get [sleepy-discord](https://github.com/yourWaifu/sleepy-discord.git):  `git clone https://github.com/yourWaifu/sleepy-discord.git` and save it in "deps" 
+ 
+ **Important: Use the develop branch of sleepy-discord!**
 ## Build
  - Create build-folder: `mkdir build`
  - Go into that folder: `cd build`
