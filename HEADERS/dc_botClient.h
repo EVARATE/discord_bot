@@ -60,6 +60,7 @@ private:
     stringVec offlineLogBuffer;
     std::vector<mo_poll> polls;
     int nextPollID = 0;
+    bool isOnline = false;
 
     //IDs:
     std::string ruleChannelID = "702501123218604102";
@@ -76,7 +77,7 @@ private:
     Ctrigger trig_ip = {"ip"};
     Ctrigger trig_poll = {"poll", "vote", "unvote",
                            "polladd", "pollrem", "pollclose",
-                           "pollset", "custopt", "multi"};
+                           "pollset", "custopt", "multi", "expire"};
     Ctrigger trig_quote = {"quote"};
     Ctrigger trig_updHelp = {"updhelp"};
     Ctrigger trig_getlog = {"getlog", "file"};
