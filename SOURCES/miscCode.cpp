@@ -162,6 +162,75 @@ inline std::string getTimeStr(time_t time){
            std::to_string(1 + ltm->tm_hour) + ":" + std::to_string(ltm->tm_min) + ":" + std::to_string(ltm->tm_sec);
 
 }
+inline size_t levenshtein_distance(const char* str1, const char* str2)
+{
+    /* Credit:
+     * TheRayTracer
+     * https://gist.github.com/TheRayTracer/2644387
+     *
+     */
+
+
+    size_t n = std::strlen(str1);
+    size_t m = std::strlen(str2);
+   ++n; ++m;
+   size_t* d = new size_t[n * m];
+
+   std::memset(d, 0, sizeof(size_t) * n * m);
+
+   for (size_t i = 1, im = 0; i < m; ++i, ++im)
+   {
+      for (size_t j = 1, jn = 0; j < n; ++j, ++jn)
+      {
+         if (str1[jn] == str2[im])
+         {
+            d[(i * n) + j] = d[((i - 1) * n) + (j - 1)];
+         }
+         else
+         {
+            d[(i * n) + j] = std::min(d[(i - 1) * n + j] + 1, /* A deletion. */
+                                 std::min(d[i * n + (j - 1)] + 1, /* An insertion. */
+                                     d[(i - 1) * n + (j - 1)] + 1)); /* A substitution. */
+         }
+      }
+   }
+
+   for (size_t i = 0; i < m; ++i)
+   {
+      for (size_t j = 0; j < n; ++j)
+      {
+         std::cout << d[(i * n) + j] << " ";
+      }
+      std::cout << std::endl;
+   }
+
+
+   size_t r = d[n * m - 1];
+
+   delete [] d;
+
+   return r;
+}
+inline int levenshtein_distance(std::string str1, std::string str2){
+    return  levenshtein_distance(str1.c_str(), str2.c_str());
+}
+inline std::string longestStr(std::string str1, std::string str2){
+    if(str1.size() >= str2.size()){
+        return str1;
+    }else{
+        return str2;
+    }
+}
+inline std::string longestStr(std::vector<std::string> strVec){
+    if(strVec.size() == 0){return "";}
+    std::string longest = strVec[0];
+    for(auto currStr : strVec){
+        if(currStr.size() > longest.size()){
+            longest = currStr;
+        }
+    }
+    return longest;
+}
 
 //===STRUCTS THAT NEED ABOVE FUNCTIONS===
 

@@ -40,7 +40,11 @@ void dc_botClient::onMessage(SleepyDiscord::Message message){
 
     //Split command into words:
     auto command = strToWords(message.content);
-    command[0].erase(0, prefix.size());
+    try {
+        command[0].erase(0, prefix.size());
+    } catch (...) {
+        evLog.log("Couldn't erase command. dc_botClient.cpp:44",ev_log::Level::ERROR);
+    }
 
     //Look for commands:
     if(message.startsWith(prefix)){
