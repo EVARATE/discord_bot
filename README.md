@@ -1,6 +1,6 @@
 # About this branch
 
-*Why Python?* you may ask. *Why not stick to sleak, nice, fun, fast, efficient and legendary C++?*. Well I don't f\*cking know. Maybe because it took me several hours and OS reinstall to set the b!tch up that way with no success. Maybe I just want all that stress out of my life.
+*Why Python?* you may ask. *Why not stick to sleak, nice, fun, fast, efficient and legendary C++?*. Well I don't f\*cking know. Maybe because it took me several hours and OS reinstalls to set the b!tch up with no success. Maybe I just want all that stress out of my life.
 
 This is an experiment after all. Maybe python can't deliver what I need. We'll see.
 
