@@ -1,8 +1,12 @@
 import discord
 import re # regex
+import configparser
 import misc_functions as misc
 
 class bot_client(discord.Client):
+    def startup(self):
+        # Run this function once when the bot starts for the first time
+        self.get_config()
     async def on_ready(self):
         print('Logged on as {0}!'.format(self.user))
 
@@ -10,21 +14,19 @@ class bot_client(discord.Client):
         print('Message received')
 
     def get_config(self):
-        configFile = open('config.txt', 'r')
-        rawText = configFile.read()
-
-        # Find parameters via regex:    .+ = '.+'
-        params = re.findall('.+ = \'.+\'', rawText)
-
-        # Assign found parameters to variables:
-        lineCount = 0
-        while lineCount < len(params):
+        configFile = configparser.ConfigParser()
+        configFile.read('config.txt')
+        self.token = configFile['DEFAULT']['token']
+        self.ruleChannelID = configFile['RULES']['channelID']
+        self.ruleMessageID = configFile['RULES']['messageID']
 
 
 
-
-    # Parameters
+    # Parameters:
     token = ''
+    ruleChannelID = ''
+    ruleMessageID = ''
 
 client = bot_client()
+client.get_config()
 client.run(bot_client.token)
