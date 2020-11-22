@@ -1,6 +1,0 @@
-[DEFAULT]
-token = dummyToken_real
-
-[RULES]
-channelID = dummyID
-messageID = dummyID
