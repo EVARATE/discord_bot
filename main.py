@@ -1,6 +1,6 @@
 import discord
-import re # regex
 import configparser
+from discord.ext import commands
 import misc_functions as misc
 
 class bot_client(discord.Client):
@@ -29,4 +29,4 @@ class bot_client(discord.Client):
 
 client = bot_client()
 client.get_config()
-client.run(bot_client.token)
+client.run(client.token)
