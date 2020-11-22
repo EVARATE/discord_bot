@@ -1,0 +1,3 @@
+# This file contains all necessary startup parameters the bot needs. Commented lines begin with a '#'
+
+token = 'NzAyNzU4OTg5MjcxNjYyNjMy.XqEtTw.0yfAVCDJX946TKjthhWIdZJPgks'

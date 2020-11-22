@@ -1,0 +1,4 @@
+This file has no functionality. It just describes planned features and guidelines.
+
+1. Keep this bot as generalized as possible. Ideally everything works on any server, no hard coded channel IDs etc.
+2. Create a config file which has all necessary startup parameters.
