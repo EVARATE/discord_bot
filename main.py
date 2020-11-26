@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands
 import configparser
 import random
-
+import time
 
 # Modify class:
 class bot_client(discord.Client):
@@ -25,6 +25,7 @@ class bot_client(discord.Client):
         self.prefix = configFile['BASE']['prefix']
         self.ruleChannelID = int(configFile['RULES']['channelID'])
         self.ruleMessageID = int(configFile['RULES']['messageID'])
+        self.activityName = configFile['ACTIVITY']['name'].strip('"')
 
 
 
@@ -33,7 +34,7 @@ class bot_client(discord.Client):
     prefix = ''
     ruleChannelID = -1
     ruleMessageID = -1
-
+    activityName = ''
 
 # Callbacks:
 client = bot_client()
@@ -41,8 +42,9 @@ client = bot_client()
 @client.event
 async def on_ready():
     print('{0.user} is now online.'.format(client))
-    game = discord.Game("mit deinen Nerven")
+    game = discord.Game(client.activityName)
     await client.change_presence(status=discord.Status.online, activity = game)
+
 
 @client.event
 async def on_message(message):
@@ -59,17 +61,17 @@ async def on_message(message):
 
     # look for commands:
     if message.content.startswith(client.prefix):
-        rand = random.random()
-        if rand < 0.01:
-            await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
-            return
 
         # RULES
-        if message.content.startswith(client.prefix + "help"):
-            ruleChannel: discord.abc.GuildChannel = client.get_channel(client.ruleChannelID)
+        if message.content.startswith(client.prefix + "rules"):
+            ruleChannel = client.get_channel(client.ruleChannelID)
             ruleMsg = await ruleChannel.fetch_message(client.ruleMessageID)
             await message.channel.send(ruleMsg.content)
+            return
 
 
+        # This line is only reached if no command has been recognized. Act accordingly:
+        await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
+        print("Unrecognized command: {0}".format(message.content))
 client.startup()
 client.run(client.token)

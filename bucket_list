@@ -4,7 +4,7 @@ This file has no functionality. It just describes planned features and guideline
 2. Create a config file which has all necessary startup parameters.
 
 bot_client functions:
-    rules
+    rules DONE
     help
     prefix
     random

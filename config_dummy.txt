@@ -1,3 +1,11 @@
+; Comments with ';'
+; Rename 'config_dummy.txt' to 'config.txt' and enter your values
+
+; This file is server-specific and contains as many customizable
+; values as possible. It is loaded once when the bot starts up and
+; can be reloaded via a command [TODO]
+; If you don't understand something start praying or ask Mo
+
 [BASE]
 token = dummyToken
 prefix = /
@@ -5,3 +13,6 @@ prefix = /
 [RULES]
 channelID = dummyID
 messageID = dummyID
+
+[ACTIVITY]
+name = "with unconfigured config.txt"
