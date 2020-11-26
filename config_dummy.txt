@@ -1,5 +1,6 @@
-[DEFAULT]
+[BASE]
 token = dummyToken
+prefix = /
 
 [RULES]
 channelID = dummyID
