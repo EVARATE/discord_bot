@@ -19,4 +19,5 @@ To get the lowest possibility of bugs and crashes then you should only use the m
 I don't fucking know. This is python. I'll have to figure it out first.
 
 # External Resources:
- - [sleepy-discord](https://github.com/yourWaifu/sleepy-discord) C++ library
+ - Stress
+ - Tears
