@@ -6,10 +6,8 @@ https://discordpy.readthedocs.io/en/latest/index.html#
 
 
 import discord
-from discord.ext import commands
 import configparser
-import random
-import time
+import mathParser
 
 # Modify class:
 class bot_client(discord.Client):
@@ -61,14 +59,29 @@ async def on_message(message):
 
     # look for commands:
     if message.content.startswith(client.prefix):
+        # Remove prefix:
+        usr_command = message.content[len(client.prefix):]
+
 
         # RULES
-        if message.content.startswith(client.prefix + "rules"):
+        if usr_command == "rules":
             ruleChannel = client.get_channel(client.ruleChannelID)
             ruleMsg = await ruleChannel.fetch_message(client.ruleMessageID)
             await message.channel.send(ruleMsg.content)
             return
 
+        # CALC
+        if message.content.startswith(client.prefix + "calc"):
+            expression = message.content[len(client.prefix + "calc"):]
+            nsp = mathParser.NumericStringParser()
+            try:
+                result = nsp.eval(expression)
+            except:
+                result = "Invalid expression"
+                print("Invalid command: {0}".format(message.content))
+
+            await message.channel.send(result)
+            return
 
         # This line is only reached if no command has been recognized. Act accordingly:
         await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
