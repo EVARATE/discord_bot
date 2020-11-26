@@ -1,5 +1,6 @@
 import discord
 import configparser
+import random
 
 # Modify class:
 class bot_client(discord.Client):
@@ -39,8 +40,18 @@ async def on_message(message):
 
     # === INTERPRET CHAT ===
 
+    # Very hidden easter eggs:
+    if message.content.lower() == 'open the pod bay doors hal':
+        await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
+
+
     # look for commands:
     if message.content.startswith(client.prefix):
+        rand = random.random()
+        if rand < 0.01:
+            await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
+            return
+
         await message.channel.send('Command detected')
 
 
