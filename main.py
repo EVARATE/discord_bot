@@ -34,6 +34,9 @@ class bot_client(discord.Client):
     ruleMessageID = -1
     activityName = ''
 
+    #Variables
+    mood = 'neutral'
+
 # Callbacks:
 client = bot_client()
 
@@ -82,6 +85,25 @@ async def on_message(message):
 
             await message.channel.send(result)
             return
+
+        #Estereggs
+        if usr_command == "music" or message.content.startswith(client.prefix + "play"):
+            await message.channel.send("I'm not the droid you're looking for!")
+            return
+
+        if usr_command.startswith('cry'):
+            client.mood = 'crying'
+            await message.channel.send(" :sob: I'm crying now. You made me cry. Are you happy now? :sob:")
+            return
+
+        if usr_command == 'sorry' or usr_command == 'sry':
+            if client.mood == 'crying':
+                client.mood = 'neutral'
+                await message.channel.send('Fuck off! :unamused:')
+            else:
+                await message.channel.send('it\'s fine')
+            return
+
 
         # This line is only reached if no command has been recognized. Act accordingly:
         await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
