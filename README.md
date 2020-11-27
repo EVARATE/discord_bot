@@ -1,5 +1,7 @@
 # About
 
+**This code doesn't really work anymore. The bot is being rewritten in pyhton. See the corresponding branches for working code!**
+
 This repository contains the source code to my discord bot. I have written it primarly to fit my own needs so others can't just use this code as is. There are functions that e.g. send messages to hard coded channel-IDs. If you really want to use this code and you don't know or don't want to go through all of it then we can talk about making it more accessible, no promises though.
 
 ## Branches
