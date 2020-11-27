@@ -8,6 +8,7 @@ https://discordpy.readthedocs.io/en/latest/index.html#
 import discord
 import configparser
 import mathParser
+import misc_functions as misc
 
 # Modify class:
 class bot_client(discord.Client):
@@ -55,19 +56,18 @@ async def on_message(message):
 
     # === INTERPRET CHAT ===
 
-    # Very hidden easter eggs:
-    if message.content.lower() == 'open the pod bay doors hal':
-        await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
-
-
     # look for commands:
     if message.content.startswith(client.prefix):
-        # Remove prefix:
-        usr_command = message.content[len(client.prefix):]
+        # Remove prefix and make lowercase:
+        usr_command = message.content[len(client.prefix):].lower()
 
+        # HELP
+        if usr_command.startswith("help"):
+            await message.channel.send(misc.get_help_msg(client.prefix))
+            return
 
         # RULES
-        if usr_command == "rules":
+        if usr_command.startswith("rules"):
             ruleChannel = client.get_channel(client.ruleChannelID)
             ruleMsg = await ruleChannel.fetch_message(client.ruleMessageID)
             await message.channel.send(ruleMsg.content)
