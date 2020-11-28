@@ -6,6 +6,6 @@ This file has no functionality. It just describes planned features and guideline
 bot_client functions:
     rules DONE
     calc DONE
-    help
+    help IN PROGRESS
     prefix
     random
