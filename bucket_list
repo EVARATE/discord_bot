@@ -8,7 +8,8 @@ bot_client functions:
     calc DONE
     help IN PROGRESS
     prefix
-    random
+    random DONE
+    Lecture commands (T1, M2, ...)
 
 
  - Help message for detailed description of every command TODO
