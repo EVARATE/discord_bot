@@ -7,12 +7,14 @@
 ; If you don't understand something start praying or ask Mo
 
 [BASE]
-token = dummyToken
+token = -1
 prefix = /
+panic_msg = AAAAAAAAAAAAAAAAAAAHHHHH!
+
 
 [RULES]
-channelID = dummyID
-messageID = dummyID
+channelID = -1
+messageID = -1
 
 [ACTIVITY]
 name = "with unconfigured config.txt"
