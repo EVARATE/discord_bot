@@ -27,7 +27,7 @@ class bot_client(discord.Client):
         self.panic_msg = configFile['BASE']['panic_msg']
         self.ruleChannelID = int(configFile['RULES']['channelID'])
         self.ruleMessageID = int(configFile['RULES']['messageID'])
-        self.activityName = configFile['ACTIVITY']['name'].strip('"')
+        self.activityName = configFile['ACTIVITY']['name']
 
 
 
@@ -84,7 +84,7 @@ async def on_message(message):
             try:
                 result = nsp.eval(expression)
             except:
-                result = "Invalid expression"
+                result = client.panic_msg
                 print("Invalid command: {0}".format(message.content))
 
             await message.channel.send(result)

@@ -17,4 +17,4 @@ channelID = -1
 messageID = -1
 
 [ACTIVITY]
-name = "with unconfigured config.txt"
+name = with unconfigured config.txt
