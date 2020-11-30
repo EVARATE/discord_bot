@@ -71,7 +71,7 @@ async def on_message(message):
             return
 
         # RULES
-        if uCmd.startswith("rules"):
+        if misc.startswithElement(uCmd, ["rules", "regel"]):
             ruleChannel = client.get_channel(client.ruleChannelID)
             ruleMsg = await ruleChannel.fetch_message(client.ruleMessageID)
             await message.channel.send(ruleMsg.content)
@@ -91,7 +91,7 @@ async def on_message(message):
             return
 
         # RANDOM
-        if uCmd.startswith("random"):
+        if misc.startswithElement(uCmd, ["random"]):
             # Valid cases:
             # 1. /random               -> [0,1]
             # 2. /random a b           -> [a,b]

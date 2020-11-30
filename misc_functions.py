@@ -11,8 +11,8 @@ def get_help_msg(prefix: str) -> str:
 
     return (":\n\
             **=== MAIN HELP MENU ===**\n\
-            Regeln:\t`{0}rules`\n\
-            Hilfe:\t`{0}help`\n\
+            Regeln:\t`{0}rules`, `{0}regeln`\n\
+            Hilfe:\t`{0}help`, `{0}hilfe`\n\
             Taschenrechner:\t`{0}calc <expression>`\n\
             Zufällige Zahl:\t`{0}random <range/list>`".format(prefix))
 
