@@ -13,4 +13,15 @@ def get_help_msg(prefix: str) -> str:
             **=== MAIN HELP MENU ===**\n\
             Regeln:\t`{0}rules`\n\
             Hilfe:\t`{0}help`\n\
-            Taschenrechner:\t`{0}calc`/hel\n".format(prefix))
+            Taschenrechner:\t`{0}calc <expression>`\n\
+            Zufällige Zahl:\t`{0}random <range/list>`".format(prefix))
+
+def startswithElement(string: str, lst: list) -> bool:
+    # This function returns 'True' if str starts with at least one element
+    # of list. Else it returns 'False'
+    for el in lst:
+            if string.startswith(el):
+                return True
+
+    # This line is only reached if no element is found
+    return False

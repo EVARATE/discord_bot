@@ -4,7 +4,6 @@ https://discordpy.readthedocs.io/en/latest/index.html#
 
 '''
 
-
 import discord
 import configparser
 import mathParser
@@ -12,12 +11,12 @@ import misc_functions as misc
 import re  # regex
 import random
 
+
 # Modify class:
 class bot_client(discord.Client):
     def startup(self):
         # Run this function once when the bot starts for the first time
         self.get_config()
-
 
     def get_config(self):
         configFile = configparser.ConfigParser()
@@ -29,8 +28,6 @@ class bot_client(discord.Client):
         self.ruleMessageID = int(configFile['RULES']['messageID'])
         self.activityName = configFile['ACTIVITY']['name']
 
-
-
     # Parameters:
     token = ''
     prefix = ''
@@ -39,17 +36,19 @@ class bot_client(discord.Client):
     ruleMessageID = -1
     activityName = ''
 
-    #Variables
+    # Variables
     mood = 'neutral'
+
 
 # Callbacks:
 client = bot_client()
+
 
 @client.event
 async def on_ready():
     print('{0.user} is now online.'.format(client))
     game = discord.Game(client.activityName)
-    await client.change_presence(status=discord.Status.online, activity = game)
+    await client.change_presence(status=discord.Status.online, activity=game)
 
 
 @client.event
@@ -66,7 +65,8 @@ async def on_message(message):
         uCmd = message.content[len(client.prefix):].lower()
 
         # HELP
-        if uCmd.startswith("help"):
+        # before: if uCmd.startswith("help"):
+        if misc.startswithElement(uCmd, ["help", "hilfe"]):
             await message.channel.send(misc.get_help_msg(client.prefix))
             return
 
@@ -98,7 +98,7 @@ async def on_message(message):
             # 3. /random a b c d ...   -> a or b or c or d or ...
 
             # Turn all ',' into '.':
-            uCmd = re.sub(',','.', uCmd)
+            uCmd = re.sub(',', '.', uCmd)
             # Find all numbers in command:
             nums = re.findall("\d+\.?\d*", uCmd)
 
@@ -114,7 +114,7 @@ async def on_message(message):
                     # CASE 2
                     if flnums[0].is_integer() and flnums[1].is_integer():
                         # If they are ints
-                        answer = str(random.randrange(flnums[0], int(flnums[1])))
+                        answer = str(random.randrange(int(flnums[0]), int(flnums[1])))
                     else:
                         # If they are floats
                         answer = str(random.uniform(flnums[0], flnums[1]))
@@ -128,11 +128,10 @@ async def on_message(message):
             await message.channel.send(answer)
             return
 
-
         # Eastereggs
         if uCmd == "music" or message.content.startswith(client.prefix + "play") \
-                                  or  message.content.startswith(client.prefix + "skip") \
-                                  or message.content.startswith(client.prefix + "queue"):
+                or message.content.startswith(client.prefix + "skip") \
+                or message.content.startswith(client.prefix + "queue"):
             await message.channel.send("I'm not the droid you're looking for!")
             return
 
@@ -153,7 +152,6 @@ async def on_message(message):
             client.mood = "angry"
             await message.channel.send('Grrrrrr :rage:')
             return
-
 
         if uCmd.startswith('captcha'):
             await message.channel.send('I\'m not a robot I swear!')
@@ -224,5 +222,7 @@ async def on_message(message):
         # This line is only reached if no command has been recognized. Act accordingly:
         await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
         print("Unrecognized command: {0}".format(message.content))
+
+
 client.startup()
 client.run(client.token)
