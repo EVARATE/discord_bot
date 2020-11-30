@@ -52,6 +52,7 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=game)
 
 
+
 @client.event
 async def on_message(message):
     # Bot doesn't answer itself:
@@ -59,6 +60,11 @@ async def on_message(message):
         return
 
     # === INTERPRET CHAT ===
+
+    nice = re.search('[^\d]69[^\d]*|[^\d]*69[^\d]', message.content)
+    if nice:
+        await message.channel.send("Nice!")
+        return
 
     # look for commands:
     if message.content.startswith(client.prefix):
@@ -130,6 +136,7 @@ async def on_message(message):
             return
 
         # Eastereggs
+
         if uCmd == "music" or message.content.startswith(client.prefix + "play") \
                 or message.content.startswith(client.prefix + "skip") \
                 or message.content.startswith(client.prefix + "queue"):

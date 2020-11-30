@@ -2,7 +2,7 @@
 This file contains functions the bot needs but that are not part of the bot_client class.
 This makes everything more organized.
 """
-
+import random
 
 def get_help_msg(prefix: str) -> str:
     # Just a very raw way of generating the help message.
