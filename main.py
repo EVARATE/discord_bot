@@ -2,7 +2,6 @@
 If you don't know what the fuck is going on here then I humbly suggest you read the documentation:
 https://discordpy.readthedocs.io/en/latest/index.html#
 
-webhook test
 '''
 
 import discord
@@ -61,11 +60,10 @@ async def on_message(message):
 
     # === INTERPRET CHAT ===
 
-    nice = re.search('[^\d]69[^\d]*|[^\d]*69[^\d]', message.content)
+    nice = re.search('[^\d]69[^\d]*|[^\d]*69[^\d]', message.clean_content)
     if nice:
         await message.channel.send("Nice!")
         return
-
     # look for commands:
     if message.content.startswith(client.prefix):
         # Remove prefix and make lowercase:
