@@ -14,7 +14,8 @@ def get_help_msg(prefix: str) -> str:
             Regeln:\t`{0}rules`, `{0}regeln`\n\
             Hilfe:\t`{0}help`, `{0}hilfe`\n\
             Taschenrechner:\t`{0}calc <expression>`\n\
-            Zufällige Zahl:\t`{0}random <range/list>`".format(prefix))
+            Zufällige Zahl:\t`{0}random <range/list>`\n\
+            Zitat Speichern:\t`{0}quote \"<Person>\" \"<Quote>\" \"<Optional context>\"`".format(prefix))
 
 def startswithElement(string: str, lst: list) -> bool:
     # This function returns 'True' if str starts with at least one element

@@ -11,10 +11,12 @@ token = -1
 prefix = /
 panic_msg = AAAAAAAAAAAAAAAAAAAHHHHH!
 
-
 [RULES]
 channelID = -1
 messageID = -1
+
+[QUOTES]
+channelID = -1
 
 [ACTIVITY]
 name = with unconfigured config.txt

@@ -26,6 +26,7 @@ class bot_client(discord.Client):
         self.panic_msg = configFile['BASE']['panic_msg']
         self.ruleChannelID = int(configFile['RULES']['channelID'])
         self.ruleMessageID = int(configFile['RULES']['messageID'])
+        self.quoteChannelID = int(configFile['QUOTES']['channelID'])
         self.activityName = configFile['ACTIVITY']['name']
 
     # Parameters:
@@ -34,6 +35,7 @@ class bot_client(discord.Client):
     panic_msg = ''
     ruleChannelID = -1
     ruleMessageID = -1
+    quoteChannelID = -1
     activityName = ''
 
     # Variables
@@ -51,7 +53,6 @@ async def on_ready():
     await client.change_presence(status=discord.Status.online, activity=game)
 
 
-
 @client.event
 async def on_message(message):
     # Bot doesn't answer itself:
@@ -64,6 +65,7 @@ async def on_message(message):
     if nice:
         await message.channel.send("Nice!")
         return
+
     # look for commands:
     if message.content.startswith(client.prefix):
         # Remove prefix and make lowercase:
@@ -131,6 +133,52 @@ async def on_message(message):
             except:
                 answer = client.panic_msg
             await message.channel.send(answer)
+            return
+
+        # QUOTES
+        if misc.startswithElement(uCmd, ["quote", "zitat"]):
+            quote = re.findall('".+?"', message.clean_content)
+            # Check valid syntax:
+            if len(quote) < 2 or len(quote) > 3:
+                await message.channel.send(client.panic_msg)
+                return
+
+            prof_name: str = quote[0].lower().strip('"')
+            prof_quote: str = quote[1]
+            if len(quote) == 3:
+                prof_context: str = quote[2]
+            else:
+                prof_context: str = '"No Context given"'
+
+            # Read quote count for that prof:
+            ifile = configparser.ConfigParser()
+            ifile.read("quotes.txt")
+            try:
+                quote_count: int = int(ifile[prof_name]['count'])
+            except:
+                quote_count: int = 0
+
+            try:
+                ofile = configparser.ConfigParser()
+                ofile.read('quotes.txt')
+                if not ofile.has_section(prof_name):
+                    ofile.add_section(prof_name)
+                ofile.set(prof_name, 'count', str(quote_count + 1))
+                ofile.set(prof_name, 'q#' + str(quote_count), prof_quote + " " + prof_context)
+
+
+                with open('quotes.txt', 'w') as configfile:
+                    ofile.write(configfile)
+                await message.channel.send("Saved quote.")
+            except:
+                await message.channel.send(client.panic_msg)
+                print("Error handling quote: {0}".format(message.content))
+                return
+            # Send to quote Channel:
+            if client.quoteChannelID != -1:
+                msg = ":\n**Person:** {0}\n**Zitat:** {1}\n**Kontext:** {2}".format(prof_name, prof_quote, prof_context)
+                channel = client.get_channel(client.quoteChannelID)
+                await channel.send(msg)
             return
 
         # Eastereggs

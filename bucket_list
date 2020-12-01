@@ -11,6 +11,7 @@ bot_client functions:
     random DONE
     Lecture commands (T1, M2, ...)
     quote
+    latex
 
 
  - Help message for detailed description of every command TODO
