@@ -112,7 +112,6 @@ async def on_message(message):
             # Convert to floats:
             flnums = [float(z) for z in nums]
 
-            answer: str
             try:
                 if len(flnums) == 0:
                     # CASE 1
@@ -166,7 +165,6 @@ async def on_message(message):
                 ofile.set(prof_name, 'count', str(quote_count + 1))
                 ofile.set(prof_name, 'q#' + str(quote_count), prof_quote + " " + prof_context)
 
-
                 with open('quotes.txt', 'w') as configfile:
                     ofile.write(configfile)
                 await message.channel.send("Saved quote.")
@@ -180,6 +178,7 @@ async def on_message(message):
                 channel = client.get_channel(client.quoteChannelID)
                 await channel.send(msg)
             return
+
 
         # Eastereggs
 
@@ -230,7 +229,7 @@ async def on_message(message):
             ⠄⠄⠄⠄⠄⠄⠄⠸⣿⣿⣿⠃⠄⠈⢿⣿⣿⠄⠄⠄⠄⠄⠄⠄')
             return
 
-        if uCmd.startswith('trump') or uCmd.startswith('donald'):
+        if misc.startswithElement(uCmd, ['trump', 'donald', 'orangeman']):
             await message.channel.send('STOP THE COUNT! \n\t\t\t⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⠋⠉⡉⣉⡛⣛⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n\
             ⣿⣿⣿⣿⣿⣿⣿⡿⠋⠁⠄⠄⠄⠄⠄⢀⣸⣿⣿⡿⠿⡯⢙⠿⣿⣿⣿⣿⣿⣿\n\
             ⣿⣿⣿⣿⣿⣿⡿⠄⠄⠄⠄⠄⡀⡀⠄⢀⣀⣉⣉⣉⠁⠐⣶⣶⣿⣿⣿⣿⣿⣿\n\
