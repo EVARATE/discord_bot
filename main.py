@@ -8,6 +8,7 @@ import discord
 import configparser
 import mathParser
 import misc_functions as misc
+import polling
 import re  # regex
 import random
 
@@ -40,7 +41,8 @@ class bot_client(discord.Client):
 
     # Variables
     mood = 'neutral'
-
+    polls = []
+    nextPollID = 0
 
 # Callbacks:
 client = bot_client()
@@ -179,6 +181,26 @@ async def on_message(message):
                 await channel.send(msg)
             return
 
+        # POLLING
+        if misc.startswithElement(uCmd, ['poll', 'vote', 'unvote']):
+            # Check for poll related commands
+            if uCmd.startswith('poll'):
+                args = re.findall('".+?"', message.clean_content)
+                if len(args) <= 1:
+                    await message.channel.send("Error: Not enough arguments!")
+                    print("Invalid poll syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
+                    return
+                newPoll = polling.poll(args[0].strip('"'), [z.strip('"') for z in args[1:]])
+                newPoll.authorID = message.author.id
+                newPoll.authorName = message.author.name
+                newPoll.msgChannelID = message.channel.id
+                newPoll.id = client.nextPollID
+                client.nextPollID += 1
+                dcMessage = await message.channel.send(newPoll.getPollMsg())
+                newPoll.msgMessageID = dcMessage.id
+
+                client.polls.append(newPoll)
+            return
 
         # Eastereggs
 
