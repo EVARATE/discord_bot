@@ -62,7 +62,7 @@ class poll:
                 opt.voterIDs.remove(voterID)
                 return
 
-    def savePoll(self, filepath: str):
+    # def savePoll(self, filepath: str):
         # Format:
         #
         # [METADATA]
@@ -85,10 +85,7 @@ class poll:
         # value = ...
         # IDs = ...
 
-
-
-
-
+        # return
 
     # def loadPoll(self):
 
