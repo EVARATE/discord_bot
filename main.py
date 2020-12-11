@@ -30,6 +30,14 @@ class bot_client(discord.Client):
         self.quoteChannelID = int(configFile['QUOTES']['channelID'])
         self.activityName = configFile['ACTIVITY']['name']
 
+    async def updatePoll(self,pollID: int):
+        for poll in self.polls:
+            if poll.id == pollID:
+                channel = client.get_channel(poll.msgChannelID)
+                message = await channel.fetch_message(poll.msgMessageID)
+                await message.edit(content = poll.getPollMsg())
+                return
+
     # Parameters:
     token = ''
     prefix = ''
@@ -183,11 +191,12 @@ async def on_message(message):
 
         # POLLING
         if misc.startswithElement(uCmd, ['poll', 'vote', 'unvote']):
-            # Check for poll related commands
+            # Delete Message for anonymity:
+            await message.delete()
             if uCmd.startswith('poll'):
                 args = re.findall('".+?"', message.clean_content)
                 if len(args) <= 1:
-                    await message.channel.send("Error: Not enough arguments!")
+                    await message.channel.send("Error: Not enough arguments!", delete_after=5.0)
                     print("Invalid poll syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
                     return
                 newPoll = polling.poll(args[0].strip('"'), [z.strip('"') for z in args[1:]])
@@ -199,7 +208,37 @@ async def on_message(message):
                 dcMessage = await message.channel.send(newPoll.getPollMsg())
                 newPoll.msgMessageID = dcMessage.id
 
-                client.polls.append(newPoll)
+                client.polls = client.polls + [newPoll]
+            elif uCmd.startswith('vote'):
+                # /vote <pollID> <optID>
+
+                args = re.findall('\d+', message.clean_content)
+                if len(args) != 2:
+                    await message.channel.send("Error: Invalid number of arguments!", delete_after=5.0)
+                    print("Invalid vote syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
+                    return
+                pollID = int(args[0])
+                optID = int(args[1])
+                for poll in client.polls:
+                    if poll.id == pollID:
+                        poll.voteOption(optID, message.author.id)
+                        await client.updatePoll(pollID)
+                        return
+            elif uCmd.startswith('unvote'):
+                # /vote <pollID> <optID>
+
+                args = re.findall('\d+', message.clean_content)
+                if len(args) != 2:
+                    await message.channel.send('Error: Invalid number of arguments!', delete_after=5.0)
+                    print("Invalid unvote syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
+                    return
+                pollID = int(args[0])
+                optID = int(args[1])
+                for poll in client.polls:
+                    if poll.id == pollID:
+                        poll.unvoteOption(optID, message.author.id)
+                        await client.updatePoll(pollID)
+                        return
             return
 
         # Eastereggs

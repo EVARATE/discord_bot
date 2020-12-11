@@ -1,18 +1,38 @@
+import configparser
+
 class pollOption:
+    def __init__(self):
+        self.voterIDs = []
     id = -1
-    voteCount = 0
     value = ''
     voterIDs = []
 
     def hasVoted(self, voterID: str) -> bool:
-        for ID in self.voterIDs:
-            if ID == voterID:
-                return True
+        if voterID in self.voterIDs:
+            return True
         return False
 
 
 class poll:
+    id = -1
+    topic = ''
+    options = []
+
+    # Metadata:
+    authorName = ''
+    authorID = -1
+    msgChannelID = -1
+    msgMessageID = -1
+    isClosed = False
+    custOpt = False
+    MultiChoice = False
+
+    nextOptID = 1
+
     def __init__(self, question: str, options: list):
+        # This is necessary to keep the lists contained to this instance of the class:
+        self.options = []
+
         self.topic = question
         for opt in options:
             self.addOption(opt)
@@ -30,23 +50,45 @@ class poll:
                 self.options.remove(opt)
 
     def voteOption(self, optionID: int, voterID: int):
-        if (not self.hasVoted(voterID)) or self.MultiChoice:
+        if not self.hasVoted(voterID):
             for opt in self.options:
                 if opt.id == optionID:
-                    if not opt.hasVoted(voterID):
-                        opt.voteCount += 1
-                        opt.voterIDs.append(voterID)
-                        return
-
-    def unvoteOption(self, optionID: int, voterID: int):
-        if self.hasVoted(voterID):
-            for opt in self.options:
-                if opt.id == optionID and opt.hasVoted(voterID):
-                    opt.voteCount -= 1
-                    opt.voterIDs.remove(voterID)
+                    opt.voterIDs.append(voterID)
                     return
 
-    # def savePoll(self):
+    def unvoteOption(self, optionID: int, voterID: int):
+        for opt in self.options:
+            if opt.id == optionID and voterID in opt.voterIDs:
+                opt.voterIDs.remove(voterID)
+                return
+
+    def savePoll(self, filepath: str):
+        # Format:
+        #
+        # [METADATA]
+        # topic = My topic
+        #
+        # authorName = ''
+        # authorID = -1
+        # msgChannelID = -1
+        # msgMessageID = -1
+        # isClosed = False
+        # custOpt = False
+        # MultiChoice = False
+        # nextOptID = 1
+        #
+        # [Option_1]
+        # value = My option value
+        # IDs = 1234567890, 1234567890, ...
+        #
+        # [Option_2]
+        # value = ...
+        # IDs = ...
+
+
+
+
+
 
     # def loadPoll(self):
 
@@ -61,17 +103,16 @@ class poll:
         return False
 
     def getOptPercentage(self, optionID: int) -> float:
-        voteSum = 0
-        optCount = 0
+        totalVotes = 0
+        optVotes = 0
         for opt in self.options:
-            voteSum += opt.voteCount
+            totalVotes += len(opt.voterIDs)
             if opt.id == optionID:
-                optCount = opt.voteCount
-        if optCount * voteSum == 0:
-            ret = 0
-        else:
-            ret = optCount / voteSum
-        return ret
+                optVotes = len(opt.voterIDs)
+        if totalVotes == 0:
+            return 0
+        return optVotes/totalVotes
+
 
     def getPollMsg(self) -> str:
         # This function is formatted for use with a discord bot
@@ -98,22 +139,11 @@ class poll:
         # Options to string:
         optStr = ''
         for opt in self.options:
-            optStr += '{0}: **{1}** ({2}) {3}%\n'.format(opt.id, opt.value, opt.voteCount, self.getOptPercentage(opt.id))
+            optStr += '{0}: **{1}** ({2}) {3}%\n'.format(opt.id,
+                                                         opt.value,
+                                                         len(opt.voterIDs),
+                                                         self.getOptPercentage(opt.id)*100.)
 
         msg = '{0}```{1}{2}```\n{3}'.format(pollTitle, topicPre, self.topic, optStr)
         return msg
 
-    id = -1
-    topic = ''
-    options = []
-
-    # Metadata:
-    authorName = ''
-    authorID = -1
-    msgChannelID = -1
-    msgMessageID = -1
-    isClosed = False
-    custOpt = False
-    MultiChoice = False
-
-    nextOptID = 1
