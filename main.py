@@ -11,6 +11,8 @@ import misc_functions as misc
 import polling
 import re  # regex
 import random
+import os
+import glob
 
 
 # Modify class:
@@ -18,6 +20,7 @@ class bot_client(discord.Client):
     def startup(self):
         # Run this function once when the bot starts for the first time
         self.get_config()
+        self.loadAllPolls()
 
     def get_config(self):
         configFile = configparser.ConfigParser()
@@ -29,6 +32,37 @@ class bot_client(discord.Client):
         self.ruleMessageID = int(configFile['RULES']['messageID'])
         self.quoteChannelID = int(configFile['QUOTES']['channelID'])
         self.activityName = configFile['ACTIVITY']['name']
+
+    def loadAllPolls(self):
+        if not os.path.exists('polls'):
+            os.makedirs('polls')
+            print('Created polls/ directory.')
+            return
+        pollFiles = glob.glob('polls/poll*.txt')
+        for file in pollFiles:
+            pollObj = polling.poll("dummy", [])
+            pollObj.loadPoll(file)
+            pollObj.id = self.nextPollID
+            self.polls.append(pollObj)
+            self.updatePoll(pollObj.id)
+
+    def savePoll(self,poll: polling.poll, cleanup = True):
+        poll.savePoll("polls/poll{0}.txt".format(poll.id))
+        if cleanup:
+            self.cleanupPollFiles()
+
+    def cleanupPollFiles(self):
+        # Compares IDs of polls on disk with those in memory
+        # and deletes the ones that are not in memory from disk
+        diskFiles = glob.glob('polls/poll*.txt')
+        diskIDs = [int(filter(str.isdigit(), str(x))) for x in diskFiles]
+        for diskID in diskIDs:
+            existsInMemory = False
+            for memPoll in self.polls:
+                if memPoll.id == diskID:
+                    existsInMemory = True
+            if not existsInMemory:
+                os.remove('polls/poll{0}.txt'.format(diskID))
 
     async def updatePoll(self,pollID: int):
         for poll in self.polls:
@@ -209,6 +243,7 @@ async def on_message(message):
                 newPoll.msgMessageID = dcMessage.id
 
                 client.polls = client.polls + [newPoll]
+                client.savePoll(newPoll)
             elif uCmd.startswith('vote'):
                 # /vote <pollID> <optID>
 
@@ -223,6 +258,7 @@ async def on_message(message):
                     if poll.id == pollID:
                         poll.voteOption(optID, message.author.id)
                         await client.updatePoll(pollID)
+                        client.savePoll(poll)
                         return
             elif uCmd.startswith('unvote'):
                 # /vote <pollID> <optID>
@@ -238,6 +274,7 @@ async def on_message(message):
                     if poll.id == pollID:
                         poll.unvoteOption(optID, message.author.id)
                         await client.updatePoll(pollID)
+                        client.savePoll(poll)
                         return
             return
 

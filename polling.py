@@ -1,4 +1,5 @@
 import configparser
+import re
 
 class pollOption:
     def __init__(self):
@@ -25,7 +26,7 @@ class poll:
     msgMessageID = -1
     isClosed = False
     custOpt = False
-    MultiChoice = False
+    multiChoice = False
 
     nextOptID = 1
 
@@ -43,6 +44,9 @@ class poll:
             opt.id = self.getOptID()
             opt.value = newOption
             self.options.append(opt)
+
+    def addExOption(self, existingOption: pollOption):
+        self.options.append(existingOption)
 
     def remOption(self, optionID: int):
         for opt in self.options:
@@ -62,32 +66,51 @@ class poll:
                 opt.voterIDs.remove(voterID)
                 return
 
-    # def savePoll(self, filepath: str):
-        # Format:
-        #
-        # [METADATA]
-        # topic = My topic
-        #
-        # authorName = ''
-        # authorID = -1
-        # msgChannelID = -1
-        # msgMessageID = -1
-        # isClosed = False
-        # custOpt = False
-        # MultiChoice = False
-        # nextOptID = 1
-        #
-        # [Option_1]
-        # value = My option value
-        # IDs = 1234567890, 1234567890, ...
-        #
-        # [Option_2]
-        # value = ...
-        # IDs = ...
+    def savePoll(self, filepath: str):
+        file = configparser.ConfigParser()
+        file.read(filepath)
+        if not file.has_section('META'):
+            file.add_section('META')
 
-        # return
+        file.set('META', 'topic', self.topic)
+        file.set('META', 'authorID', str(self.authorID))
+        file.set('META', 'msgChannelID', str(self.msgChannelID))
+        file.set('META', 'msgMessageID', str(self.msgMessageID))
+        file.set('META', 'nextOptID', str(self.nextOptID))
 
-    # def loadPoll(self):
+        file.set('META', 'isClosed', str(self.isClosed))
+        file.set('META', 'custOpt', str(self.custOpt))
+        file.set('META', 'multiChoice', str(self.multiChoice))
+
+        for opt in self.options:
+            if not file.has_section(opt.value):
+                file.set(opt.value, 'id', str(opt.id))
+                file.set(opt.value, 'voterIDs', str(opt.voterIDs))
+
+        with open(filepath, 'w') as configfile:
+            file.write(configfile)
+
+    def loadPoll(self, filepath: str):
+        file = configparser.ConfigParser()
+        file.read(filepath)
+        self.topic = file['META']['topic']
+        self.authorID = int(file['META']['authorID'])
+        self.msgChannelID = int(file['META']['msgChannelID'])
+        self.msgMessageID = int(file['META']['msgMessageID'])
+        self.nextOptID = int(file['META']['nextOptID'])
+
+        self.isClosed = bool(file['META']['isClosed'])
+        self.custOpt = bool(file['META']['custOpt'])
+        self.multiChoice = bool(file['META']['multiChoice'])
+
+        for section in file.sections():
+            if section != 'META':
+                newOpt = pollOption()
+                newOpt.value = section
+                newOpt.id = int(file[section]['id'])
+                newOpt.voterIDs = re.findall('\d+', file[section]['voterIDs'])
+                self.addExOption(newOpt)
+
 
     def getOptID(self) -> int:
         self.nextOptID += 1
