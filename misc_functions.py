@@ -29,3 +29,18 @@ def startswithElement(string: str, lst: list) -> bool:
 
     # This line is only reached if no element is found
     return False
+
+def unique_shuffle_list(originalList: list):
+    randomizedList = originalList[:]
+    step: int = 0
+    while True:
+        random.shuffle(randomizedList)
+        step += 1
+        if not has_el_on_same_index(randomizedList, originalList) or step >= 10000:
+            return randomizedList
+
+def has_el_on_same_index(l1: list, l2: list) -> bool:
+    for i in range(min(len(l1), len(l2))):
+        if l1[i] == l2[i]:
+            return True
+    return False

@@ -241,6 +241,57 @@ async def on_message(message):
                         return
             return
 
+        # WICHTELN
+        if misc.startswithElement(uCmd, ['wichtel']):
+            # /wichteln "Anschrift_Name; MeineStraße 1a; 12345 MeinOrt; weiteres"
+            await message.delete(delay=10.0)
+            receiverStrs = re.findall('\".+?\"', message.clean_content)
+            if len(receiverStrs) != 1:
+                await message.channel.send("Error: Invalid syntax!", delete_after=5.0)
+                return
+            file = configparser.ConfigParser()
+            file.read('wichteln.txt')
+            if not file.has_section('PARTICIPANTS'):
+                file.add_section('PARTICIPANTS')
+            file['PARTICIPANTS'][str(message.author.id)] = receiverStrs[0]
+
+            with open('wichteln.txt', 'w') as configfile:
+                file.write(configfile)
+
+            await message.channel.send('Du bist hiermit beim Wichteln dabei. Falls du deine Anschrift ändern willst, gib den command einfach nochmal ein.', delete_after=10.0)
+            return
+
+        # GIVE OUT WICHTELN ADDRESSES
+        if uCmd.startswith('triggerwichteln'):
+            file = configparser.ConfigParser()
+            file.read('wichteln.txt')
+            userIDs = []
+            userDataRaw = []
+            for section in file.sections():
+                for (key, val) in file.items(section):
+                    userIDs.append(key)
+                    userDataRaw.append(val)
+            # Shuffle userData to randomly assign addresses to users
+            userData = misc.unique_shuffle_list(userDataRaw)
+            for i in range(len(userIDs)):
+                msg = "**Glückwunsch!\nZum Wichteln wurde dir die Person mit folgender Addresse zugeteilt:**\n{0}"\
+                    .format(userData[i])
+                user = client.get_user(int(userIDs[i]))
+                await user.send(msg)
+                print('Sent wichteln msg to {0}'.format(user.name))
+            wChannel = client.get_channel(786935616465797121)
+            await wChannel.send('Die Addressen wurden soeben unter den Teilnehmern aufgeteilt. Falls sich jemand mit `/wichteln "..."` eingetragen hat, aber keine Privatnachricht bekommen hat, bitte an DaMoIsHere wenden!')
+
+            if not file.has_section('ZUTEILUNG'):
+                file.add_section('ZUTEILUNG')
+            for i in range(len(userIDs)):
+                file['ZUTEILUNG'][str(userIDs[i])] = userData[i]
+
+            with open('wichteln.txt', 'w') as configfile:
+                file.write(configfile)
+            return
+
+
         # Eastereggs
         if misc.startswithElement(uCmd, ['music', 'play', 'skip', 'queue']):
             await message.channel.send("I'm not the droid you're looking for!")
