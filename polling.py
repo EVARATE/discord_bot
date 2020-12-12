@@ -111,18 +111,8 @@ class poll:
         return optVotes/totalVotes
 
 
-    def getPollMsg(self) -> str:
+    def getPollMsg(self, prefix: str) -> str:
         # This function is formatted for use with a discord bot
-
-        # Poll#<pollNr> by <author>
-        # ```
-        # The poll topic
-        # ```
-        # 1. **Option 1**
-        # 2. **Option 2**
-        # 3. **Option 3**
-        #
-        # Settings: [none, custOpt, multi, ...]
 
         # Title:
         pollTitle = 'Poll#-**{0}** by {1}\n'.format(self.id, self.authorName)
@@ -136,11 +126,19 @@ class poll:
         # Options to string:
         optStr = ''
         for opt in self.options:
-            optStr += '{0}: **{1}** ({2}) {3}%\n'.format(opt.id,
+            optStr += '**{0}**: {1} **{3}%** ({2})\n'.format(opt.id,
                                                          opt.value,
                                                          len(opt.voterIDs),
-                                                         self.getOptPercentage(opt.id)*100.)
+                                                         int(self.getOptPercentage(opt.id)*100.))
 
-        msg = '{0}```{1}{2}```\n{3}'.format(pollTitle, topicPre, self.topic, optStr)
+        # Clarifications:
+        clar = '\n\nAbstimmen mit `{0}vote {1} <optionID>`'.format(prefix,
+                                                                   self.id)
+        optStr += clar
+
+        msg = '{0}```{1}{2}```\n{3}'.format(pollTitle,
+                                            topicPre,
+                                            self.topic,
+                                            optStr)
         return msg
 

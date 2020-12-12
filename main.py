@@ -35,7 +35,7 @@ class bot_client(discord.Client):
             if poll.id == pollID:
                 channel = client.get_channel(poll.msgChannelID)
                 message = await channel.fetch_message(poll.msgMessageID)
-                await message.edit(content = poll.getPollMsg())
+                await message.edit(content=poll.getPollMsg(self.prefix))
                 return
 
     # Parameters:
@@ -205,7 +205,7 @@ async def on_message(message):
                 newPoll.msgChannelID = message.channel.id
                 newPoll.id = client.nextPollID
                 client.nextPollID += 1
-                dcMessage = await message.channel.send(newPoll.getPollMsg())
+                dcMessage = await message.channel.send(newPoll.getPollMsg(client.prefix))
                 newPoll.msgMessageID = dcMessage.id
 
                 client.polls = client.polls + [newPoll]
@@ -242,10 +242,7 @@ async def on_message(message):
             return
 
         # Eastereggs
-
-        if uCmd == "music" or message.content.startswith(client.prefix + "play") \
-                or message.content.startswith(client.prefix + "skip") \
-                or message.content.startswith(client.prefix + "queue"):
+        if misc.startswithElement(uCmd, ['music', 'play', 'skip', 'queue']):
             await message.channel.send("I'm not the droid you're looking for!")
             return
 
