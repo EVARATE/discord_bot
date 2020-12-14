@@ -3,7 +3,7 @@ This file contains functions the bot needs but that are not part of the bot_clie
 This makes everything more organized.
 """
 import random
-import polling
+
 
 def get_help_msg(prefix: str) -> str:
     # Just a very raw way of generating the help message.
@@ -20,15 +20,17 @@ def get_help_msg(prefix: str) -> str:
             Neue Abstimmung:\t`{0}poll \"<Frage>\" \"<Option 1>\" \"<Option 2>\" ...`\n\
             Abstimmen: `{0}vote <pollID> <optionID>` bzw. `{0}unvote <pollID> <optionID>`".format(prefix))
 
+
 def startswithElement(string: str, lst: list) -> bool:
     # This function returns 'True' if str starts with at least one element
     # of list. Else it returns 'False'
     for el in lst:
-            if string.startswith(el):
-                return True
+        if string.startswith(el):
+            return True
 
     # This line is only reached if no element is found
     return False
+
 
 def unique_shuffle_list(originalList: list):
     randomizedList = originalList[:]
@@ -39,24 +41,28 @@ def unique_shuffle_list(originalList: list):
         if not has_el_on_same_index(randomizedList, originalList) or step >= 10000:
             return randomizedList
 
+
 def has_el_on_same_index(l1: list, l2: list) -> bool:
     for i in range(min(len(l1), len(l2))):
         if l1[i] == l2[i]:
             return True
     return False
 
-def int_in_str(string:str) -> int:
+
+def int_in_str(string: str) -> int:
     dig = ''
     for char in string:
         if char.isdigit():
             dig += char
     return int(dig)
 
+
 def bool_to_int(state: bool) -> int:
     if state:
         return 1
     else:
         return 0
+
 
 def int_to_bool(num: int) -> bool:
     if num == 0:
