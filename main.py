@@ -361,6 +361,11 @@ async def on_message(message):
                 file.write(configfile)
             return
 
+        if uCmd.startswith('echo'):
+            text = message.clean_content[(len(client.prefix)+4):]
+            await message.delete()
+            await message.channel.send(text)
+            return
 
         # Eastereggs
         if misc.startswithElement(uCmd, ['music', 'play', 'skip', 'queue']):
