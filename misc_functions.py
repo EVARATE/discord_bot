@@ -44,3 +44,22 @@ def has_el_on_same_index(l1: list, l2: list) -> bool:
         if l1[i] == l2[i]:
             return True
     return False
+
+def int_in_str(string:str) -> int:
+    dig = ''
+    for char in string:
+        if char.isdigit():
+            dig += char
+    return int(dig)
+
+def bool_to_int(state: bool) -> int:
+    if state:
+        return 1
+    else:
+        return 0
+
+def int_to_bool(num: int) -> bool:
+    if num == 0:
+        return False
+    else:
+        return True

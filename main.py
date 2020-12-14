@@ -43,8 +43,9 @@ class bot_client(discord.Client):
             pollObj = polling.poll("dummy", [])
             pollObj.loadPoll(file)
             pollObj.id = self.nextPollID
+            self.nextPollID += 1
             self.polls.append(pollObj)
-            self.updatePoll(pollObj.id)
+            # self.updatePoll(pollObj.id) # needs to be awaited; can't happen before on_ready()
 
     def savePoll(self,poll: polling.poll, cleanup = True):
         poll.savePoll("polls/poll{0}.txt".format(poll.id))
@@ -55,7 +56,7 @@ class bot_client(discord.Client):
         # Compares IDs of polls on disk with those in memory
         # and deletes the ones that are not in memory from disk
         diskFiles = glob.glob('polls/poll*.txt')
-        diskIDs = [int(filter(str.isdigit(), str(x))) for x in diskFiles]
+        diskIDs = [misc.int_in_str(z) for z in diskFiles]
         for diskID in diskIDs:
             existsInMemory = False
             for memPoll in self.polls:
@@ -68,8 +69,12 @@ class bot_client(discord.Client):
         for poll in self.polls:
             if poll.id == pollID:
                 channel = client.get_channel(poll.msgChannelID)
-                message = await channel.fetch_message(poll.msgMessageID)
-                await message.edit(content=poll.getPollMsg(self.prefix))
+                try:
+                    message = await channel.fetch_message(poll.msgMessageID)
+                    await message.edit(content=poll.getPollMsg(self.prefix))
+                except:
+                    newMsg = await channel.send(poll.getPollMsg(self.prefix))
+                    poll.msgMessageID = newMsg.id
                 return
 
     # Parameters:
@@ -95,6 +100,8 @@ async def on_ready():
     print('{0.user} is now online.'.format(client))
     game = discord.Game(client.activityName)
     await client.change_presence(status=discord.Status.online, activity=game)
+    for poll in client.polls:
+        await client.updatePoll(poll.id)
 
 
 @client.event
@@ -108,7 +115,7 @@ async def on_message(message):
     nice = re.search('[^\d]69[^\d]*|[^\d]*69[^\d]', message.clean_content)
     if nice:
         await message.channel.send("Nice!")
-        return
+        
 
     # look for commands:
     if message.content.startswith(client.prefix):

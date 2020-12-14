@@ -1,5 +1,6 @@
 import configparser
 import re
+import misc_functions as misc
 
 class pollOption:
     def __init__(self):
@@ -74,18 +75,20 @@ class poll:
 
         file.set('META', 'topic', self.topic)
         file.set('META', 'authorID', str(self.authorID))
+        file.set('META', 'authorName', str(self.authorName))
         file.set('META', 'msgChannelID', str(self.msgChannelID))
         file.set('META', 'msgMessageID', str(self.msgMessageID))
         file.set('META', 'nextOptID', str(self.nextOptID))
 
-        file.set('META', 'isClosed', str(self.isClosed))
-        file.set('META', 'custOpt', str(self.custOpt))
-        file.set('META', 'multiChoice', str(self.multiChoice))
+        file.set('META', 'isClosed', str(misc.bool_to_int(self.isClosed)))
+        file.set('META', 'custOpt', str(misc.bool_to_int(self.custOpt)))
+        file.set('META', 'multiChoice', str(misc.bool_to_int(self.multiChoice)))
 
         for opt in self.options:
             if not file.has_section(opt.value):
-                file.set(opt.value, 'id', str(opt.id))
-                file.set(opt.value, 'voterIDs', str(opt.voterIDs))
+                file.add_section(opt.value)
+            file.set(opt.value, 'id', str(opt.id))
+            file.set(opt.value, 'voterIDs', str(opt.voterIDs))
 
         with open(filepath, 'w') as configfile:
             file.write(configfile)
@@ -95,20 +98,21 @@ class poll:
         file.read(filepath)
         self.topic = file['META']['topic']
         self.authorID = int(file['META']['authorID'])
+        self.authorName = str(file['META']['authorName'])
         self.msgChannelID = int(file['META']['msgChannelID'])
         self.msgMessageID = int(file['META']['msgMessageID'])
         self.nextOptID = int(file['META']['nextOptID'])
 
-        self.isClosed = bool(file['META']['isClosed'])
-        self.custOpt = bool(file['META']['custOpt'])
-        self.multiChoice = bool(file['META']['multiChoice'])
+        self.isClosed = misc.int_to_bool(int(file['META']['isClosed']))
+        self.custOpt = misc.int_to_bool(int(file['META']['custOpt']))
+        self.multiChoice = misc.int_to_bool(int(file['META']['multiChoice']))
 
         for section in file.sections():
             if section != 'META':
                 newOpt = pollOption()
                 newOpt.value = section
                 newOpt.id = int(file[section]['id'])
-                newOpt.voterIDs = re.findall('\d+', file[section]['voterIDs'])
+                newOpt.voterIDs = [int(z) for z in re.findall('\d+', file[section]['voterIDs'])]
                 self.addExOption(newOpt)
 
 
