@@ -45,7 +45,7 @@ class bot_client(discord.Client):
             pollObj.id = self.nextPollID
             self.nextPollID += 1
             self.polls.append(pollObj)
-            # self.updatePoll(pollObj.id) # needs to be awaited; can't happen before on_ready()
+        self.cleanupPollFiles()
 
     def savePoll(self,poll: polling.poll, cleanup = True):
         poll.savePoll("polls/poll{0}.txt".format(poll.id))
@@ -53,9 +53,18 @@ class bot_client(discord.Client):
             self.cleanupPollFiles()
 
     def cleanupPollFiles(self):
+        # delete all disk files and resave them:
+        diskFileList = glob.glob('polls/poll*.txt')
+        for file in diskFileList:
+            os.remove(file)
+        # resave them:
+        for poll in self.polls:
+            self.savePoll(poll, False)
+
+
         # Compares IDs of polls on disk with those in memory
         # and deletes the ones that are not in memory from disk
-        diskFiles = glob.glob('polls/poll*.txt')
+        """diskFiles = glob.glob('polls/poll*.txt')
         diskIDs = [misc.int_in_str(z) for z in diskFiles]
         for diskID in diskIDs:
             existsInMemory = False
@@ -63,7 +72,7 @@ class bot_client(discord.Client):
                 if memPoll.id == diskID:
                     existsInMemory = True
             if not existsInMemory:
-                os.remove('polls/poll{0}.txt'.format(diskID))
+                os.remove('polls/poll{0}.txt'.format(diskID))"""
 
     async def updatePoll(self,pollID: int):
         for poll in self.polls:
@@ -231,7 +240,7 @@ async def on_message(message):
             return
 
         # POLLING
-        if misc.startswithElement(uCmd, ['poll', 'vote', 'unvote']):
+        if misc.startswithElement(uCmd, ['poll', 'vote', 'unvote', 'closepoll']):
             # Delete Message for anonymity:
             await message.delete()
             if uCmd.startswith('poll'):
@@ -283,6 +292,23 @@ async def on_message(message):
                         await client.updatePoll(pollID)
                         client.savePoll(poll)
                         return
+            elif uCmd.startswith('closepoll'):
+                args = re.findall('\d+', message.clean_content)
+                if len(args) != 1:
+                    await message.channel.send('Error: Invalid number of arguments!', delete_after=5.0)
+                    return
+                pollID = int(args[0])
+                for poll in client.polls:
+                    if poll.id == pollID:
+                        if poll.authorID != message.author.id:
+                            await message.channel.send('Error: You are not the poll author!', delete_after=5.0)
+                            return
+                        poll.isClosed = True
+                        await client.updatePoll(pollID)
+                        os.remove('polls/poll{0}.txt'.format(poll.id))
+                        client.polls[:] = [x for x in client.polls if x.id != pollID]
+                        await message.channel.send('Closed poll#-{0}'.format(pollID), delete_after=5.0)
+
             return
 
         # WICHTELN

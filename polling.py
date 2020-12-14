@@ -159,8 +159,11 @@ class poll:
                                                          int(self.getOptPercentage(opt.id)*100.))
 
         # Clarifications:
-        clar = '\n\nAbstimmen mit `{0}vote {1} <optionID>`'.format(prefix,
-                                                                   self.id)
+        if not self.isClosed:
+            clar = '\nAbstimmen mit `{0}vote {1} <optionID>`'.format(prefix,
+                                                                       self.id)
+        else:
+            clar = '\nPoll has been closed.'
         optStr += clar
 
         msg = '{0}```{1}{2}```\n{3}'.format(pollTitle,
