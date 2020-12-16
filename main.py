@@ -1,8 +1,7 @@
-'''
+"""
 If you don't know what the fuck is going on here then I humbly suggest you read the documentation:
 https://discordpy.readthedocs.io/en/latest/index.html#
-
-'''
+"""
 
 import discord
 import configparser
@@ -47,7 +46,7 @@ class bot_client(discord.Client):
             self.polls.append(pollObj)
         self.cleanupPollFiles()
 
-    def savePoll(self,poll: polling.poll, cleanup = True):
+    def savePoll(self, poll: polling.poll, cleanup=True):
         poll.savePoll("polls/poll{0}.txt".format(poll.id))
         if cleanup:
             self.cleanupPollFiles()
@@ -61,20 +60,10 @@ class bot_client(discord.Client):
         for poll in self.polls:
             self.savePoll(poll, False)
 
-
         # Compares IDs of polls on disk with those in memory
         # and deletes the ones that are not in memory from disk
-        """diskFiles = glob.glob('polls/poll*.txt')
-        diskIDs = [misc.int_in_str(z) for z in diskFiles]
-        for diskID in diskIDs:
-            existsInMemory = False
-            for memPoll in self.polls:
-                if memPoll.id == diskID:
-                    existsInMemory = True
-            if not existsInMemory:
-                os.remove('polls/poll{0}.txt'.format(diskID))"""
 
-    async def updatePoll(self,pollID: int):
+    async def updatePoll(self, pollID: int):
         for poll in self.polls:
             if poll.id == pollID:
                 channel = client.get_channel(poll.msgChannelID)
@@ -100,6 +89,7 @@ class bot_client(discord.Client):
     polls = []
     nextPollID = 0
 
+
 # Callbacks:
 client = bot_client()
 
@@ -124,7 +114,6 @@ async def on_message(message):
     nice = re.search('[^\d]69[^\d]*|[^\d]*69[^\d]', message.clean_content)
     if nice:
         await message.channel.send("Nice!")
-        
 
     # look for commands:
     if message.content.startswith(client.prefix):
@@ -247,7 +236,7 @@ async def on_message(message):
                 args = re.findall('".+?"', message.clean_content)
                 if len(args) <= 1:
                     await message.channel.send("Error: Not enough arguments!", delete_after=5.0)
-                    print("Invalid poll syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
+                    print("Invalid poll syntax: {0}".format(message.clean_content[(len(client.prefix) + 4):]))
                     return
                 newPoll = polling.poll(args[0].strip('"'), [z.strip('"') for z in args[1:]])
                 newPoll.authorID = message.author.id
@@ -266,7 +255,7 @@ async def on_message(message):
                 args = re.findall('\d+', message.clean_content)
                 if len(args) != 2:
                     await message.channel.send("Error: Invalid number of arguments!", delete_after=5.0)
-                    print("Invalid vote syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
+                    print("Invalid vote syntax: {0}".format(message.clean_content[(len(client.prefix) + 4):]))
                     return
                 pollID = int(args[0])
                 optID = int(args[1])
@@ -282,7 +271,7 @@ async def on_message(message):
                 args = re.findall('\d+', message.clean_content)
                 if len(args) != 2:
                     await message.channel.send('Error: Invalid number of arguments!', delete_after=5.0)
-                    print("Invalid unvote syntax: {0}".format(message.clean_content[(len(client.prefix)+4):]))
+                    print("Invalid unvote syntax: {0}".format(message.clean_content[(len(client.prefix) + 4):]))
                     return
                 pollID = int(args[0])
                 optID = int(args[1])
@@ -311,58 +300,8 @@ async def on_message(message):
 
             return
 
-        # WICHTELN
-        if misc.startswithElement(uCmd, ['wichtel']):
-            # /wichteln "Anschrift_Name; MeineStraße 1a; 12345 MeinOrt; weiteres"
-            await message.delete(delay=10.0)
-            receiverStrs = re.findall('\".+?\"', message.clean_content)
-            if len(receiverStrs) != 1:
-                await message.channel.send("Error: Invalid syntax!", delete_after=5.0)
-                return
-            file = configparser.ConfigParser()
-            file.read('wichteln.txt')
-            if not file.has_section('PARTICIPANTS'):
-                file.add_section('PARTICIPANTS')
-            file['PARTICIPANTS'][str(message.author.id)] = receiverStrs[0]
-
-            with open('wichteln.txt', 'w') as configfile:
-                file.write(configfile)
-
-            await message.channel.send('Du bist hiermit beim Wichteln dabei. Falls du deine Anschrift ändern willst, gib den command einfach nochmal ein.', delete_after=10.0)
-            return
-
-        # GIVE OUT WICHTELN ADDRESSES
-        if uCmd.startswith('triggerwichteln'):
-            file = configparser.ConfigParser()
-            file.read('wichteln.txt')
-            userIDs = []
-            userDataRaw = []
-            for section in file.sections():
-                for (key, val) in file.items(section):
-                    userIDs.append(key)
-                    userDataRaw.append(val)
-            # Shuffle userData to randomly assign addresses to users
-            userData = misc.unique_shuffle_list(userDataRaw)
-            for i in range(len(userIDs)):
-                msg = "**Glückwunsch!\nZum Wichteln wurde dir die Person mit folgender Addresse zugeteilt:**\n{0}"\
-                    .format(userData[i])
-                user = client.get_user(int(userIDs[i]))
-                await user.send(msg)
-                print('Sent wichteln msg to {0}'.format(user.name))
-            wChannel = client.get_channel(786935616465797121)
-            await wChannel.send('Die Addressen wurden soeben unter den Teilnehmern aufgeteilt. Falls sich jemand mit `/wichteln "..."` eingetragen hat, aber keine Privatnachricht bekommen hat, bitte an DaMoIsHere wenden!')
-
-            if not file.has_section('ZUTEILUNG'):
-                file.add_section('ZUTEILUNG')
-            for i in range(len(userIDs)):
-                file['ZUTEILUNG'][str(userIDs[i])] = userData[i]
-
-            with open('wichteln.txt', 'w') as configfile:
-                file.write(configfile)
-            return
-
         if uCmd.startswith('echo'):
-            text = message.clean_content[(len(client.prefix)+4):]
+            text = message.clean_content[(len(client.prefix) + 4):]
             await message.delete()
             await message.channel.send(text)
             return

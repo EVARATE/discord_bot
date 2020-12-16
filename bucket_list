@@ -7,11 +7,11 @@ bot_client functions:
     rules DONE
     calc DONE
     help IN PROGRESS
-    prefix
     random DONE
-    Lecture commands (T1, M2, ...)
-    quote
+    Lecture commands (T1, M2, ...) TODO
+    quote DONE
     latex
+    
 
 
  - Help message for detailed description of every command TODO
