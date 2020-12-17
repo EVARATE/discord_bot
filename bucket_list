@@ -15,3 +15,5 @@ bot_client functions:
 
 
  - Help message for detailed description of every command TODO
+
+ - Make everything type-safe to prevent stupid bugs TODO (https://medium.com/@ageitgey/learn-how-to-use-static-type-checking-in-python-3-6-in-10-minutes-12c86d72677b)

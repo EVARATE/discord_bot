@@ -1,13 +1,16 @@
 import configparser
 import re
 import misc_functions as misc
+from typing import List
+
 
 class pollOption:
     def __init__(self):
         self.voterIDs = []
-    id = -1
-    value = ''
-    voterIDs = []
+
+    id: int = -1
+    value: str = ''
+    voterIDs: List[int] = []
 
     def hasVoted(self, voterID: str) -> bool:
         if voterID in self.voterIDs:
@@ -16,20 +19,19 @@ class pollOption:
 
 
 class poll:
-    id = -1
-    topic = ''
-    options = []
+    id: int = -1
+    topic: str = ''
+    options: List[pollOption] = []
 
     # Metadata:
-    authorName = ''
-    authorID = -1
-    msgChannelID = -1
-    msgMessageID = -1
-    isClosed = False
-    custOpt = False
-    multiChoice = False
-
-    nextOptID = 1
+    authorName: str = ''
+    authorID: int = -1
+    msgChannelID: int = -1
+    msgMessageID: int = -1
+    isClosed: bool = False
+    custOpt: bool = False
+    multiChoice: bool = False
+    nextOptID: int = 1
 
     def __init__(self, question: str, options: list):
         # This is necessary to keep the lists contained to this instance of the class:
@@ -115,14 +117,13 @@ class poll:
                 newOpt.voterIDs = [int(z) for z in re.findall('\d+', file[section]['voterIDs'])]
                 self.addExOption(newOpt)
 
-
     def getOptID(self) -> int:
         self.nextOptID += 1
         return self.nextOptID - 1
 
     def hasVoted(self, voterID: int) -> bool:
         for opt in self.options:
-            if opt.hasVoted(voterID):
+            if opt.hasVoted(str(voterID)):
                 return True
         return False
 
@@ -135,14 +136,13 @@ class poll:
                 optVotes = len(opt.voterIDs)
         if totalVotes == 0:
             return 0
-        return optVotes/totalVotes
-
+        return optVotes / totalVotes
 
     def getPollMsg(self, prefix: str) -> str:
         # This function is formatted for use with a discord bot
 
         # Title:
-        pollTitle = 'Poll#-**{0}** by {1}\n'.format(self.id, self.authorName)
+        pollTitle = f'Poll#-**{self.id}** by {self.authorName}\n'
 
         # isClosed:
         if self.isClosed:
@@ -153,22 +153,15 @@ class poll:
         # Options to string:
         optStr = ''
         for opt in self.options:
-            optStr += '**{0}**: {1} **{3}%** ({2})\n'.format(opt.id,
-                                                         opt.value,
-                                                         len(opt.voterIDs),
-                                                         int(self.getOptPercentage(opt.id)*100.))
+            optStr += f'**{opt.id}**: {opt.value} **{len(opt.voterIDs)}%** ({int(self.getOptPercentage(opt.id)*100)})\n'
 
         # Clarifications:
         if not self.isClosed:
-            clar = '\nAbstimmen mit `{0}vote {1} <optionID>`'.format(prefix,
-                                                                       self.id)
+            clar = f'\nAbstimmen mit `{prefix}vote {self.id} <optionID>`'
         else:
             clar = '\nPoll has been closed.'
         optStr += clar
 
-        msg = '{0}```{1}{2}```\n{3}'.format(pollTitle,
-                                            topicPre,
-                                            self.topic,
-                                            optStr)
-        return msg
+        msg = f'{pollTitle}```{topicPre}{self.topic}```\n{optStr}'
 
+        return msg

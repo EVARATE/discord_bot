@@ -4,6 +4,7 @@ This makes everything more organized.
 """
 import random
 
+
 def get_help_msg(prefix: str) -> str:
     # Just a very raw way of generating the help message.
     # Will probably become more procedural in the future
@@ -33,13 +34,13 @@ def startswithElement(string: str, lst: list) -> bool:
     return False
 
 
-def unique_shuffle_list(originalList: list):
+def unique_shuffle_list(originalList: list, maxStep: int = 10000):
     randomizedList = originalList[:]
     step: int = 0
     while True:
         random.shuffle(randomizedList)
         step += 1
-        if not has_el_on_same_index(randomizedList, originalList) or step >= 10000:
+        if not has_el_on_same_index(randomizedList, originalList) or step >= maxStep:
             return randomizedList
 
 
@@ -51,7 +52,7 @@ def has_el_on_same_index(l1: list, l2: list) -> bool:
 
 
 def int_in_str(string: str) -> int:
-    dig = ''
+    dig: str = ''
     for char in string:
         if char.isdigit():
             dig += char
@@ -70,3 +71,4 @@ def int_to_bool(num: int) -> bool:
         return False
     else:
         return True
+

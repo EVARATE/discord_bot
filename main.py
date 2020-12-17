@@ -3,15 +3,17 @@ If you don't know what the fuck is going on here then I humbly suggest you read 
 https://discordpy.readthedocs.io/en/latest/index.html#
 """
 
-import discord
 import configparser
+import glob
+import os
+import random
+import re  # regex
+from typing import List # Make everything typesafe, please
+import discord
+
 import mathParser
 import misc_functions as misc
 import polling
-import re  # regex
-import random
-import os
-import glob
 
 
 # Modify class:
@@ -47,7 +49,7 @@ class bot_client(discord.Client):
         self.cleanupPollFiles()
 
     def savePoll(self, poll: polling.poll, cleanup=True):
-        poll.savePoll("polls/poll{0}.txt".format(poll.id))
+        poll.savePoll(f"polls/poll{poll.id}.txt")
         if cleanup:
             self.cleanupPollFiles()
 
@@ -76,18 +78,21 @@ class bot_client(discord.Client):
                 return
 
     # Parameters:
-    token = ''
-    prefix = ''
-    panic_msg = ''
-    ruleChannelID = -1
-    ruleMessageID = -1
-    quoteChannelID = -1
-    activityName = ''
+    token: str = ''
+    prefix: str = ''
+    panic_msg: str = ''
+    ruleChannelID: int = -1
+    ruleMessageID: int = -1
+    quoteChannelID: int = -1
+    activityName: str = ''
 
     # Variables
-    mood = 'neutral'
-    polls = []
-    nextPollID = 0
+    mood: str = 'neutral'
+    polls: List[polling.poll] = []
+    nextPollID: int = 0
+
+    # Locks
+    echo_admin_lock = False
 
 
 # Callbacks:
@@ -96,7 +101,7 @@ client = bot_client()
 
 @client.event
 async def on_ready():
-    print('{0.user} is now online.'.format(client))
+    print(f'{client.user} is now online.')
     game = discord.Game(client.activityName)
     await client.change_presence(status=discord.Status.online, activity=game)
     for poll in client.polls:
@@ -121,7 +126,6 @@ async def on_message(message):
         uCmd = message.content[len(client.prefix):].lower()
 
         # HELP
-        # before: if uCmd.startswith("help"):
         if misc.startswithElement(uCmd, ["help", "hilfe"]):
             await message.channel.send(misc.get_help_msg(client.prefix))
             return
@@ -141,7 +145,7 @@ async def on_message(message):
                 result = nsp.eval(expression)
             except:
                 result = client.panic_msg
-                print("Invalid command: {0}".format(message.content))
+                print(f"Invalid command: {message.content}")
 
             await message.channel.send(result)
             return
@@ -219,11 +223,11 @@ async def on_message(message):
                 await message.channel.send("Saved quote.")
             except:
                 await message.channel.send(client.panic_msg)
-                print("Error handling quote: {0}".format(message.content))
+                print(f"Error handling quote: {message.content}")
                 return
             # Send to quote Channel:
             if client.quoteChannelID != -1:
-                msg = ":\n**Person:** {0}\n**Zitat:** {1}\n**Kontext:** {2}".format(prof_name, prof_quote, prof_context)
+                msg = f":\n**Person:** {prof_name}\n**Zitat:** {prof_quote}\n**Kontext:** {prof_context}"
                 channel = client.get_channel(client.quoteChannelID)
                 await channel.send(msg)
             return
@@ -236,7 +240,7 @@ async def on_message(message):
                 args = re.findall('".+?"', message.clean_content)
                 if len(args) <= 1:
                     await message.channel.send("Error: Not enough arguments!", delete_after=5.0)
-                    print("Invalid poll syntax: {0}".format(message.clean_content[(len(client.prefix) + 4):]))
+                    print(f"Invalid poll syntax: {message.clean_content[(len(client.prefix) + 4):]}")
                     return
                 newPoll = polling.poll(args[0].strip('"'), [z.strip('"') for z in args[1:]])
                 newPoll.authorID = message.author.id
@@ -255,7 +259,7 @@ async def on_message(message):
                 args = re.findall('\d+', message.clean_content)
                 if len(args) != 2:
                     await message.channel.send("Error: Invalid number of arguments!", delete_after=5.0)
-                    print("Invalid vote syntax: {0}".format(message.clean_content[(len(client.prefix) + 4):]))
+                    print(f"Invalid vote syntax: {message.clean_content[(len(client.prefix) + 4):]}")
                     return
                 pollID = int(args[0])
                 optID = int(args[1])
@@ -265,13 +269,14 @@ async def on_message(message):
                         await client.updatePoll(pollID)
                         client.savePoll(poll)
                         return
+
             elif uCmd.startswith('unvote'):
                 # /vote <pollID> <optID>
 
                 args = re.findall('\d+', message.clean_content)
                 if len(args) != 2:
                     await message.channel.send('Error: Invalid number of arguments!', delete_after=5.0)
-                    print("Invalid unvote syntax: {0}".format(message.clean_content[(len(client.prefix) + 4):]))
+                    print(f"Invalid unvote syntax: {message.clean_content[(len(client.prefix) + 4):]}")
                     return
                 pollID = int(args[0])
                 optID = int(args[1])
@@ -281,6 +286,7 @@ async def on_message(message):
                         await client.updatePoll(pollID)
                         client.savePoll(poll)
                         return
+
             elif uCmd.startswith('closepoll'):
                 args = re.findall('\d+', message.clean_content)
                 if len(args) != 1:
@@ -294,12 +300,13 @@ async def on_message(message):
                             return
                         poll.isClosed = True
                         await client.updatePoll(pollID)
-                        os.remove('polls/poll{0}.txt'.format(poll.id))
+                        os.remove(f'polls/poll{poll.id}.txt')
                         client.polls[:] = [x for x in client.polls if x.id != pollID]
-                        await message.channel.send('Closed poll#-{0}'.format(pollID), delete_after=5.0)
+                        await message.channel.send(f'Closed poll#-{pollID}', delete_after=5.0)
 
             return
 
+        # ECHO
         if uCmd.startswith('echo'):
             text = message.clean_content[(len(client.prefix) + 4):]
             await message.delete()
@@ -396,8 +403,8 @@ async def on_message(message):
             return
 
         # This line is only reached if no command has been recognized. Act accordingly:
-        await message.channel.send('I am afraid I can\'t do that {0.author.name}.'.format(message))
-        print("Unrecognized command: {0}".format(message.content))
+        await message.channel.send(f'I am afraid I can\'t do that {message.author.name}.')
+        print(f"Unrecognized command: {message.content}")
 
 
 client.startup()
