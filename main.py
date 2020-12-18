@@ -32,7 +32,9 @@ class bot_client(discord.Client):
         self.ruleChannelID = int(configFile['RULES']['channelID'])
         self.ruleMessageID = int(configFile['RULES']['messageID'])
         self.quoteChannelID = int(configFile['QUOTES']['channelID'])
+        self.adminRoleID = int(configFile['BASE']['admin_roleID'])
         self.activityName = configFile['ACTIVITY']['name']
+        self.echo_lock = misc.int_to_bool(int(configFile['LOCKS']['echo_lock']))
 
     def loadAllPolls(self):
         if not os.path.exists('polls'):
@@ -84,6 +86,7 @@ class bot_client(discord.Client):
     ruleChannelID: int = -1
     ruleMessageID: int = -1
     quoteChannelID: int = -1
+    adminRoleID: int = -1
     activityName: str = ''
 
     # Variables
@@ -92,7 +95,7 @@ class bot_client(discord.Client):
     nextPollID: int = 0
 
     # Locks
-    echo_admin_lock = False
+    echo_lock: bool = False
 
 
 # Callbacks:
@@ -307,10 +310,53 @@ async def on_message(message):
             return
 
         # ECHO
-        if uCmd.startswith('echo'):
-            text = message.clean_content[(len(client.prefix) + 4):]
-            await message.delete()
-            await message.channel.send(text)
+        if uCmd.startswith('echo') and not uCmd.startswith('echolock'):
+            if not client.echo_lock:
+                text = message.clean_content[(len(client.prefix) + 4):]
+                await message.delete()
+                await message.channel.send(text)
+                return
+            adm_role = discord.utils.get(message.guild.roles, id=client.adminRoleID)
+            if adm_role in message.author.roles:
+                text = message.clean_content[(len(client.prefix) + 4):]
+                await message.delete()
+                await message.channel.send(text)
+                return
+            else:
+                await message.channel.send('This command is currently locked.', delete_after=5.0)
+                return
+
+        # ECHO LOCK
+        if uCmd.startswith('echolock'):
+            # Only admins can do this:
+            adm_role = discord.utils.get(message.guild.roles, id=client.adminRoleID)
+            if not adm_role in message.author.roles:
+                await message.channel.send('You do not have permission for this command!', delete_after=5.0)
+                await message.delete()
+                return
+            # /echolock         -> [status]
+            # /echolock toggle  -> [status]
+
+            if misc.startswithElement(uCmd[8:].lstrip(), ['toggle', 'switch', 'change']):
+                client.echo_lock = not client.echo_lock
+                if client.echo_lock:
+                    lockStr = 'Locked'
+                else:
+                    lockStr = 'Unlocked'
+                await message.channel.send(f'`{client.prefix}echo` is now {lockStr}')
+                # Update config.txt:
+                file = configparser.ConfigParser()
+                file.read('config.txt')
+                file.set('LOCKS', 'echo_lock', str(misc.bool_to_int(client.echo_lock)))
+                with open('config.txt', 'w') as configfile:
+                    file.write(configfile)
+
+            else:
+                if client.echo_lock:
+                    lockStr = 'Locked'
+                else:
+                    lockStr = 'Unlocked'
+                await message.channel.send(f'`{client.prefix}echo` is {lockStr}')
             return
 
         # Eastereggs
