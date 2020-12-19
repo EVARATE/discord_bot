@@ -14,6 +14,7 @@ import sys
 import mathParser
 import misc_functions as misc
 import polling
+import asyncio
 
 
 # Modify class:
@@ -356,6 +357,30 @@ async def on_message(message):
             else:
                 lockStr = 'Unlocked' if client.echo_lock else 'Locked'
                 await message.channel.send(f'`{client.prefix}echo` is {lockStr}')
+            return
+
+        # TEST
+        if uCmd.startswith('test'):
+            retMSG = await message.channel.send('0')
+            for i in range(120):
+                await asyncio.sleep(1)
+                await retMSG.edit(content=str(i))
+            return
+
+        # COUNTDOWN
+        if uCmd.startswith('countdown'):
+            nums = re.findall('\d+', uCmd)
+            count: int = 10 if len(nums) == 0 else int(nums[0])
+            if count > 500:
+                await message.channel.send('Dude, I don\'t have all day!')
+                return
+
+            msg = await message.channel.send(f'Countdown: {count}')
+            while count > 0:
+                count += -1
+                await asyncio.sleep(1)
+                await msg.edit(content=f'Countdown: {count}')
+            await msg.edit(content='**NOW**')
             return
 
         # Eastereggs

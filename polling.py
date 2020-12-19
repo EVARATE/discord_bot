@@ -153,7 +153,7 @@ class poll:
         # Options to string:
         optStr = ''
         for opt in self.options:
-            optStr += f'**{opt.id}**: {opt.value} **{len(opt.voterIDs)}%** ({int(self.getOptPercentage(opt.id)*100)})\n'
+            optStr += f'**{opt.id}**: {opt.value} **{int(self.getOptPercentage(opt.id)*100)}%** ({len(opt.voterIDs)})\n'
 
         # Clarifications:
         if not self.isClosed:
