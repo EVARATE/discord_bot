@@ -1,0 +1,14 @@
+This file has no functionality. It just describes planned features and guidelines.
+
+1. Keep this bot as generalized as possible. Ideally everything works on any server, no hard coded channel IDs etc.
+2. Create a config file which has all necessary startup parameters.
+
+bot_client functions:
+    rules DONE
+    calc DONE
+    help IN PROGRESS
+    random DONE
+    Lecture commands (T1, M2, ...) TODO
+    quote DONE
+
+ - Make everything type-safe to prevent stupid bugs TODO (https://medium.com/@ageitgey/learn-how-to-use-static-type-checking-in-python-3-6-in-10-minutes-12c86d72677b)
