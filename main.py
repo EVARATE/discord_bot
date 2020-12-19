@@ -10,7 +10,7 @@ import random
 import re  # regex
 from typing import List # Make everything typesafe, please
 import discord
-
+import sys
 import mathParser
 import misc_functions as misc
 import polling
@@ -24,17 +24,22 @@ class bot_client(discord.Client):
         self.loadAllPolls()
 
     def get_config(self):
-        configFile = configparser.ConfigParser()
-        configFile.read('config.txt')
-        self.token = configFile['BASE']['token']
-        self.prefix = configFile['BASE']['prefix']
-        self.panic_msg = configFile['BASE']['panic_msg']
-        self.ruleChannelID = int(configFile['RULES']['channelID'])
-        self.ruleMessageID = int(configFile['RULES']['messageID'])
-        self.quoteChannelID = int(configFile['QUOTES']['channelID'])
-        self.adminRoleID = int(configFile['BASE']['admin_roleID'])
-        self.activityName = configFile['ACTIVITY']['name']
-        self.echo_lock = misc.int_to_bool(int(configFile['LOCKS']['echo_lock']))
+        try:
+            configFile = configparser.ConfigParser()
+            configFile.read('config.txt')
+            self.token = configFile['BASE']['token']
+            self.prefix = configFile['BASE']['prefix']
+            self.panic_msg = configFile['BASE']['panic_msg']
+            self.ruleChannelID = int(configFile['RULES']['channelID'])
+            self.ruleMessageID = int(configFile['RULES']['messageID'])
+            self.quoteChannelID = int(configFile['QUOTES']['channelID'])
+            self.adminRoleID = int(configFile['BASE']['admin_roleID'])
+            self.activityName = configFile['ACTIVITY']['name']
+            self.echo_lock = misc.int_to_bool(int(configFile['LOCKS']['echo_lock']))
+        except:
+            print('Error: Your "config.txt" is invalid. Aborting.')
+            sys.exit()
+
 
     def loadAllPolls(self):
         if not os.path.exists('polls'):
@@ -339,10 +344,7 @@ async def on_message(message):
 
             if misc.startswithElement(uCmd[8:].lstrip(), ['toggle', 'switch', 'change']):
                 client.echo_lock = not client.echo_lock
-                if client.echo_lock:
-                    lockStr = 'Locked'
-                else:
-                    lockStr = 'Unlocked'
+                lockStr = 'Unlocked' if client.echo_lock else 'Locked'
                 await message.channel.send(f'`{client.prefix}echo` is now {lockStr}')
                 # Update config.txt:
                 file = configparser.ConfigParser()
@@ -352,10 +354,7 @@ async def on_message(message):
                     file.write(configfile)
 
             else:
-                if client.echo_lock:
-                    lockStr = 'Locked'
-                else:
-                    lockStr = 'Unlocked'
+                lockStr = 'Unlocked' if client.echo_lock else 'Locked'
                 await message.channel.send(f'`{client.prefix}echo` is {lockStr}')
             return
 
