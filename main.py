@@ -125,8 +125,7 @@ async def on_message(message):
 
     # === INTERPRET CHAT ===
 
-    nice = re.search('[^\d]69[^\d]*|[^\d]*69[^\d]', message.clean_content)
-    if nice:
+    if re.search('69|sixty[ -]*nine|neun[ -]*und[ -]*sechzig', message.clean_content.lower()):
         await message.channel.send("Nice!")
 
     # look for commands:
@@ -379,8 +378,7 @@ async def on_message(message):
             while count > 0:
                 count += -1
                 await asyncio.sleep(1)
-                await msg.edit(content=f'Countdown: {count}')
-            await msg.edit(content='**NOW**')
+                await msg.edit(content=(f'Countdown: {count}' if count != 0 else '**NOW**'))
             return
 
         # Eastereggs
