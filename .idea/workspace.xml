@@ -27,7 +27,6 @@
   <component name="ChangeListManager">
     <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Implemented /countdown, fixed wrong poll message formatting">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +43,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master_python" />
+        <entry key="$PROJECT_DIR$" value="dev_python" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -416,7 +415,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="dev_python" />
+                        <option value="rewrite_python" />
                       </list>
                     </value>
                   </entry>
@@ -475,10 +474,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="374" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608154851396" />
-    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1607790582640">
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1608486443472">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="274" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607790582640" />
+    <state x="740" y="274" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608486443472" />
     <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1608409651766">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -529,11 +528,11 @@
     </state>
     <state x="-1691" y="102" width="1295" height="859" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606742645125" />
     <state x="409" y="118" width="998" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607977202647" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1608408793749">
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1608410207560">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1848" y="252" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126754051" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608408793749" />
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608410207560" />
     <state x="72" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197421950" />
     <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1606848577147">
       <screen x="0" y="0" width="1920" height="1040" />
