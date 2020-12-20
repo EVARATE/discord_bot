@@ -25,9 +25,11 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Created 'rewrite_python' branch.">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Set up config.txt reader and basic bot.">
+      <change afterPath="$PROJECT_DIR$/bot_database.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bot_help.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config_dummy.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bucket_list" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -407,7 +409,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608490276052</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="Set up config.txt reader and basic bot.">
+      <created>1608498078587</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1608498078587</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -438,7 +447,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added alternative triggers for some commands" />
     <MESSAGE value="Push for webhook test" />
     <MESSAGE value="Added niceness" />
     <MESSAGE value="Fixed bot being in love with Caro" />
@@ -463,7 +471,8 @@
     <MESSAGE value="Code cosmetics" />
     <MESSAGE value="Implemented /countdown, fixed wrong poll message formatting" />
     <MESSAGE value="Created 'rewrite_python' branch." />
-    <option name="LAST_COMMIT_MESSAGE" value="Created 'rewrite_python' branch." />
+    <MESSAGE value="Set up config.txt reader and basic bot." />
+    <option name="LAST_COMMIT_MESSAGE" value="Set up config.txt reader and basic bot." />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1606999483539">
@@ -487,46 +496,46 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608486443472" />
-    <state width="1899" height="213" key="GridCell.Tab.0.bottom" timestamp="1608497771280">
+    <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1608503521304">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="213" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771280" />
-    <state width="1899" height="213" key="GridCell.Tab.0.center" timestamp="1608497771280">
+    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608503521304" />
+    <state width="1899" height="184" key="GridCell.Tab.0.center" timestamp="1608503521304">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="213" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771280" />
-    <state width="1899" height="213" key="GridCell.Tab.0.left" timestamp="1608497771280">
+    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608503521304" />
+    <state width="1899" height="184" key="GridCell.Tab.0.left" timestamp="1608503521304">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="213" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771280" />
-    <state width="1899" height="213" key="GridCell.Tab.0.right" timestamp="1608497771280">
+    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608503521304" />
+    <state width="1899" height="184" key="GridCell.Tab.0.right" timestamp="1608503521304">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="213" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771280" />
-    <state width="1899" height="213" key="GridCell.Tab.1.bottom" timestamp="1608497771281">
+    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608503521304" />
+    <state width="1899" height="213" key="GridCell.Tab.1.bottom" timestamp="1608498040168">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="347" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771281" />
-    <state width="1899" height="213" key="GridCell.Tab.1.center" timestamp="1608497771281">
+    <state width="1899" height="213" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608498040168" />
+    <state width="1899" height="213" key="GridCell.Tab.1.center" timestamp="1608498040167">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="347" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771281" />
-    <state width="1899" height="213" key="GridCell.Tab.1.left" timestamp="1608497771280">
+    <state width="1899" height="213" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608498040167" />
+    <state width="1899" height="213" key="GridCell.Tab.1.left" timestamp="1608498040167">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="347" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771280" />
-    <state width="1899" height="213" key="GridCell.Tab.1.right" timestamp="1608497771281">
+    <state width="1899" height="213" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608498040167" />
+    <state width="1899" height="213" key="GridCell.Tab.1.right" timestamp="1608498040167">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="347" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608497771281" />
+    <state width="1899" height="213" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608498040167" />
     <state x="753" y="222" key="RollbackChangesDialog" timestamp="1607890959401">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

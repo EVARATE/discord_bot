@@ -11,77 +11,58 @@ https://discordpy.readthedocs.io/en/latest/index.html
 import discord
 from discord.ext import commands
 import configparser
+import bot_database as db
+import bot_help
 from typing import List, Dict
 import polling
 import os
 import glob
 import sys
+import asyncio
 
-
-class bot_database():
-    """
-    This class has nothing to do with the bot directly. It just stores all kinds of variables and other data
-    the bot needs.
-    """
-    token: str = ''
-    prefix: str = ''
-    IDs: Dict[str, int] = {}
-
-    def __init__(self,filepath: str = ''):
-        # Initialize empty arrays:
-        self.IDs = {}
-
-        # 'config.txt' must be in local directory, create it if not
-        if not os.path.exists('config.txt'):
-            # Create template file:
-            config = configparser.ConfigParser()
-            config.add_section('BASE')
-            config.add_section('IDs')
-
-            config.set('BASE', 'token', '-1')
-            config.set('BASE', 'prefix', '/')
-
-            config.set('IDs', 'admin_role', '-1')
-            config.set('IDs', 'rule_channel', '-1')
-            config.set('IDs', 'rule_message', '-1')
-            config.set('IDs', 'quote_channel', '-1')
-
-            with open('config.txt', 'w') as configfile:
-                config.write(configfile)
-
-            print('Created \'config.txt\'. Please enter available values and restart.')
-            sys.exit()
-        else:
-            # Try to read 'config.txt':
-            try:
-                config = configparser.ConfigParser()
-                config.read('config.txt')
-                self.token = config['BASE']['token']
-                self.prefix = config['BASE']['prefix']
-
-                for (ID_key, val) in config.items('IDs'):
-                    self.IDs[ID_key] = val
-
-            except:
-                print('Error reading \'config.txt\'. Please fix it or delete it to generate a new one. Aborting.')
-                sys.exit()
-
-        print('Successfully loaded database.')
-
-
-
-
-bot_data = bot_database()
+bot_data = db.bot_database()
 bot = commands.Bot(command_prefix = bot_data.prefix)
+# bot.help_command = bot_help.bot_helper()
 
 @bot.event
 async def on_ready():
     print(f'Bot logged in as {bot.user}')
 
-# Commands go here
-@bot.command()
+@bot.event
+async def on_message(message):
+    """
+    If possible don't define commands here. Use the command framework for that (see below)
+    Only use this function if you are processing messages without commands.
+    """
+
+    # Code goes here
+
+    await bot.process_commands(message)
+
+# Commands go here =====================================================================================================
+@bot.command(brief="Just for testing random stuff.",
+             help="This function is for testing code. Don't expect any predictable behaviour from it.",
+             aliases=["hilfe"])
 async def test(ctx):
     await ctx.send('test received')
     pass
+
+@bot.command(brief="Countdown from value. Default is 10s.",
+             help="Start a countdown from a designated value or 10 seconds if none has been specified.",
+             usage="<seconds>")
+async def countdown(ctx, arg = "10"):
+    if not arg.isdigit():
+        counter = 10
+    else:
+        counter = int(arg)
+    if counter > 500:
+        await ctx.send('Dude, I don\'t have all day!')
+        return
+    msg = await ctx.send(f'Countdown: {counter}')
+    while counter > 0:
+        counter -= 1
+        await asyncio.sleep(1)
+        await msg.edit(content=(f'Countdown: {counter}' if counter != 0 else 'Countdown: **NOW**'))
+
 
 bot.run(bot_data.token)
