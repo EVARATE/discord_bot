@@ -83,7 +83,8 @@ async def calc(ctx, *, arg):
     try:
         result = nsp.eval(arg)
     except:
-        result = f"Invalid expression. Type `{bot_data.prefix}help calc` for information on the command."
+        await ctx.send(f"Invalid expression. Type `{bot_data.prefix}help calc` for information on the command.",
+                       delete_after=10.0)
         print(f'Invalid \'calc\' expression: {arg}')
     await ctx.send(result)
 
@@ -105,7 +106,9 @@ async def rand(ctx, *args):
     elif len(args) > 1:
         answer = str(random.choice(args))
     else:
-        answer = f'Error: Invalid argument. Type `{bot_data.prefix}help random` for information on the command.'
+        await ctx.send(f'Error: Invalid argument. Type `{bot_data.prefix}help random` for information on the command.',
+                       delete_after=10.0)
+        return
     await ctx.send(answer)
 
 @bot.command(brief="Save Quote.",
@@ -147,6 +150,7 @@ async def quote(ctx, *args):
                                         \n**Kontext:** {quote_context}')
         await ctx.send('Saved quote.')
     except:
-        await ctx.send(f'There was an error saving the quote. Check `{bot_data.prefix}help quote` for correct format.')
+        await ctx.send(f'There was an error saving the quote. Type `{bot_data.prefix}help quote` for correct format.',
+                       delete_after=10.0)
 
 bot.run(bot_data.token)
