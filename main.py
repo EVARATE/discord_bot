@@ -48,7 +48,6 @@ async def on_message(message):
 async def test(ctx):
     await ctx.send('test received')
 
-
 @bot.command(brief="Countdown from value. Default is 10s.",
              help="Start a countdown from a designated value or 10 seconds if none has been specified.",
              usage="<seconds>")
@@ -93,10 +92,6 @@ async def calc(ctx, *, arg):
                   \nrandom\t\t-> [0,1]\nrandom a\t-> [0,a]\nrandom a b\t-> [a,b]\nrandom a b c\t-> a or b or c or ...",
              aliases=['random'])
 async def rand(ctx, *args):
-    # /random       -> [0,1]
-    # /random a     -> [0,a]
-    # /random a b   -> [a,b]
-    # /random a b c -> a or b or c or ...
     if not args:
         answer = str(random.random())
     elif len(args) == 1 and args[0].isdigit():
