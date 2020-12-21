@@ -51,7 +51,7 @@ class bot_database:
                 self.prefix = config['BASE']['prefix']
 
                 for (ID_key, val) in config.items('IDs'):
-                    self.IDs[ID_key] = val
+                    self.IDs[ID_key] = int(val)
 
             except:
                 print('Error reading \'config.txt\'. Please fix it or delete it to generate a new one. Aborting.')
