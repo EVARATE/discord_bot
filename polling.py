@@ -2,6 +2,16 @@ import configparser
 import re
 import misc_functions as misc
 from typing import List
+import discord
+from discord.ext import commands
+
+
+class Poll_Commands(commands.Bot):
+    """
+    This is a cog for the discord bot.
+    """
+    def __init__(self, bot):
+        self.bot = bot
 
 
 class pollOption:
