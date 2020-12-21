@@ -13,12 +13,10 @@ class bot_database:
     """
     token: str = ''
     prefix: str = ''
+    datapath: str = ''
     IDs: Dict[str, int] = {}
 
-    def __init__(self, filepath: str = ''):
-        # 'filepath' variable isn't used yet. However the directory will contain data (quotes, polls, ...)
-        # which isn't stored in 'config.txt'
-
+    def __init__(self):
         # Initialize empty arrays:
         self.IDs = {}
 
@@ -31,6 +29,7 @@ class bot_database:
 
             config.set('BASE', 'token', '-1')
             config.set('BASE', 'prefix', '/')
+            config.set('BASE', 'datapath', 'data/')
 
             config.set('IDs', 'admin_role', '-1')
             config.set('IDs', 'rule_channel', '-1')
@@ -49,6 +48,7 @@ class bot_database:
                 config.read('config.txt')
                 self.token = config['BASE']['token']
                 self.prefix = config['BASE']['prefix']
+                self.datapath = config['BASE']['datapath']
 
                 for (ID_key, val) in config.items('IDs'):
                     self.IDs[ID_key] = int(val)
@@ -56,6 +56,10 @@ class bot_database:
             except:
                 print('Error reading \'config.txt\'. Please fix it or delete it to generate a new one. Aborting.')
                 sys.exit()
+
+        if not os.path.exists(self.datapath):
+            os.makedirs(self.datapath)
+            print(f'Created directory: \'{self.datapath}\'')
 
         # Final checks:
         if len(self.token) != 59:

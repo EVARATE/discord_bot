@@ -105,7 +105,48 @@ async def rand(ctx, *args):
     elif len(args) > 1:
         answer = str(random.choice(args))
     else:
-        answer = 'Error: Invalid argument.'
+        answer = f'Error: Invalid argument. Type `{bot_data.prefix}help random` for information on the command.'
     await ctx.send(answer)
+
+@bot.command(brief="Save Quote.",
+             help="Save a quote, its author and optionally information on the context of the quote.\
+                  \nIf available the quote will also be sent to a dedicated text channel.",
+             usage='"Author" "Quote" "Optional context"')
+async def quote(ctx, *args):
+    if len(args) < 2 or len(args) > 3:
+        await ctx.send(f"Error: Invalid arguments. Type `{bot_data.prefix}help quote` for information on the command",
+                       delete_after=10.0)
+        return
+
+    author_name: str = args[0].lower()
+    quote_text: str = args[1]
+    if len(args) == 3:
+        quote_context = args[2]
+    else:
+        quote_context = "No Context given"
+
+    qfile = configparser.ConfigParser()
+    qfile.read(f'{bot_data.datapath}quotes.txt')
+    try:
+        quote_count: int = int(qfile[author_name]['count'])
+    except:
+        quote_count: int = 0
+
+    try:
+        if not qfile.has_section(author_name):
+            qfile.add_section(author_name)
+        qfile.set(author_name, 'count', str(quote_count + 1))
+        qfile.set(author_name, f'q#{quote_count}', f'"{quote_text}" "{quote_context}"')
+
+        with open(f'{bot_data.datapath}quotes.txt', 'w') as configfile:
+            qfile.write(configfile)
+        if bot_data.IDs['quote_channel'] != -1:
+            quote_channel = bot.get_channel(bot_data.IDs['quote_channel'])
+            await quote_channel.send(f':\n**Person:** {author_name}\
+                                        \n**Zitat:** {quote_text}\
+                                        \n**Kontext:** {quote_context}')
+        await ctx.send('Saved quote.')
+    except:
+        await ctx.send(f'There was an error saving the quote. Check `{bot_data.prefix}help quote` for correct format.')
 
 bot.run(bot_data.token)
