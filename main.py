@@ -184,6 +184,15 @@ class Main_Commands(commands.Cog):
         if arg in ['toggle', 'switch', 'change']:
             bot_data.locks['echo'] = not bot_data.locks['echo']
             statusStr = "unlocked" if bot_data.locks['echo'] else "locked"
+
+            # Update 'config.txt':
+            config = configparser.ConfigParser()
+            config.read('config.txt')
+            config.set('LOCKS', 'echo', str(misc.bool_to_int(bot_data.locks['echo'])))
+
+            with open('config.txt', 'w') as configfile:
+                config.write(configfile)
+
             await ctx.send(f'`{bot_data.prefix}echo` is now **{statusStr}**')
         elif len(arg) == 0:
             statusStr = "unlocked" if bot_data.locks['echo'] else "locked"
