@@ -12,7 +12,6 @@ import discord
 from discord.ext import commands
 import configparser
 import bot_database as db
-import bot_help
 import mathParser
 import polling
 import misc_functions as misc
