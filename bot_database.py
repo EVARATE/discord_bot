@@ -1,6 +1,7 @@
 import configparser
 from typing import List, Dict
 import polling
+import misc_functions as misc
 import os
 import glob
 import sys
@@ -15,13 +16,17 @@ class bot_database:
     prefix: str = ''
     datapath: str = ''
     IDs: Dict[str, int] = {}
+    locks: Dict[str, bool] = {}
     polls: List[polling.mo_poll] = []
     nextPollID: int = 0
+
+
 
     def __init__(self):
         # Initialize empty arrays:
         self.IDs = {}
         self.polls = []
+        self.locks = {}
 
         # 'config.txt' must be in local directory, create it if not
         if not os.path.exists('config.txt'):
@@ -29,6 +34,7 @@ class bot_database:
             config = configparser.ConfigParser()
             config.add_section('BASE')
             config.add_section('IDs')
+            config.add_section('LOCKS')
 
             config.set('BASE', 'token', '-1')
             config.set('BASE', 'prefix', '/')
@@ -39,6 +45,8 @@ class bot_database:
             config.set('IDs', 'rule_message', '-1')
             config.set('IDs', 'quote_channel', '-1')
             config.set('IDs', 'backup_poll_channel', '-1')
+
+            config.set('LOCKS', 'echo', '0')
 
             with open('config.txt', 'w') as configfile:
                 config.write(configfile)
@@ -57,6 +65,9 @@ class bot_database:
                 for (ID_key, val) in config.items('IDs'):
                     self.IDs[ID_key] = int(val)
 
+                for (lock_key, val) in config.items('LOCKS'):
+                    self.locks[lock_key] = misc.int_to_bool(val)
+
             except:
                 print('Error reading \'config.txt\'. Please fix it or delete it to generate a new one. Aborting.')
                 sys.exit()
@@ -69,4 +80,4 @@ class bot_database:
         if len(self.token) != 59:
             print('Error: Invalid token. Aborting.')
             sys.exit()
-        print('Successfully loaded database.')
+        print('Successfully loaded \'config.txt\'.')

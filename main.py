@@ -15,6 +15,7 @@ import bot_database as db
 import bot_help
 import mathParser
 import polling
+import misc_functions as misc
 from typing import List, Dict
 import os
 import glob
@@ -25,6 +26,12 @@ import random
 bot_data = db.bot_database()
 bot = commands.Bot(command_prefix = bot_data.prefix)
 # bot.help_command = bot_help.bot_helper()
+
+# CHECKS
+
+async def is_admin(ctx):
+    admin_role = ctx.guild.get_role(bot_data.IDs['admin_role'])
+    return admin_role in ctx.author.roles
 
 
 @bot.event
@@ -153,6 +160,34 @@ class Main_Commands(commands.Cog):
         except:
             await ctx.send(f'There was an error saving the quote. Type `{bot_data.prefix}help quote` for correct format.',
                            delete_after=10.0)
+
+    @commands.command(brief="Make the bot say something.",
+                      help="Let the bot say something. Your original message will be deleted. Mentions will be converted to text.",
+                      usage="<text>")
+    async def echo(self, ctx, *, arg):
+        await ctx.message.delete()
+        admin_role = ctx.guild.get_role(bot_data.IDs['admin_role'])
+        if not bot_data.locks['echo'] or admin_role in ctx.author.roles:
+            await ctx.send(arg)
+        else:
+            await ctx.send('Error: This command is currently locked.', delete_after=10.0)
+
+    @commands.command(brief="Lock access to the 'echo' command.",
+                      help="With this command you can lock the 'echo' command.\
+                           \n\necholock\t\t-> Current lock status\necholock toggle\t-> Toggle lock\
+                            \n\nAlternatives to 'toggle' are 'switch' and 'change'",
+                      usage="[<none>, toggle, switch, change]")
+    @commands.check(is_admin)
+    async def echolock(self, ctx, arg):
+        if arg in ['toggle', 'switch', 'change']:
+            bot_data.locks['echo'] = not bot_data['echo']
+            statusStr = "unlocked" if bot_data.locks['echo'] else "locked"
+            ctx.send(f'`{bot_data.prefix}echo` is now **{statusStr}**')
+        elif len(arg) == 0:
+            statusStr = "unlocked" if bot_data.locks['echo'] else "locked"
+            ctx.send(f'`{bot_data.prefix}echo` now **{statusStr}**')
+        else:
+            ctx.send(f'Error: Invalid argument. See `{bot_data.prefix}help echo` for information on the command.')
 
 
 bot.add_cog(Main_Commands(bot))

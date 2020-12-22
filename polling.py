@@ -102,7 +102,8 @@ class Poll_Commands(commands.Cog):
             if currPoll.id == pollID:
                 # Check if ctx.author is admin or poll author:
                 # admin_role = self..RoleConverter(self.bot_data.IDs['admin_role'])
-                admin_role = discord.utils.get(ctx.guild.roles, id=self.bot_data.IDs['admin_role'])
+                # admin_role = discord.utils.get(ctx.guild.roles, id=self.bot_data.IDs['admin_role'])
+                admin_role = ctx.guild.get_role(self.bot_data.IDs['admin_role'])
                 if admin_role in ctx.author.roles or ctx.author.id == currPoll.authorID:
                     currPoll.isClosed = True
                     await self.updatePoll(currPoll, ctx.channel.id)
