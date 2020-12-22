@@ -109,7 +109,7 @@ class Poll_Commands(commands.Cog):
                     await self.updatePoll(currPoll, ctx.channel.id)
                     os.remove(f'{self.bot_data.datapath}polls/poll{currPoll.id}.txt')
                     self.bot_data.polls[:] = [x for x in self.bot_data.polls if x.id != pollID]
-                    await ctx.send(f'Closed poll#-{pollID}')
+                    await ctx.send(f'Closed poll#-**{pollID}**')
                 else:
                     await ctx.send('Error: You can only close your own polls.', delete_after=10.0)
 

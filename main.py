@@ -29,7 +29,7 @@ bot = commands.Bot(command_prefix = bot_data.prefix)
 
 # CHECKS
 
-async def is_admin(ctx):
+def is_admin(ctx):
     admin_role = ctx.guild.get_role(bot_data.IDs['admin_role'])
     return admin_role in ctx.author.roles
 
@@ -166,8 +166,7 @@ class Main_Commands(commands.Cog):
                       usage="<text>")
     async def echo(self, ctx, *, arg):
         await ctx.message.delete()
-        admin_role = ctx.guild.get_role(bot_data.IDs['admin_role'])
-        if not bot_data.locks['echo'] or admin_role in ctx.author.roles:
+        if bot_data.locks['echo'] or is_admin(ctx):
             await ctx.send(arg)
         else:
             await ctx.send('Error: This command is currently locked.', delete_after=10.0)
@@ -177,17 +176,21 @@ class Main_Commands(commands.Cog):
                            \n\necholock\t\t-> Current lock status\necholock toggle\t-> Toggle lock\
                             \n\nAlternatives to 'toggle' are 'switch' and 'change'",
                       usage="[<none>, toggle, switch, change]")
-    @commands.check(is_admin)
-    async def echolock(self, ctx, arg):
+    async def echolock(self, ctx, *args):
+        if not is_admin(ctx):
+            await ctx.send('Error: You do not have permission to run this command.', delete_after=10.0)
+            return
+
+        arg = args[0] if len(args) > 0 else ""
         if arg in ['toggle', 'switch', 'change']:
-            bot_data.locks['echo'] = not bot_data['echo']
+            bot_data.locks['echo'] = not bot_data.locks['echo']
             statusStr = "unlocked" if bot_data.locks['echo'] else "locked"
-            ctx.send(f'`{bot_data.prefix}echo` is now **{statusStr}**')
+            await ctx.send(f'`{bot_data.prefix}echo` is now **{statusStr}**')
         elif len(arg) == 0:
             statusStr = "unlocked" if bot_data.locks['echo'] else "locked"
-            ctx.send(f'`{bot_data.prefix}echo` now **{statusStr}**')
+            await ctx.send(f'`{bot_data.prefix}echo` is **{statusStr}**')
         else:
-            ctx.send(f'Error: Invalid argument. See `{bot_data.prefix}help echo` for information on the command.')
+            await ctx.send(f'Error: Invalid argument. See `{bot_data.prefix}help echo` for information on the command.')
 
 
 bot.add_cog(Main_Commands(bot))
