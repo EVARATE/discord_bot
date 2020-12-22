@@ -1,18 +1,20 @@
-# About this branch
+# About
+This repository contains the code to my discord bot. The bot can be added to any server but is mainly designed to
+fit the needs of the server I'm on.
 
-This is a complete rewrite of the discord bot. Before every message was scanned for commands with
-if/else statements which is kindof messy.
-The goal of this rewrite is to use the existing command framework of the discord.py library.
+The `dev_python` branch contains the most up-to-date version of the bot but the chance of bugs is also highest.
 
-Here is its documentation:
-https://discordpy.readthedocs.io/en/latest/index.html
+The `master_python` branch contains a version which I have arbitrarily deemed stable.
 
 ## Dependencies
 The following packages should be available via `pip` and are required:
  - discord.py
  - configparser
  
+ Your python version should also be 3.6 or above.
+ 
  ## Setting up your bot
+ I highly recommend running the server from some sort of terminal since important information will be displayed there.
  To start the bot run the `main.py` file. If you do that in a terminal you will see how it creates multiple files
  and directories. Open the `config.txt` file and fill in as many values as you have. Else, leave them as they are.
  Rerun `main.py`.
