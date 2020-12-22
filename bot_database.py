@@ -15,10 +15,13 @@ class bot_database:
     prefix: str = ''
     datapath: str = ''
     IDs: Dict[str, int] = {}
+    polls: List[polling.mo_poll] = []
+    nextPollID: int = 0
 
     def __init__(self):
         # Initialize empty arrays:
         self.IDs = {}
+        self.polls = []
 
         # 'config.txt' must be in local directory, create it if not
         if not os.path.exists('config.txt'):
@@ -35,6 +38,7 @@ class bot_database:
             config.set('IDs', 'rule_channel', '-1')
             config.set('IDs', 'rule_message', '-1')
             config.set('IDs', 'quote_channel', '-1')
+            config.set('IDs', 'backup_poll_channel', '-1')
 
             with open('config.txt', 'w') as configfile:
                 config.write(configfile)

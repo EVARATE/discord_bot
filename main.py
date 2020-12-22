@@ -26,9 +26,11 @@ bot_data = db.bot_database()
 bot = commands.Bot(command_prefix = bot_data.prefix)
 # bot.help_command = bot_help.bot_helper()
 
+
 @bot.event
 async def on_ready():
     print(f'Bot logged in as {bot.user}')
+    bot.add_cog(polling.Poll_Commands(bot, bot_data))
 
 @bot.event
 async def on_message(message):
@@ -41,13 +43,16 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-# Main Command cog:
+
 class Main_Commands(commands.Cog):
+    """
+    This cog contains all the main commands which don't really fit into another cog.
+    """
     @commands.command(brief="Just for testing random stuff.",
                  help="This function is for testing code. Don't expect any predictable behaviour from it.",
                  aliases=["hilfe"])
     async def test(self, ctx):
-        await ctx.send('test received')
+        await ctx.send(f'Prefix in db is {bot_data.prefix}')
 
     @commands.command(brief="Countdown from value. Default is 10s.",
                  help="Start a countdown from a designated value or 10 seconds if none has been specified.",
@@ -110,7 +115,7 @@ class Main_Commands(commands.Cog):
     @commands.command(brief="Save Quote.",
                  help="Save a quote, its author and optionally information on the context of the quote.\
                       \nIf available the quote will also be sent to a dedicated text channel.",
-                 usage='"Author" "Quote" "Optional context"')
+                 usage='"<Author>" "<Quote>" "<Optional context>"')
     async def quote(self, ctx, *args):
         if len(args) < 2 or len(args) > 3:
             await ctx.send(f"Error: Invalid arguments. Type `{bot_data.prefix}help quote` for information on the command",
@@ -151,5 +156,5 @@ class Main_Commands(commands.Cog):
 
 
 bot.add_cog(Main_Commands(bot))
-bot.add_cog(polling.Poll_Commands(bot))
+
 bot.run(bot_data.token)
