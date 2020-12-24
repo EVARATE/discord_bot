@@ -40,7 +40,7 @@ async def on_ready():
     # Set activity:
     if bot_data.activity_name != '-1':
         game = discord.Game(bot_data.activity_name)
-        await bot.change_presence(status=discord.Status.idle, activity=game)
+        await bot.change_presence(status=discord.Status.online, activity=game)
     else:
         await bot.change_presence(status=None, activity=None)
 
@@ -219,7 +219,7 @@ class Main_Commands(commands.Cog):
         else:
             arg = ' '.join(args)
             game = discord.Game(arg)
-            await self.bot.change_presence(status=discord.Status.idle, activity=game)
+            await self.bot.change_presence(status=discord.Status.online, activity=game)
             configStr: str = arg
 
         # Save to config
