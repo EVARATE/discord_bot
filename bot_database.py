@@ -15,6 +15,7 @@ class bot_database:
     token: str = ''
     prefix: str = ''
     datapath: str = ''
+    activity_name: str = ''
     IDs: Dict[str, int] = {}
     locks: Dict[str, bool] = {}
     polls: List[polling.mo_poll] = []
@@ -39,6 +40,7 @@ class bot_database:
             config.set('BASE', 'token', '-1')
             config.set('BASE', 'prefix', '/')
             config.set('BASE', 'datapath', 'data/')
+            config.set('BASE', 'activity_name', '-1')
 
             config.set('IDs', 'admin_role', '-1')
             config.set('IDs', 'rule_channel', '-1')
@@ -61,6 +63,7 @@ class bot_database:
                 self.token = config['BASE']['token']
                 self.prefix = config['BASE']['prefix']
                 self.datapath = config['BASE']['datapath']
+                self.activity_name = config['BASE']['activity_name']
 
                 for (ID_key, val) in config.items('IDs'):
                     self.IDs[ID_key] = int(val)

@@ -24,7 +24,6 @@ import random
 
 bot_data = db.bot_database()
 bot = commands.Bot(command_prefix = bot_data.prefix)
-# bot.help_command = bot_help.bot_helper()
 
 # CHECKS
 
@@ -35,8 +34,15 @@ def is_admin(ctx):
 
 @bot.event
 async def on_ready():
-    print(f'Bot logged in as {bot.user}')
     bot.add_cog(polling.Poll_Commands(bot, bot_data))
+    print(f'Bot logged in as {bot.user}')
+
+    # Set activity:
+    if bot_data.activity_name != '-1':
+        game = discord.Game(bot_data.activity_name)
+        await bot.change_presence(status=discord.Status.idle, activity=game)
+    else:
+        await bot.change_presence(status=None, activity=None)
 
 @bot.event
 async def on_message(message):
@@ -54,6 +60,9 @@ class Main_Commands(commands.Cog):
     """
     This cog contains all the main commands which don't really fit into another cog.
     """
+    def __init__(self, bot):
+        self.bot = bot
+
     @commands.command(brief="Just for testing random stuff.",
                  help="This function is for testing code. Don't expect any predictable behaviour from it.",
                  aliases=["hilfe"])
@@ -172,7 +181,7 @@ class Main_Commands(commands.Cog):
 
     @commands.command(brief="Lock access to the 'echo' command.",
                       help="With this command you can lock the 'echo' command.\
-                           \n\necholock\t\t-> Current lock status\necholock toggle\t-> Toggle lock\
+                           \n\necholock\t-> Show current lock status\necholock toggle\t-> Toggle lock\
                             \n\nAlternatives to 'toggle' are 'switch' and 'change'",
                       usage="[<none>, toggle, switch, change]")
     async def echolock(self, ctx, *args):
@@ -200,7 +209,27 @@ class Main_Commands(commands.Cog):
         else:
             await ctx.send(f'Error: Invalid argument. See `{bot_data.prefix}help echo` for information on the command.')
 
+    @commands.check(is_admin)
+    @commands.command(brief="Change the 'Playing' status of the bot.",
+                      help = "Changes the 'Playing' status of the bot to the specified text. If no argument is given the status will be removed.")
+    async def setactivity(self, ctx, *args):
+        if not args:
+            await self.bot.change_presence(status=None, activity=None)
+            configStr: str = '-1'
+        else:
+            arg = ' '.join(args)
+            game = discord.Game(arg)
+            await self.bot.change_presence(status=discord.Status.idle, activity=game)
+            configStr: str = arg
+
+        # Save to config
+        config = configparser.ConfigParser()
+        config.read('config.txt')
+        config.set('BASE', 'activity_name', configStr)
+
+        with open('config.txt', 'w') as configfile:
+            config.write(configfile)
+
 
 bot.add_cog(Main_Commands(bot))
-
 bot.run(bot_data.token)
