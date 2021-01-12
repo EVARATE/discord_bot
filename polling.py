@@ -169,7 +169,7 @@ class pollOption:
     voterIDs: List[int] = []
 
     def hasVoted(self, voterID: str) -> bool:
-        if voterID in self.voterIDs:
+        if int(voterID) in self.voterIDs:
             return True
         return False
 

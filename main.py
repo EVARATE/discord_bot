@@ -67,7 +67,7 @@ class Main_Commands(commands.Cog):
                  help="This function is for testing code. Don't expect any predictable behaviour from it.",
                  aliases=["hilfe"])
     async def test(self, ctx):
-        await ctx.send(f'Prefix in db is {bot_data.prefix}')
+        pass
 
     @commands.command(brief="Countdown from value. Default is 10s.",
                  help="Start a countdown from a designated value or 10 seconds if none has been specified.",
@@ -179,16 +179,13 @@ class Main_Commands(commands.Cog):
         else:
             await ctx.send('Error: This command is currently locked.', delete_after=10.0)
 
+    @commands.check(is_admin)
     @commands.command(brief="Lock access to the 'echo' command.",
                       help="With this command you can lock the 'echo' command.\
                            \n\necholock\t-> Show current lock status\necholock toggle\t-> Toggle lock\
                             \n\nAlternatives to 'toggle' are 'switch' and 'change'",
                       usage="[<none>, toggle, switch, change]")
     async def echolock(self, ctx, *args):
-        if not is_admin(ctx):
-            await ctx.send('Error: You do not have permission to run this command.', delete_after=10.0)
-            return
-
         arg = args[0] if len(args) > 0 else ""
         if arg in ['toggle', 'switch', 'change']:
             bot_data.locks['echo'] = not bot_data.locks['echo']
