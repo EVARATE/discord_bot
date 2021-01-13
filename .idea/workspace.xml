@@ -25,10 +25,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Changed bot standard activity status from 'idle' to 'online'">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Fixed bug where people could vote multiple times">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polling.py" beforeDir="false" afterPath="$PROJECT_DIR$/polling.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,13 +103,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00010" summary="/help is now up to date">
-      <created>1606593526679</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1606593526679</updated>
     </task>
     <task id="LOCAL-00011" summary="Introduced panic message. Also new command /random">
       <created>1606679091930</created>
@@ -449,7 +440,14 @@
       <option name="project" value="LOCAL" />
       <updated>1608825521743</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="Fixed bug where people could vote multiple times">
+      <created>1610467196367</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1610467196367</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -480,7 +478,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Polls can now be closed and deleted.&#10;&#10;Fixed bugs with loading/saving polls" />
     <MESSAGE value="Code cleanup" />
     <MESSAGE value="Updated Help message" />
     <MESSAGE value="Added echo command" />
@@ -505,7 +502,8 @@
     <MESSAGE value="Updated README.md" />
     <MESSAGE value="Added admin command /setactivity" />
     <MESSAGE value="Changed bot standard activity status from 'idle' to 'online'" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed bot standard activity status from 'idle' to 'online'" />
+    <MESSAGE value="Fixed bug where people could vote multiple times" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed bug where people could vote multiple times" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1606999483539">
@@ -529,26 +527,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608579396173" />
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1610467099143">
+    <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1610467263814">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467099143" />
-    <state width="1899" height="184" key="GridCell.Tab.0.center" timestamp="1610467099143">
+    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467263814" />
+    <state width="1899" height="184" key="GridCell.Tab.0.center" timestamp="1610467263814">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467099143" />
-    <state width="1899" height="184" key="GridCell.Tab.0.left" timestamp="1610467099142">
+    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467263814" />
+    <state width="1899" height="184" key="GridCell.Tab.0.left" timestamp="1610467263814">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467099142" />
-    <state width="1899" height="184" key="GridCell.Tab.0.right" timestamp="1610467099143">
+    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467263814" />
+    <state width="1899" height="184" key="GridCell.Tab.0.right" timestamp="1610467263814">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467099143" />
+    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467263814" />
     <state width="1899" height="213" key="GridCell.Tab.1.bottom" timestamp="1608830782006">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -579,11 +577,11 @@
     </state>
     <state x="-1691" y="102" width="1295" height="859" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606742645125" />
     <state x="409" y="118" width="998" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607977202647" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1608825525701">
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610467204100">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1848" y="252" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126754051" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608825525701" />
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610467204100" />
     <state x="72" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197421950" />
     <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1606848577147">
       <screen x="0" y="0" width="1920" height="1040" />

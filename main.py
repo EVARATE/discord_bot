@@ -132,6 +132,7 @@ class Main_Commands(commands.Cog):
                       \nIf available the quote will also be sent to a dedicated text channel.",
                  usage='"<Author>" "<Quote>" "<Optional context>"')
     async def quote(self, ctx, *args):
+        await ctx.message.delete()
         if len(args) < 2 or len(args) > 3:
             await ctx.send(f"Error: Invalid arguments. Type `{bot_data.prefix}help quote` for information on the command",
                            delete_after=10.0)
@@ -164,7 +165,7 @@ class Main_Commands(commands.Cog):
                 await quote_channel.send(f':\n**Person:** {author_name}\
                                             \n**Zitat:** {quote_text}\
                                             \n**Kontext:** {quote_context}')
-            await ctx.send('Saved quote.')
+            await ctx.send('Saved quote.', delete_after=10)
         except:
             await ctx.send(f'There was an error saving the quote. Type `{bot_data.prefix}help quote` for correct format.',
                            delete_after=10.0)
