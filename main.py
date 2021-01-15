@@ -14,6 +14,7 @@ import configparser
 import bot_database as db
 import mathParser
 import polling
+import tictactoe
 import misc_functions as misc
 from typing import List, Dict
 import os
@@ -35,6 +36,7 @@ def is_admin(ctx):
 @bot.event
 async def on_ready():
     bot.add_cog(polling.Poll_Commands(bot, bot_data))
+    bot.add_cog(tictactoe.tic_tac_toe(bot, bot_data))
     print(f'Bot logged in as {bot.user}')
 
     # Set activity:

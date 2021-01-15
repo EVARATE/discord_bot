@@ -223,8 +223,6 @@ class Poll_Commands(commands.Cog):
     async def updatePoll(self, currPoll: poll, backup_channelID: int):
         channel = self.bot.get_channel(currPoll.msgChannelID)
 
-        # TODO
-        # This does not work if message doesn't exist anymore
         if not (channel is None):
             try:
                 message = await channel.fetch_message(currPoll.msgMessageID)
