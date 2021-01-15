@@ -435,12 +435,12 @@ class mo_poll:
             settings.append("`multiple_choice`")
         if self.custOpt:
             settings.append("`custom_options`")
-        setStr = ("\nEinstellungen: " + ", ".join(settings) + "\n") if settings else ''
+        setStr = ("\nEinstellungen: " + ", ".join(settings) + "\n") if settings else '\nKeine Einstellungen.\n'
 
         # Options to string:
         optStr = ''
         for opt in self.options:
-            optStr += f'`{opt.id}:` {opt.value}        **{int(self.getOptPercentage(opt.id)*100)}%** ({len(opt.voterIDs)}/{self.getVoterCount()})\n'
+            optStr += f'`{opt.id}:` {opt.value}        ({len(opt.voterIDs)}/{self.getVoterCount()}) **{int(self.getOptPercentage(opt.id)*100)}%**\n'
 
         # Clarifications:
         if not self.isClosed:

@@ -25,9 +25,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added commands pollset, polladd, pollrem and corresponding functionality">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="View votercount in polls, new command pollmove to move polls">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/polling.py" beforeDir="false" afterPath="$PROJECT_DIR$/polling.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -104,13 +103,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Added Lecture commands to bucket list">
-      <created>1606680347903</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1606680347903</updated>
     </task>
     <task id="LOCAL-00014" summary="Added Quote to bucket list">
       <created>1606745554124</created>
@@ -448,7 +440,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610656855103</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="View votercount in polls, new command pollmove to move polls">
+      <created>1610722674036</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1610722674036</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -479,7 +478,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added echo command" />
     <MESSAGE value="Removed wichteln commands" />
     <MESSAGE value="Removed unused praw lib" />
     <MESSAGE value="Code Cosmetics, Type Safety" />
@@ -504,7 +502,8 @@
     <MESSAGE value="Fixed bug where people could vote multiple times" />
     <MESSAGE value="When adding a quote, the original message gets deleted as well as the confirmation message after 10 seconds to reduce spamming." />
     <MESSAGE value="Added commands pollset, polladd, pollrem and corresponding functionality" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added commands pollset, polladd, pollrem and corresponding functionality" />
+    <MESSAGE value="View votercount in polls, new command pollmove to move polls" />
+    <option name="LAST_COMMIT_MESSAGE" value="View votercount in polls, new command pollmove to move polls" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1606999483539">
@@ -532,26 +531,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608579396173" />
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1610722573891">
+    <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1610724279686">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610722573891" />
-    <state width="1899" height="184" key="GridCell.Tab.0.center" timestamp="1610722573891">
+    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610724279686" />
+    <state width="1899" height="184" key="GridCell.Tab.0.center" timestamp="1610724279686">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610722573891" />
-    <state width="1899" height="184" key="GridCell.Tab.0.left" timestamp="1610722573891">
+    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610724279686" />
+    <state width="1899" height="184" key="GridCell.Tab.0.left" timestamp="1610724279686">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610722573891" />
-    <state width="1899" height="184" key="GridCell.Tab.0.right" timestamp="1610722573891">
+    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610724279686" />
+    <state width="1899" height="184" key="GridCell.Tab.0.right" timestamp="1610724279686">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610722573891" />
+    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610724279686" />
     <state width="1899" height="213" key="GridCell.Tab.1.bottom" timestamp="1608830782006">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -582,11 +581,11 @@
     </state>
     <state x="-1691" y="102" width="1295" height="859" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606742645125" />
     <state x="823" y="93" width="1095" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610658909607" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610656862502">
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610722682115">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1848" y="252" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126754051" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610656862502" />
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610722682115" />
     <state x="72" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197421950" />
     <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1606848577147">
       <screen x="0" y="0" width="1920" height="1040" />
