@@ -138,7 +138,7 @@ class tttGame:
                f'B     {self.gameMatrix[0][1]}  |  {self.gameMatrix[1][1]}  |  {self.gameMatrix[2][1]}\n' \
                f'    -----|-----|-----\n' \
                f'C     {self.gameMatrix[0][2]}  |  {self.gameMatrix[1][2]}  |  {self.gameMatrix[2][2]}\n' \
-               f'```\nPlay via `{prefix}ttt {self.id} __`'
+               f'```\nPlay via e.g. `{prefix}ttt {self.id} A1` for A1'
 
     def isActivePlayer(self, playerName: str) -> bool:
         if self.player1sTurn and playerName == self.player1Name:

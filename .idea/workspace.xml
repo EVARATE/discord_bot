@@ -28,12 +28,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Changed poll message formatting">
-      <change afterPath="$PROJECT_DIR$/tictactoe.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/misc_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polling.py" beforeDir="false" afterPath="$PROJECT_DIR$/polling.py" afterDir="false" />
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Tic Tac Toe is now in beta">
+      <change beforePath="$PROJECT_DIR$/tictactoe.py" beforeDir="false" afterPath="$PROJECT_DIR$/tictactoe.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,13 +105,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Added 'startswithElement()' function that works with lists.">
-      <created>1606750369724</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1606750369724</updated>
     </task>
     <task id="LOCAL-00016" summary="Added alternative triggers for some commands">
       <created>1606757936117</created>
@@ -453,7 +442,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610724815866</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Tic Tac Toe is now in beta">
+      <created>1610746211391</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1610746211392</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -484,7 +480,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Removed unused praw lib" />
     <MESSAGE value="Code Cosmetics, Type Safety" />
     <MESSAGE value="added lock for /echo command" />
     <MESSAGE value="Code cosmetics" />
@@ -509,7 +504,8 @@
     <MESSAGE value="Added commands pollset, polladd, pollrem and corresponding functionality" />
     <MESSAGE value="View votercount in polls, new command pollmove to move polls" />
     <MESSAGE value="Changed poll message formatting" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed poll message formatting" />
+    <MESSAGE value="Tic Tac Toe is now in beta" />
+    <option name="LAST_COMMIT_MESSAGE" value="Tic Tac Toe is now in beta" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1610732468372">
@@ -587,11 +583,11 @@
     </state>
     <state x="-1691" y="102" width="1295" height="859" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606742645125" />
     <state x="823" y="93" width="1095" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610658909607" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610724820569">
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610746252928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1848" y="252" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126754051" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610724820569" />
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610746252928" />
     <state x="72" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197421950" />
     <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1606848577147">
       <screen x="0" y="0" width="1920" height="1040" />
