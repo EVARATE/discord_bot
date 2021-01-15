@@ -21,8 +21,6 @@ class bot_database:
     polls: List[polling.mo_poll] = []
     nextPollID: int = 0
 
-
-
     def __init__(self):
         # Initialize empty arrays:
         self.IDs = {}

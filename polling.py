@@ -24,8 +24,6 @@ class Poll_Commands(commands.Cog):
         # self.pp = await self.get_pp() # not sure if I need this
         await self.load_all_polls()
 
-
-
     @commands.command(brief="Create new poll",
                       help="Create a new poll with a topic and as many options as you like.",
                       usage='"<topic>" "<option1>" "<option2>" ...')
@@ -195,18 +193,46 @@ class Poll_Commands(commands.Cog):
                     return
         ctx.send(f"Error: Couldn't find poll with id `{args[0]}`")
 
+    @commands.command(brief="Move poll to different channel",
+                      help="This command deletes the message of the selected poll and resends it to the channel you are in.",
+                      usage="<pollID>",
+                      aliases=["movepoll"])
+    async def pollmove(self, ctx, arg):
+        await ctx.message.delete()
+        if not arg.isdigit():
+            await ctx.send(f"Error: Invalid pollID: `{arg}`", delete_after=10.0)
+            return
+        for poll in self.bot_data.polls:
+            if poll.id == int(arg):
+                orig_chnl = self.bot.get_channel(poll.msgChannelID)
+                try:
+                    orig_msg = await orig_chnl.fetch_message(poll.msgMessageID)
+                    # Delete original message:
+                    await orig_msg.delete()
+                except:
+                    print("Warning: Moving nonexistent poll message")
+                # Set IDs to new message:
+                poll.msgChannelID = ctx.channel.id
+                poll.msgMessageID = ctx.message.id
+                # Update the message:
+                await self.updatePoll(poll, ctx.channel.id)
+                poll.savePoll(f'{self.bot_data.datapath}polls/poll{poll.id}.txt')
+                return
+        await ctx.send(f"Error: Couldn't find poll with ID `{arg}`", delete_after=10.0)
+
     async def updatePoll(self, currPoll: poll, backup_channelID: int):
         channel = self.bot.get_channel(currPoll.msgChannelID)
 
+        # TODO
+        # This does not work if message doesn't exist anymore
         if not (channel is None):
-            message = await channel.fetch_message(currPoll.msgMessageID)
-            if not (message is None):
-                # Everything works out:
+            try:
+                message = await channel.fetch_message(currPoll.msgMessageID)
                 await message.edit(content=currPoll.getPollMsg(self.bot_data.prefix))
-            else:
-                # Message doesn't exist anymore:
+            except:
                 resendMsg = await channel.send(currPoll.getPollMsg(self.bot_data.prefix))
                 currPoll.msgMessageID = resendMsg.id
+
         else:
             # Channel doesn't exist:
             backup_channel = self.bot.get_channel(backup_channelID)
@@ -373,6 +399,13 @@ class mo_poll:
                 return True
         return False
 
+    def getVoterCount(self) -> int:
+        voterIDSet = set()
+        for opt in self.options:
+            for voterID in opt.voterIDs:
+                voterIDSet.add(voterID)
+        return len(voterIDSet)
+
     def getOptPercentage(self, optionID: int) -> float:
         totalVotes = 0
         optVotes = 0
@@ -407,7 +440,7 @@ class mo_poll:
         # Options to string:
         optStr = ''
         for opt in self.options:
-            optStr += f'`{opt.id}:` {opt.value} **{int(self.getOptPercentage(opt.id)*100)}%** ({len(opt.voterIDs)})\n'
+            optStr += f'`{opt.id}:` {opt.value}        **{int(self.getOptPercentage(opt.id)*100)}%** ({len(opt.voterIDs)}/{self.getVoterCount()})\n'
 
         # Clarifications:
         if not self.isClosed:
