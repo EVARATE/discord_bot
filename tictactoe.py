@@ -22,7 +22,18 @@ class tic_tac_toe(commands.Cog):
                       help="Create a new Tic Tac Toe game. One more player must join to play.")
     async def tttnew(self, ctx):
         await ctx.message.delete()
-        newtttGame = tttGame(self.get_ttt_ID(), ctx.author.name)
+
+        for game in self.tttGames:
+            if ctx.author.id == game.player1ID:
+                game.player1ID = -1
+                game.player1Name = ''
+                await self.updateGameMsg(game)
+            elif ctx.author.id == game.player2ID:
+                game.player2ID = -1
+                game.player2Name = ''
+                await self.updateGameMsg(game)
+
+        newtttGame = tttGame(self.get_ttt_ID(), ctx.author.name, ctx.author.id)
         gameMsg = await ctx.send(newtttGame.getBoardStr(self.bot_data.prefix))
         newtttGame.msgChannelID = gameMsg.channel.id
         newtttGame.msgMessageID = gameMsg.id
@@ -36,29 +47,53 @@ class tic_tac_toe(commands.Cog):
         if not arg.isdigit():
             await ctx.send(f"Error: Invalid gameID: `{arg}`", delete_after=10.0)
             return
+
+        # Exit any other games author is in:
+        for game in self.tttGames:
+            if ctx.author.id == game.player1ID:
+                game.player1ID = -1
+                game.player1Name = ''
+                await self.updateGameMsg(game)
+            elif ctx.author.id == game.player2ID:
+                game.player2ID = -1
+                game.player2Name = ''
+                await self.updateGameMsg(game)
+
         for game in self.tttGames:
             if game.id == int(arg) and not game.isRunning:
-                game.addPlayer2(ctx.author.name)
+                game.addPlayer2(ctx.author.name, ctx.author.id)
                 game.startGame()
                 await self.updateGameMsg(game)
             else:
                 await ctx.send(f"Couldn't find open game with id `{arg}`", delete_after=10.0)
 
     @commands.command(brief="Play a move",
-                      help="Play a move in the game you are in.\n\nExample:\t/ttt 0 A2",
-                      usage="<gameID> <coordinate>")
-    async def ttt(self, ctx, *args):
+                      help="Play a move in the game you are in.\n\nExample:\t/ttt A1\n\n'1a' and '1A' are also valid.",
+                      usage="<coordinate>")
+    async def ttt(self, ctx, arg):
         await ctx.message.delete()
-        if not (len(args) == 2 and len(args[1]) == 2 and args[1][0].lower() in ['a', 'b', 'c'] and args[1][1] in ['1', '2', '3']):
-            await ctx.send("Error: Invalid syntax. Don't forget the `gameID` or the coordinates such as `A0`",
-                           delete_after=10.0)
+        if len(arg) != 2:
+            ctx.send("Error: only two letters/digits allowed. E.g. `A1` or `a1`", delete_after=10.0)
             return
+        if  arg[0].lower() in ['a', 'b', 'c'] and arg[1] in ['1', '2', '3']:
+            letterFirst = True
+        elif arg[1].lower() in ['a', 'b', 'c'] and arg[0] in ['1', '2', '3']:
+            letterFirst = False
+        else:
+            ctx.send("Error: Coordinates must be e.g. `A1` or `a1`", delete_after=10.0)
+            return
+
         for game in self.tttGames:
-            if game.id == int(args[0]):
-                game.makeMove(ctx.author.name, game.charToYcoord(args[1][0]) - 1, int(args[1][1]) - 1)
+            # Find game in which author is player:
+            if ctx.author.id in [game.player1ID, game.player2ID]:
+                if letterFirst:
+                    game.makeMove(ctx.author.name, game.charToYcoord(arg[0]) - 1, int(arg[1]) - 1)
+                else:
+                    game.makeMove(ctx.author.name, game.charToYcoord(arg[1]) - 1, int(arg[0]) - 1)
+
                 await self.updateGameMsg(game)
                 return
-        await ctx.send("Couldn't play move.", delete_after=5.0)
+        await ctx.send("Error playing move.", delete_after=5.0)
 
     async def updateGameMsg(self, game):
         channel = self.bot.get_channel(game.msgChannelID)
@@ -82,6 +117,8 @@ class tttGame:
     id: int = -1
     player1Name: str = ""
     player2Name: str = ""
+    player1ID: int = -1
+    player2ID: int = -1
     player1sTurn: bool = False
 
     gameMatrix = []
@@ -90,18 +127,20 @@ class tttGame:
     msgChannelID: int = -1
     msgMessageID: int = -1
 
-    def __init__(self, gameID: int, player1Name: str):
+    def __init__(self, gameID: int, player1Name: str, player1ID: int):
         self.gameMatrix = [[' ', ' ', ' '],
                            [' ', ' ', ' '],
                            [' ', ' ', ' ']]
         self.isRunning = False
         self.id = gameID
         self.player1Name = player1Name
+        self.player1ID = player1ID
         self.player1sTurn = False
 
-    def addPlayer2(self, player2Name: str):
+    def addPlayer2(self, player2Name: str, player2ID: int):
         if not self.isRunning:
             self.player2Name = player2Name
+            self.player2ID = player2ID
 
     def startGame(self):
         self.isRunning = True
@@ -123,12 +162,12 @@ class tttGame:
         pass
 
     def getBoardStr(self, prefix: str):
-        if not self.isRunning:
-            player2Str = f"Waiting for player 2 via ``{prefix}tttjoin {self.id}` ..."
+        if not self.isRunning or self.player2ID == -1:
+            player2Str = f"*Waiting for player 2 via*  `{prefix}tttjoin {self.id}`"
         else:
             player2Str = f"**{self.player2Name}**" if not self.player1sTurn else self.player2Name
 
-        return f':\n**Tic Tac Toe** -- Game-`{self.id}`' \
+        return f'**Tic Tac Toe**\t\tGame-`{self.id}`' \
                f'\nPlayer 1  (`X`):    {f"**{self.player1Name}**" if self.player1sTurn else self.player1Name}' \
                f'\nPlayer 2 (`O`):    {player2Str}' \
                f'\n\n```\n' \
@@ -138,7 +177,7 @@ class tttGame:
                f'B     {self.gameMatrix[0][1]}  |  {self.gameMatrix[1][1]}  |  {self.gameMatrix[2][1]}\n' \
                f'    -----|-----|-----\n' \
                f'C     {self.gameMatrix[0][2]}  |  {self.gameMatrix[1][2]}  |  {self.gameMatrix[2][2]}\n' \
-               f'```\nPlay via e.g. `{prefix}ttt {self.id} A1` for A1'
+               f'```\nPlay via e.g. `{prefix}ttt A1` for A1'
 
     def isActivePlayer(self, playerName: str) -> bool:
         if self.player1sTurn and playerName == self.player1Name:
