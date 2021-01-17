@@ -86,7 +86,7 @@ class tic_tac_toe(commands.Cog):
                 if letterFirst:
                     game.makeMove(ctx.author.id, int(arg[1]) - 1, game.charToCoord(arg[0]) - 1)
                 else:
-                    game.makeMove(ctx.author.id, int(arg[0] - 1), game.charToCoord(arg[1]) - 1)
+                    game.makeMove(ctx.author.id, int(arg[0]) - 1, game.charToCoord(arg[1]) - 1)
                 await self.updateGameMsg(game)
 
     async def updateGameMsg(self, game):
