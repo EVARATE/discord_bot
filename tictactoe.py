@@ -229,7 +229,6 @@ class tttGame:
                 retVal = ''
         return retVal
 
-
     def charToCoord(self, char: str) -> int:
         char = char.lower()
         if char == 'a':

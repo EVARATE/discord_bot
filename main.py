@@ -37,7 +37,6 @@ def is_admin(ctx):
 async def on_ready():
     bot.add_cog(polling.Poll_Commands(bot, bot_data))
     bot.add_cog(tictactoe.tic_tac_toe(bot, bot_data))
-    print(f'Bot logged in as {bot.user}')
 
     # Set activity:
     if bot_data.activity_name != '-1':
@@ -45,6 +44,8 @@ async def on_ready():
         await bot.change_presence(status=discord.Status.online, activity=game)
     else:
         await bot.change_presence(status=None, activity=None)
+
+    print(f'Bot logged in as {bot.user}')
 
 @bot.event
 async def on_message(message):
