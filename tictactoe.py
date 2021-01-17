@@ -21,7 +21,7 @@ class tic_tac_toe(commands.Cog):
 
     @commands.command(brief="Create new Game",
                       help="Create a new Tic Tac Toe game. One more player must join to play.")
-    async def tttnew(self, ctx):
+    async def tnew(self, ctx):
         await ctx.message.delete()
         # leave all other games:
         for game in self.tttGames:
@@ -41,7 +41,7 @@ class tic_tac_toe(commands.Cog):
     @commands.command(brief="Join an open game",
                       help="Join an open Tic Tac Toe game.",
                       usage="<gameID>")
-    async def tttjoin(self, ctx, arg):
+    async def tjoin(self, ctx, arg):
         await ctx.message.delete()
         # Check syntax:
         if not arg.isdigit():
@@ -63,9 +63,9 @@ class tic_tac_toe(commands.Cog):
         await ctx.send(f'Error: Couldn\'t find game with id `{arg}`', delete_after=10.0)
 
     @commands.command(brief="Play a move",
-                      help="Play a move in the game you are in.\n\nExample:\t/ttt A1\n\n'1a' and '1A' are also valid.",
+                      help="Play a move in the game you are in.\n\nExample:\t/t A1\n\n'1a' and '1A' are also valid.",
                       usage="<coordinate>")
-    async def ttt(self, ctx, arg):
+    async def t(self, ctx, arg):
         await ctx.message.delete()
         # Check syntax:
         if len(arg) != 2 or not re.match('[abcABC][123]|[123][abcABC]', arg):
@@ -163,7 +163,7 @@ class tttGame:
             self.isPlayer1Turn = random.choice([True, False])
 
     def makeMove(self, playerID: int, xcoord: int, ycoord: int):
-        if self.checkWin() != '':
+        if self.checkWin() not in ['', 'd']:
             self.gameMatrix = [[' ', ' ', ' '],
                                [' ', ' ', ' '],
                                [' ', ' ', ' ']]
@@ -177,15 +177,17 @@ class tttGame:
 
     def getBoardStr(self, prefix: str):
         player1Str = self.player1['name'] if self.player1[
-                                                 'id'] != -1 else f'*Waiting for Player 1 via* `{prefix}tttjoin {self.id}`'
+                                                 'id'] != -1 else f'*Waiting for Player 1 via* `{prefix}tjoin {self.id}`'
         player2Str = self.player2['name'] if self.player2[
-                                                 'id'] != -1 else f'*Waiting for Player 2 via* `{prefix}tttjoin {self.id}`'
+                                                 'id'] != -1 else f'*Waiting for Player 2 via* `{prefix}tjoin {self.id}`'
 
         winChar = self.checkWin()
         if winChar == 'X':
             winStr = f'{self.player1["name"]} has won!!!'
         elif winChar == 'O':
             winStr = f'{self.player2["name"]} has won!!!'
+        elif winChar == 'd':
+            winStr = 'Game was a draw.'
         else:
             winStr = ''
 
@@ -199,24 +201,34 @@ class tttGame:
                f'B     {self.gameMatrix[0][1]}  |  {self.gameMatrix[1][1]}  |  {self.gameMatrix[2][1]}\t{winStr}\n' \
                f'    -----|-----|-----\n' \
                f'C     {self.gameMatrix[0][2]}  |  {self.gameMatrix[1][2]}  |  {self.gameMatrix[2][2]}\n' \
-               f'```\n' \
-               f'Play via e.g. `{prefix}ttt A1` for A1'
+               f'```{ "Play any move to restart the game." if winChar != "" else ""}\n' \
+               f'Play via e.g. `{prefix}t A1` for A1'
 
-    def checkWin(self) -> str:  # returns either ['X', 'O', '']
+    def checkWin(self) -> str:  # returns either ['X', 'O', 'd', ''], 'd' stands for 'draw'
         for sym in ['X', 'O']:
-            gm = self.gameMatrix
 
-            if [sym, sym, sym] in [[gm[0][0], gm[1][0], gm[2][0]],  # Horizontal
-                                   [gm[0][1], gm[1][1], gm[2][1]],
-                                   [gm[0][2], gm[1][2], gm[2][2]],
-                                   [gm[0][0], gm[0][1], gm[0][2]],  # Vertical
-                                   [gm[1][0], gm[1][1], gm[1][2]],
-                                   [gm[2][0], gm[2][1], gm[2][2]],
-                                   [gm[0][0], gm[1][1], gm[2][2]],  # Diagonal
-                                   [gm[2][0], gm[1][1], gm[0][2]]]:
-                return sym
+            def checkDraw() -> bool:
+                for line in self.gameMatrix:
+                    for el in line:
+                        if el == ' ':
+                            return False
+                return True
+
+            if [sym, sym, sym] in [[self.gameMatrix[0][0], self.gameMatrix[1][0], self.gameMatrix[2][0]],  # Horizontal
+                                   [self.gameMatrix[0][1], self.gameMatrix[1][1], self.gameMatrix[2][1]],
+                                   [self.gameMatrix[0][2], self.gameMatrix[1][2], self.gameMatrix[2][2]],
+                                   [self.gameMatrix[0][0], self.gameMatrix[0][1], self.gameMatrix[0][2]],  # Vertical
+                                   [self.gameMatrix[1][0], self.gameMatrix[1][1], self.gameMatrix[1][2]],
+                                   [self.gameMatrix[2][0], self.gameMatrix[2][1], self.gameMatrix[2][2]],
+                                   [self.gameMatrix[0][0], self.gameMatrix[1][1], self.gameMatrix[2][2]],  # Diagonal
+                                   [self.gameMatrix[2][0], self.gameMatrix[1][1], self.gameMatrix[0][2]]]:
+                retVal = sym
+            elif checkDraw():
+                return 'd'
             else:
-                return ''
+                retVal = ''
+        return retVal
+
 
     def charToCoord(self, char: str) -> int:
         char = char.lower()
@@ -227,86 +239,3 @@ class tttGame:
         else:
             return 3
 
-    '''
-    id: int = -1
-    player1Name: str = ""
-    player2Name: str = ""
-    player1ID: int = -1
-    player2ID: int = -1
-    player1sTurn: bool = False
-
-    gameMatrix = []
-    isRunning: bool = False
-
-    msgChannelID: int = -1
-    msgMessageID: int = -1
-
-    def __init__(self, gameID: int, player1Name: str, player1ID: int):
-        self.gameMatrix = [[' ', ' ', ' '],
-                           [' ', ' ', ' '],
-                           [' ', ' ', ' ']]
-        self.isRunning = False
-        self.id = gameID
-        self.player1Name = player1Name
-        self.player1ID = player1ID
-        self.player1sTurn = False
-
-    def addPlayer2(self, player2Name: str, player2ID: int):
-        if not self.isRunning:
-            self.player2Name = player2Name
-            self.player2ID = player2ID
-
-    def startGame(self):
-        self.isRunning = True
-        rnd = random.random()
-        self.player1sTurn = True if rnd < 0.5 else False
-
-    def makeMove(self, playerName: str, ycoord: int, xcoord: int):
-        activePlayer = self.isActivePlayer(playerName)
-        freeSlot = True if self.gameMatrix[xcoord][ycoord] == ' ' else False
-        if activePlayer and freeSlot:
-            if self.player1sTurn:
-                self.gameMatrix[xcoord][ycoord] = 'X'
-            else:
-                self.gameMatrix[xcoord][ycoord] = 'O'
-            self.player1sTurn = not self.player1sTurn
-            self.checkWinner()
-
-    def checkWinner(self):
-        pass
-
-    def getBoardStr(self, prefix: str):
-        if not self.isRunning or self.player2ID == -1:
-            player2Str = f"*Waiting for player 2 via*  `{prefix}tttjoin {self.id}`"
-        else:
-            player2Str = f"**{self.player2Name}**" if not self.player1sTurn else self.player2Name
-
-        return f'**Tic Tac Toe:** Game-`{self.id}`' \
-               f'\nPlayer 1  (`X`):    {f"**{self.player1Name}**" if self.player1sTurn else self.player1Name}' \
-               f'\nPlayer 2 (`O`):    {player2Str}' \
-               f'\n\n```\n' \
-               f'      1     2     3\n' \
-               f'A     {self.gameMatrix[0][0]}  |  {self.gameMatrix[1][0]}  |  {self.gameMatrix[2][0]}\n' \
-               f'    -----|-----|-----\n' \
-               f'B     {self.gameMatrix[0][1]}  |  {self.gameMatrix[1][1]}  |  {self.gameMatrix[2][1]}\n' \
-               f'    -----|-----|-----\n' \
-               f'C     {self.gameMatrix[0][2]}  |  {self.gameMatrix[1][2]}  |  {self.gameMatrix[2][2]}\n' \
-               f'```\nPlay via e.g. `{prefix}ttt A1` for A1'
-
-    def isActivePlayer(self, playerName: str) -> bool:
-        if self.player1sTurn and playerName == self.player1Name:
-            return True
-        elif not self.player1sTurn and playerName == self.player2Name:
-            return True
-        else:
-            return False
-
-    def charTocoord(self, char: str) -> int:
-        char = char.lower()
-        if char == 'a':
-            return 1
-        elif char == 'b':
-            return 2
-        else:
-            return 3
-'''
