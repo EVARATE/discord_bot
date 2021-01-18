@@ -93,9 +93,10 @@ class tic_tac_toe(commands.Cog):
                       help="Leave all games you are in.",
                       aliases=['tquit', 'texit'])
     async def tleave(self, ctx):
+        await ctx.message.delete()
         for game in self.tttGames:
             if game.removePlayer(ctx.author.id):
-                self.updateGameMsg(game)
+                await self.updateGameMsg(game)
 
     async def updateGameMsg(self, game):
         channel = self.bot.get_channel(game.msgChannelID)

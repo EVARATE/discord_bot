@@ -28,7 +28,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Fixed bug where ttt coordinate with number first wasnt recognized">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added tleave command and fixed bug where ttt game didn't restart after draw">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tictactoe.py" beforeDir="false" afterPath="$PROJECT_DIR$/tictactoe.py" afterDir="false" />
     </list>
@@ -106,13 +106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Code cosmetics">
-      <created>1607000593516</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1607000593518</updated>
     </task>
     <task id="LOCAL-00024" summary="Started /poll command. Not done yet.">
       <created>1607287162651</created>
@@ -450,7 +443,14 @@
       <option name="project" value="LOCAL" />
       <updated>1610917782138</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="Added tleave command and fixed bug where ttt game didn't restart after draw">
+      <created>1610974843493</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1610974843494</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -481,7 +481,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Adapted README.md" />
     <MESSAGE value="More commands" />
     <MESSAGE value="Implemented /quote command" />
     <MESSAGE value="Small code improvements" />
@@ -506,7 +505,8 @@
     <MESSAGE value="Fixed bug where 'O' couldn't win. Added 'draw' detection. Improved game message." />
     <MESSAGE value="Tiny code cleanup." />
     <MESSAGE value="Fixed bug where ttt coordinate with number first wasnt recognized" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed bug where ttt coordinate with number first wasnt recognized" />
+    <MESSAGE value="Added tleave command and fixed bug where ttt game didn't restart after draw" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added tleave command and fixed bug where ttt game didn't restart after draw" />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1610732468372">
@@ -584,11 +584,11 @@
     </state>
     <state x="-1691" y="102" width="1295" height="859" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606742645125" />
     <state x="823" y="93" width="1095" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610658909607" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610917785653">
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1610974857784">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1848" y="252" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126754051" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610917785653" />
+    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1610974857784" />
     <state x="72" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197421950" />
     <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1606848577147">
       <screen x="0" y="0" width="1920" height="1040" />
