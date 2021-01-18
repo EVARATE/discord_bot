@@ -89,6 +89,14 @@ class tic_tac_toe(commands.Cog):
                     game.makeMove(ctx.author.id, int(arg[0]) - 1, game.charToCoord(arg[1]) - 1)
                 await self.updateGameMsg(game)
 
+    @commands.command(brief="Leave all games.",
+                      help="Leave all games you are in.",
+                      aliases=['tquit', 'texit'])
+    async def tleave(self, ctx):
+        for game in self.tttGames:
+            if game.removePlayer(ctx.author.id):
+                self.updateGameMsg(game)
+
     async def updateGameMsg(self, game):
         channel = self.bot.get_channel(game.msgChannelID)
 
@@ -163,7 +171,7 @@ class tttGame:
             self.isPlayer1Turn = random.choice([True, False])
 
     def makeMove(self, playerID: int, xcoord: int, ycoord: int):
-        if self.checkWin() not in ['', 'd']:
+        if self.checkWin() != '':
             self.gameMatrix = [[' ', ' ', ' '],
                                [' ', ' ', ' '],
                                [' ', ' ', ' ']]
@@ -207,12 +215,11 @@ class tttGame:
     def checkWin(self) -> str:  # returns either ['X', 'O', 'd', ''], 'd' stands for 'draw'
         for sym in ['X', 'O']:
 
-            def checkDraw() -> bool:
-                for line in self.gameMatrix:
-                    for el in line:
-                        if el == ' ':
-                            return False
-                return True
+            checkDraw = True
+            for line in self.gameMatrix:
+                for el in line:
+                    if el == ' ':
+                        checkDraw = False
 
             if [sym, sym, sym] in [[self.gameMatrix[0][0], self.gameMatrix[1][0], self.gameMatrix[2][0]],  # Horizontal
                                    [self.gameMatrix[0][1], self.gameMatrix[1][1], self.gameMatrix[2][1]],
@@ -223,8 +230,8 @@ class tttGame:
                                    [self.gameMatrix[0][0], self.gameMatrix[1][1], self.gameMatrix[2][2]],  # Diagonal
                                    [self.gameMatrix[2][0], self.gameMatrix[1][1], self.gameMatrix[0][2]]]:
                 retVal = sym
-            elif checkDraw():
-                return 'd'
+            elif checkDraw:
+                retVal = 'd'
             else:
                 retVal = ''
         return retVal
