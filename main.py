@@ -15,6 +15,7 @@ import bot_database as db
 import mathParser
 import polling
 import tictactoe
+import connect_four
 import misc_functions as misc
 from typing import List, Dict
 import os
@@ -37,6 +38,7 @@ def is_admin(ctx):
 async def on_ready():
     bot.add_cog(polling.Poll_Commands(bot, bot_data))
     bot.add_cog(tictactoe.tic_tac_toe(bot, bot_data))
+    bot.add_cog(connect_four.connect_four(bot, bot_data.prefix))
 
     # Set activity:
     if bot_data.activity_name != '-1':
