@@ -214,14 +214,11 @@ class tttGame:
                f'Play via e.g. `{prefix}t A1` for A1'
 
     def checkWin(self) -> str:  # returns either ['X', 'O', 'd', ''], 'd' stands for 'draw'
+        # 1: Check win          -> ['X', 'O', '']
+        # 2: If 'n' check draw  -> ['d', '']
+        # 3: Return char
+
         for sym in ['X', 'O']:
-
-            checkDraw = True
-            for line in self.gameMatrix:
-                for el in line:
-                    if el == ' ':
-                        checkDraw = False
-
             if [sym, sym, sym] in [[self.gameMatrix[0][0], self.gameMatrix[1][0], self.gameMatrix[2][0]],  # Horizontal
                                    [self.gameMatrix[0][1], self.gameMatrix[1][1], self.gameMatrix[2][1]],
                                    [self.gameMatrix[0][2], self.gameMatrix[1][2], self.gameMatrix[2][2]],
@@ -230,12 +227,15 @@ class tttGame:
                                    [self.gameMatrix[2][0], self.gameMatrix[2][1], self.gameMatrix[2][2]],
                                    [self.gameMatrix[0][0], self.gameMatrix[1][1], self.gameMatrix[2][2]],  # Diagonal
                                    [self.gameMatrix[2][0], self.gameMatrix[1][1], self.gameMatrix[0][2]]]:
-                retVal = sym
-            elif checkDraw:
-                retVal = 'd'
-            else:
-                retVal = ''
-        return retVal
+                return sym
+
+        checkDraw = True
+        for line in self.gameMatrix:
+            for el in line:
+                if el == ' ':
+                    checkDraw = False
+
+        return 'd' if checkDraw else ''
 
     def charToCoord(self, char: str) -> int:
         char = char.lower()

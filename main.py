@@ -9,7 +9,7 @@ https://discordpy.readthedocs.io/en/latest/index.html
 
 # imports
 import discord
-from discord.ext import commands
+from discord.ext import tasks, commands
 import configparser
 import bot_database as db
 import mathParser
@@ -57,7 +57,6 @@ async def on_message(message):
     # Code goes here
 
     await bot.process_commands(message)
-
 
 class Main_Commands(commands.Cog):
     """
