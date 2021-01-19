@@ -73,7 +73,3 @@ def int_to_bool(num: int) -> bool:
         return False
     else:
         return True
-
-
-def genHash(self, input: str, targetLength: int = 20) -> int:
-    return int(hashlib.sha1(str(input).encode("utf-8")).hexdigest(), 16) % (10 ** targetLength)

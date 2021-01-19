@@ -1,6 +1,4 @@
-import misc_functions as misc
-from typing import List
-import discord
+from typing import Dict, List
 from discord.ext import commands
 import bot_database
 import random
