@@ -15,11 +15,9 @@ class Poll_Commands(commands.Cog):
     def __init__(self, bot, database):
         self.bot = bot
         self.bot_data: bot_database.bot_database = database
-        # self.load_all_polls() needs async
         bot.loop.create_task(self.__ainit__())
 
     async def __ainit__(self):
-        # self.pp = await self.get_pp() # not sure if I need this
         await self.load_all_polls()
 
     @commands.command(brief="Create new poll",
@@ -272,8 +270,8 @@ class pollOption:
     value: str = ''
     voterIDs: List[int] = []
 
-    def hasVoted(self, voterID: str) -> bool:
-        if int(voterID) in self.voterIDs:
+    def hasVoted(self, voterID: int) -> bool:
+        if voterID in self.voterIDs:
             return True
         return False
 
@@ -391,7 +389,7 @@ class mo_poll:
 
     def hasVoted(self, voterID: int) -> bool:
         for opt in self.options:
-            if opt.hasVoted(str(voterID)):
+            if opt.hasVoted(voterID):
                 return True
         return False
 

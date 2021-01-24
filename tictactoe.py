@@ -1,6 +1,5 @@
 from typing import Dict, List
 from discord.ext import commands
-import bot_database
 import random
 import re
 
@@ -12,9 +11,8 @@ class tic_tac_toe(commands.Cog):
     tttGames = []
     next_ttt_ID = 0
 
-    def __init__(self, bot, database):
+    def __init__(self, bot):
         self.bot = bot
-        self.bot_data: bot_database.bot_database = database
         self.tttGames: List[tttGame] = []
 
     @commands.command(brief="Create new Game",
@@ -30,7 +28,7 @@ class tic_tac_toe(commands.Cog):
         newGame = tttGame(self.get_ttt_ID(), ctx.author.id, ctx.author.name)
 
         # Create new Message:
-        gameMsg = await ctx.send(newGame.getBoardStr(self.bot_data.prefix))
+        gameMsg = await ctx.send(newGame.getBoardStr(self.bot.command_prefix))
         newGame.msgChannelID = gameMsg.channel.id
         newGame.msgMessageID = gameMsg.id
 
@@ -102,12 +100,12 @@ class tic_tac_toe(commands.Cog):
         if not (channel is None):
             try:
                 message = await channel.fetch_message(game.msgMessageID)
-                await message.edit(content=game.getBoardStr(self.bot_data.prefix))
+                await message.edit(content=game.getBoardStr(self.bot.command_prefix))
             except:
-                resendMsg = await channel.send(game.getBoardStr(self.bot_data.prefix))
+                resendMsg = await channel.send(game.getBoardStr(self.bot.command_prefix))
                 game.msgMessageID = resendMsg.id
         else:
-            print(f"Couldn't find channel and message of ttt_game '{tttGame.id}'")
+            print(f"Couldn't find channel and message of ttt_game '{game.id}'")
 
     def get_ttt_ID(self) -> int:
         self.next_ttt_ID += 1
@@ -124,7 +122,6 @@ class tttGame:
         self.player1: Dict = {'name': '', 'id': -1}  # Player will be added later. This is just a template
         self.player2: Dict = {'name': '', 'id': -1}
         self.isPlayer1Turn: bool = False
-        self.isRunning: bool = False
         self.gameMatrix = [[' ', ' ', ' '],
                            [' ', ' ', ' '],
                            [' ', ' ', ' ']]
@@ -142,7 +139,6 @@ class tttGame:
             return
 
         if -1 not in [self.player1['id'], self.player2['id']]:
-            self.isRunning = True
             self.restartGame()
 
     def removePlayer(self, playerID: int) -> bool:  # True if player was removed
@@ -152,13 +148,11 @@ class tttGame:
             self.player1['name'] = self.player2['name']
             self.player2['id'] = -1
             self.player2['name'] = ''
-            self.isRunning = False
             return True
         elif self.player2['id'] == playerID:
             # Just remove player2:
             self.player2['id'] = -1
             self.player2['name'] = ''
-            self.isRunning = False
             return True
         return False
 
@@ -213,7 +207,7 @@ class tttGame:
 
     def checkWin(self) -> str:  # returns either ['X', 'O', 'd', ''], 'd' stands for 'draw'
         # 1: Check win          -> ['X', 'O', '']
-        # 2: If 'n' check draw  -> ['d', '']
+        # 2: If '' check draw  -> ['d', '']
         # 3: Return char
 
         for sym in ['X', 'O']:

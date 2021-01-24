@@ -37,8 +37,8 @@ def is_admin(ctx):
 @bot.event
 async def on_ready():
     bot.add_cog(polling.Poll_Commands(bot, bot_data))
-    bot.add_cog(tictactoe.tic_tac_toe(bot, bot_data))
-    bot.add_cog(connect_four.connect_four(bot, bot_data.prefix))
+    bot.add_cog(tictactoe.tic_tac_toe(bot))
+    # bot.add_cog(connect_four.connect_four(bot))
 
     # Set activity:
     if bot_data.activity_name != '-1':
@@ -82,7 +82,7 @@ class Main_Commands(commands.Cog):
         else:
             counter = int(arg)
         if counter > 500:
-            await ctx.send('Dude, I don\'t have all day!')
+            await ctx.send('Dude, I don\'t have all day!', delete_after=10.0)
             return
         msg = await ctx.send(f'Countdown: {counter}')
         while counter > 0:
@@ -100,7 +100,7 @@ class Main_Commands(commands.Cog):
 
     @commands.command(brief="Calculate constant math expressions.",
                  help="This command tries to calculate constant mathematical expressions.\nNo variables allowed.\n\
-                      \nValid constants and functions:\n - e, pi\n - sin, cos, tan, exp, sqrt, abs, trunc, round, sgn",
+                      \nValid constants and functions:\n - e, pi, c, h, k\n - sin, sinh, asin, asinh, cos, cosh, acos, acosh, tan, atan, atan2, atanh, exp, expm1, ln, lg, sqrt, abs, trunc, round, sgn",
                  usage="<expression>")
     async def calc(self, ctx, *, arg):
         nsp = mathParser.NumericStringParser()
@@ -110,6 +110,7 @@ class Main_Commands(commands.Cog):
             await ctx.send(f"Invalid expression. Type `{bot_data.prefix}help calc` for information on the command.",
                            delete_after=10.0)
             print(f'Invalid \'calc\' expression: {arg}')
+            return
         await ctx.send(result)
 
     @commands.command(brief="Generate random number",

@@ -65,9 +65,12 @@ class NumericStringParser(object):
         multop = mult | div
         expop = Literal("^")
         pi = CaselessLiteral("PI")
+        c = CaselessLiteral('C')
+        h = CaselessLiteral('H')
+        k = CaselessLiteral('K')
         expr = Forward()
         atom = ((Optional(oneOf("- +")) +
-                 (ident + lpar + expr + rpar | pi | e | fnumber).setParseAction(self.pushFirst))
+                 (ident + lpar + expr + rpar | pi | e | c | h | k | fnumber).setParseAction(self.pushFirst))
                 | Optional(oneOf("- +")) + Group(lpar + expr + rpar)
                 ).setParseAction(self.pushUMinus)
         # by defining exponentiation as "atom [ ^ factor ]..." instead of
@@ -92,14 +95,26 @@ class NumericStringParser(object):
                     "/": operator.truediv,
                     "^": operator.pow}
         self.fn = {"sin": math.sin,
+                   "sinh": math.sinh,
+                   "asin": math.asin,
+                   "asinh": math.asinh,
                    "cos": math.cos,
+                   "cosh": math.cosh,
+                   "acos": math.acos,
+                   "acosh": math.acosh,
                    "tan": math.tan,
+                   "atan": math.atan,
+                   "atan2": math.atan2,
+                   "atanh": math.atanh,
+                   "expm1": math.expm1,
                    "exp": math.exp,
+                   "ln": math.log,
+                   "lg": math.log10,
                    "sqrt": math.sqrt,
                    "abs": abs,
                    "trunc": lambda a: int(a),
                    "round": round,
-                    "sgn": lambda a: abs(a) > epsilon and cmp(a, 0) or 0} # Does not work in Python 3.x
+                    "sgn": lambda a: abs(a) > epsilon and cmp(a, 0) or 0}  # Does not work in Python 3.x
 
     def evaluateStack(self, s):
         op = s.pop()
@@ -113,6 +128,12 @@ class NumericStringParser(object):
             return math.pi  # 3.1415926535
         elif op == "E":
             return math.e  # 2.718281828
+        elif op == 'C':
+            return 299792458.0
+        elif op == 'H':
+            return 6.62607e-34
+        elif op == 'K':
+            return 1.38065e-23
         elif op in self.fn:
             return self.fn[op](self.evaluateStack(s))
         elif op[0].isalpha():
