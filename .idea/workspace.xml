@@ -28,12 +28,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Implemented connect_four skeleton. Nothing works yet though.">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added all major math functions to /calc command.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mathParser.py" beforeDir="false" afterPath="$PROJECT_DIR$/mathParser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/polling.py" beforeDir="false" afterPath="$PROJECT_DIR$/polling.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tictactoe.py" beforeDir="false" afterPath="$PROJECT_DIR$/tictactoe.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,13 +106,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Fixed typo in help message.">
-      <created>1607711775095</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1607711775095</updated>
     </task>
     <task id="LOCAL-00029" summary="Improved Poll message formatting.">
       <created>1607786438835</created>
@@ -453,7 +443,14 @@
       <option name="project" value="LOCAL" />
       <updated>1611092633597</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Added all major math functions to /calc command.">
+      <created>1611513015751</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1611513015752</updated>
+    </task>
+    <option name="localTasksCounter" value="78" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -484,7 +481,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Finished poll commands" />
     <MESSAGE value="Small code improvements and 'echo', 'echolock' commands" />
     <MESSAGE value="Removed unused import" />
     <MESSAGE value="'echolock' status is now also written into 'config.txt'" />
@@ -509,7 +505,8 @@
     <MESSAGE value="Attempt faulty ttt checkWin() fix" />
     <MESSAGE value="Small code cleanup" />
     <MESSAGE value="Implemented connect_four skeleton. Nothing works yet though." />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented connect_four skeleton. Nothing works yet though." />
+    <MESSAGE value="Added all major math functions to /calc command." />
+    <option name="LAST_COMMIT_MESSAGE" value="Added all major math functions to /calc command." />
   </component>
   <component name="WindowStateProjectService">
     <state x="586" y="198" key="#Inspections" timestamp="1610732468372">
