@@ -26,7 +26,7 @@ import random
 
 bot_data = db.bot_database()
 bot = commands.Bot(command_prefix = bot_data.prefix)
-is_init: bool = False
+
 
 # CHECKS
 
@@ -37,11 +37,10 @@ def is_admin(ctx):
 @bot.event
 async def on_ready():
     # Only add cogs on first init:
-    if not is_init:
-        bot.add_cog(polling.Poll_Commands(bot, bot_data))
-        bot.add_cog(tictactoe.tic_tac_toe(bot))
-        # bot.add_cog(connect_four.connect_four(bot))
-        is_init = True
+    bot.add_cog(polling.Poll_Commands(bot, bot_data))
+    bot.add_cog(tictactoe.tic_tac_toe(bot))
+    # bot.add_cog(connect_four.connect_four(bot))
+
 
     # Set activity:
     if bot_data.activity_name != '-1':

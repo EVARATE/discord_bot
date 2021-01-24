@@ -15,10 +15,13 @@ class Poll_Commands(commands.Cog):
     def __init__(self, bot, database):
         self.bot = bot
         self.bot_data: bot_database.bot_database = database
+        self.is_init = False
         bot.loop.create_task(self.__ainit__())
 
     async def __ainit__(self):
-        await self.load_all_polls()
+        if not self.is_init:
+            await self.load_all_polls()
+            self.is_init = True
 
     @commands.command(brief="Create new poll",
                       help="Create a new poll with a topic and as many options as you like.",
@@ -244,6 +247,10 @@ class Poll_Commands(commands.Cog):
             os.makedirs(f'{self.bot_data.datapath}polls/')
             print(f'Created directory \'{self.bot_data.datapath}polls/\'')
             return
+
+        # Delete all files in memory, in case this is called on a reconnect:
+        self.bot_data.polls = []
+        self.bot_data.nextPollID = 0
 
         # Load all files and delete them afterwards
         file_list = glob.glob(f'{self.bot_data.datapath}polls/poll*.txt')
