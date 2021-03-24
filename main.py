@@ -235,6 +235,22 @@ class Main_Commands(commands.Cog):
         with open('config.txt', 'w') as configfile:
             config.write(configfile)
 
+    @commands.command(brief="Convert weight to usable units.",
+                      help='This command converts your weight (or any mass in kg) to its corresponding resting energy in '
+                           'kilotons of TNT. This is equivalent to half the energy released in the explosion of you'
+                           ' touching your anti-matter twin.\nThis is also a great way of calling random people fat.')
+    async def weight(self, ctx, arg):
+        if not arg.isdigit:
+            await ctx.send("Error: This is either not a number or your... generousness is too high. Either way this is invalid input.", delete_after=20)
+            return
+        E = float(arg) * (2.99e8)**2
+        Joule_to_gigatonTNT = 2.390e-19
+        hiroshima_energy = 16e-6   # gigatons of TNT
+        GT_mass = round(E * Joule_to_gigatonTNT, 2)
+        hiroshima_factor = round(GT_mass / hiroshima_energy)
+
+        text = f'This mass is equivalent to a very generous **{GT_mass} gigatons of TNT** or **{hiroshima_factor} hiroshima bombs**. Good job.'
+        await ctx.send(text)
 
 bot.add_cog(Main_Commands(bot))
 bot.run(bot_data.token)
