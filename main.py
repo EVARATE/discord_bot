@@ -253,6 +253,33 @@ class Main_Commands(commands.Cog):
         elif arg.endswith('t'):
             arg = arg[0:-1]
             factor = 1000
+        elif arg.endswith('u'):
+            arg = arg[0:-1]
+            factor = 6.0221e26
+        elif arg.endswith('tev/c^2'):
+            arg = arg[0:-7]
+            factor = 5.60852495e23
+        elif arg.endswith('tev/c²'):
+            arg = arg[0:-6]
+            factor = 5.60852495e23
+        elif arg.endswith('gev/c^2'):
+            arg = arg[0:-7]
+            factor = 5.60852495e26
+        elif arg.endswith('gev/c²'):
+            arg = arg[0:-6]
+            factor = 5.60852495e26
+        elif arg.endswith('kev/c^2'):
+            arg = arg[0:-7]
+            factor = 5.60852495e29
+        elif arg.endswith('kev/c²'):
+            arg = arg[0:-6]
+            factor = 5.60852495e29
+        elif arg.endswith('ev/c^2'):
+            arg = arg[0:-6]
+            factor = 5.60852495e32
+        elif arg.endswith('ev/c²'):
+            arg = arg[0:-5]
+            factor = 5.60852495e32
         else:
             factor = 1.0
 
@@ -282,7 +309,9 @@ class Main_Commands(commands.Cog):
         else:
             explosion_str = f'{round(GT_mass_raw * 1e9, 2)} tons'
 
-        hiroshima_factor = round(GT_mass_raw / hiroshima_energy)
+        # Hiroshima formatting:
+        hir_fac = round(GT_mass_raw / hiroshima_energy, 1)
+        hir_str = f'or **{hir_fac}** hiroshima bombs**' if hir_fac >= 1 else ''
 
         # For the lulz:
         if float(arg) * factor >= 100:
@@ -292,7 +321,7 @@ class Main_Commands(commands.Cog):
             pref = ''
             suff = ''
 
-        text = f'{pref}This mass is equivalent to a very generous **{explosion_str} of TNT** or **{hiroshima_factor} hiroshima bombs**. {suff}'
+        text = f'{pref}This mass is equivalent to a very generous **{explosion_str} of TNT** {hir_str}. {suff}'
         await ctx.send(text)
 
 bot.add_cog(Main_Commands(bot))

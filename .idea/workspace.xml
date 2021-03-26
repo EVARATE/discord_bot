@@ -28,7 +28,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added better math and unit parsing for /weight">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -108,13 +108,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Poll saving/loading should now work.&#10; &#10; Fixed &quot;nice&quot; recognition preventing other commands.">
-      <created>1607970307702</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1607970307702</updated>
     </task>
     <task id="LOCAL-00033" summary="Polls can now be closed and deleted.&#10;&#10;Fixed bugs with loading/saving polls">
       <created>1607972475558</created>
@@ -452,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616787263369</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command">
+      <created>1616788247256</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1616788247256</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -483,7 +483,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated README.md" />
     <MESSAGE value="Added admin command /setactivity" />
     <MESSAGE value="Changed bot standard activity status from 'idle' to 'online'" />
     <MESSAGE value="Fixed bug where people could vote multiple times" />
@@ -508,6 +507,7 @@
     <MESSAGE value="Fixed polls being reloaded on top of existing ones in case of a reconnect." />
     <MESSAGE value="Added /weight utility command." />
     <MESSAGE value="Added better math and unit parsing for /weight" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added better math and unit parsing for /weight" />
+    <MESSAGE value="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command" />
   </component>
 </project>
