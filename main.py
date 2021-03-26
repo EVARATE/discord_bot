@@ -239,9 +239,17 @@ class Main_Commands(commands.Cog):
                       help='This command converts your weight (or any mass in kg) to its corresponding resting energy in '
                            'kilotons of TNT. This is equivalent to half the energy released in the explosion of you'
                            ' touching your anti-matter twin.\nThis is also a great way of calling random people fat.')
-    async def weight(self, ctx, arg):
+    async def weight(self, ctx, *, arg):
         # Make lowercase in case someone entered units:
         arg = arg.lower()
+
+        # Scan for cancer:
+        if misc.element_in_str(['grain', 'gr', 'drachm', 'dr', 'ounce', 'oz', 'pound', 'lb', 'stone', 'st',
+                                'quarter', 'qr', 'qtr', 'hundretweight', 'cwt', 'slug'], arg):
+            admin_role = ctx.guild.get_role(bot_data.IDs['admin_role'])
+            await ctx.send(f"{admin_role.mention} **IMPERIAL UNITS DETECTED!!!** Authorities were notified. Stay where you are criminal scum!")
+            return
+
 
         # Detect units:
         factor = 1.0
@@ -290,7 +298,7 @@ class Main_Commands(commands.Cog):
             try:
                 arg = nsp.eval(arg)
             except:
-                await ctx.send('Error: Could not parse argument. Enter value in \'kg\'', delete_after=10)
+                await ctx.send('Error: Could not parse argument. This better not be in imperial units...', delete_after=10)
                 return
 
         E = float(arg) * factor * (2.998e8)**2
