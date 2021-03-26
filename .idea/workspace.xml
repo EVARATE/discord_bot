@@ -28,7 +28,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added /weight utility command.">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added better math and unit parsing for /weight">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -108,13 +108,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Polls are now saved on disk [NOT TESTED]">
-      <created>1607812825920</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1607812825920</updated>
     </task>
     <task id="LOCAL-00032" summary="Poll saving/loading should now work.&#10; &#10; Fixed &quot;nice&quot; recognition preventing other commands.">
       <created>1607970307702</created>
@@ -452,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616606599896</updated>
     </task>
-    <option name="localTasksCounter" value="80" />
+    <task id="LOCAL-00080" summary="Added better math and unit parsing for /weight">
+      <created>1616787263369</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1616787263369</updated>
+    </task>
+    <option name="localTasksCounter" value="81" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -483,7 +483,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="'echolock' status is now also written into 'config.txt'" />
     <MESSAGE value="Updated README.md" />
     <MESSAGE value="Added admin command /setactivity" />
     <MESSAGE value="Changed bot standard activity status from 'idle' to 'online'" />
@@ -508,17 +507,7 @@
     <MESSAGE value="Added all major math functions to /calc command." />
     <MESSAGE value="Fixed polls being reloaded on top of existing ones in case of a reconnect." />
     <MESSAGE value="Added /weight utility command." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added /weight utility command." />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/main.py</url>
-          <line>271</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Added better math and unit parsing for /weight" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added better math and unit parsing for /weight" />
   </component>
 </project>

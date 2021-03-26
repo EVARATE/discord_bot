@@ -269,8 +269,20 @@ class Main_Commands(commands.Cog):
         E = float(arg) * factor * (2.998e8)**2
         Joule_to_gigatonTNT = 2.390e-19
         hiroshima_energy = 16e-6   # gigatons of TNT
-        GT_mass = round(E * Joule_to_gigatonTNT, 2)
-        hiroshima_factor = round(GT_mass / hiroshima_energy)
+
+        GT_mass_raw = E * Joule_to_gigatonTNT
+        if GT_mass_raw >= 1e3:
+            explosion_str = f'{round(GT_mass_raw * 1e-3, 2)} terratons'
+        elif GT_mass_raw < 1e3 and GT_mass_raw >= 1:
+            explosion_str = f'{round(GT_mass_raw, 2)} gigatons'
+        elif GT_mass_raw < 1 and GT_mass_raw >= 0.001:
+            explosion_str = f'{round(GT_mass_raw * 1e3, 2)} megatons'
+        elif GT_mass_raw < 1e-3 and GT_mass_raw >= 1e-6:
+            explosion_str = f'{round(GT_mass_raw * 1e6, 2)} kilotons'
+        else:
+            explosion_str = f'{round(GT_mass_raw * 1e9, 2)} tons'
+
+        hiroshima_factor = round(GT_mass_raw / hiroshima_energy)
 
         # For the lulz:
         if float(arg) * factor >= 100:
@@ -280,7 +292,7 @@ class Main_Commands(commands.Cog):
             pref = ''
             suff = ''
 
-        text = f'{pref}This mass is equivalent to a very generous **{GT_mass} gigatons of TNT** or **{hiroshima_factor} hiroshima bombs**. {suff}'
+        text = f'{pref}This mass is equivalent to a very generous **{explosion_str} of TNT** or **{hiroshima_factor} hiroshima bombs**. {suff}'
         await ctx.send(text)
 
 bot.add_cog(Main_Commands(bot))
