@@ -240,16 +240,47 @@ class Main_Commands(commands.Cog):
                            'kilotons of TNT. This is equivalent to half the energy released in the explosion of you'
                            ' touching your anti-matter twin.\nThis is also a great way of calling random people fat.')
     async def weight(self, ctx, arg):
-        if not arg.isdigit:
-            await ctx.send("Error: This is either not a number or your... generousness is too high. Either way this is invalid input.", delete_after=20)
-            return
-        E = float(arg) * (2.99e8)**2
+        # Make lowercase in case someone entered units:
+        arg = arg.lower()
+
+        # Detect units:
+        factor = 1.0
+        if arg.endswith('kg'):
+            arg = arg[0:-2]
+        elif arg.endswith('g'):
+            arg = arg[0:-1]
+            factor = 1. / 1000.0
+        elif arg.endswith('t'):
+            arg = arg[0:-1]
+            factor = 1000
+        else:
+            factor = 1.0
+
+        # If arg still has non-digit chars, it is an error
+        if not arg.isdigit():
+            # Detect mathematical expressions:
+            nsp = mathParser.NumericStringParser()
+            try:
+                arg = nsp.eval(arg)
+            except:
+                await ctx.send('Error: Could not parse argument. Enter value in \'kg\'', delete_after=10)
+                return
+
+        E = float(arg) * factor * (2.998e8)**2
         Joule_to_gigatonTNT = 2.390e-19
         hiroshima_energy = 16e-6   # gigatons of TNT
         GT_mass = round(E * Joule_to_gigatonTNT, 2)
         hiroshima_factor = round(GT_mass / hiroshima_energy)
 
-        text = f'This mass is equivalent to a very generous **{GT_mass} gigatons of TNT** or **{hiroshima_factor} hiroshima bombs**. Good job.'
+        # For the lulz:
+        if float(arg) * factor >= 100:
+            pref = '**WOW!** '
+            suff = 'Damn.'
+        else:
+            pref = ''
+            suff = ''
+
+        text = f'{pref}This mass is equivalent to a very generous **{GT_mass} gigatons of TNT** or **{hiroshima_factor} hiroshima bombs**. {suff}'
         await ctx.send(text)
 
 bot.add_cog(Main_Commands(bot))
