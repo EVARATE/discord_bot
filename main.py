@@ -236,7 +236,7 @@ class Main_Commands(commands.Cog):
             config.write(configfile)
 
     @commands.command(brief="Convert weight to usable units.",
-                      help='This command converts your weight (or any mass in kg) to its corresponding resting energy in '
+                      help='This command converts your mass (kg) to its corresponding resting energy in '
                            'kilotons of TNT. This is equivalent to half the energy released in the explosion of you'
                            ' touching your anti-matter twin.\nThis is also a great way of calling random people fat.')
     async def weight(self, ctx, *, arg):
@@ -298,7 +298,7 @@ class Main_Commands(commands.Cog):
             try:
                 arg = nsp.eval(arg)
             except:
-                await ctx.send('Error: Could not parse argument. This better not be in imperial units...', delete_after=10)
+                await ctx.send('Error: Could not parse argument. Use something like `10 kg` or just `10`.', delete_after=10)
                 return
 
         E = float(arg) * factor * (2.998e8)**2
