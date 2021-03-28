@@ -28,7 +28,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added imperial units detection">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Fixed typos">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -108,13 +108,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Updated Help message">
-      <created>1607972777590</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1607972777590</updated>
     </task>
     <task id="LOCAL-00036" summary="Added echo command">
       <created>1607973603948</created>
@@ -452,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616796749084</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="Fixed typos">
+      <created>1616942709016</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1616942709016</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -483,7 +483,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Fixed bug where people could vote multiple times" />
     <MESSAGE value="When adding a quote, the original message gets deleted as well as the confirmation message after 10 seconds to reduce spamming." />
     <MESSAGE value="Added commands pollset, polladd, pollrem and corresponding functionality" />
     <MESSAGE value="View votercount in polls, new command pollmove to move polls" />
@@ -508,6 +507,7 @@
     <MESSAGE value="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command" />
     <MESSAGE value="Even better unit detection and formatting" />
     <MESSAGE value="Added imperial units detection" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added imperial units detection" />
+    <MESSAGE value="Fixed typos" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed typos" />
   </component>
 </project>

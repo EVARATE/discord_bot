@@ -238,7 +238,8 @@ class Main_Commands(commands.Cog):
     @commands.command(brief="Convert weight to usable units.",
                       help='This command converts your mass (kg) to its corresponding resting energy in '
                            'kilotons of TNT. This is equivalent to half the energy released in the explosion of you'
-                           ' touching your anti-matter twin.\nThis is also a great way of calling random people fat.')
+                           ' touching your anti-matter twin.\nThis is also a great way of calling random people fat.',
+                      usage='<mass in kg>')
     async def weight(self, ctx, *, arg):
         # Make lowercase in case someone entered units:
         arg = arg.lower()
