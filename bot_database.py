@@ -1,5 +1,5 @@
 import configparser
-from typing import List, Dict
+from typing import List, Dict, Set
 import polling
 import misc_functions as misc
 import os
@@ -16,6 +16,7 @@ class bot_database:
     prefix: str = ''
     datapath: str = ''
     activity_name: str = ''
+    party_count: int = 5
     IDs: Dict[str, int] = {}
     locks: Dict[str, bool] = {}
     polls: List[polling.mo_poll] = []
@@ -26,6 +27,7 @@ class bot_database:
         self.IDs = {}
         self.polls = []
         self.locks = {}
+        self.party_channels = set()
 
         # 'config.txt' must be in local directory, create it if not
         if not os.path.exists('config.txt'):
@@ -39,12 +41,15 @@ class bot_database:
             config.set('BASE', 'prefix', '/')
             config.set('BASE', 'datapath', 'data/')
             config.set('BASE', 'activity_name', '-1')
+            config.set('BASE', 'party_count', '5')
 
             config.set('IDs', 'admin_role', '-1')
             config.set('IDs', 'rule_channel', '-1')
             config.set('IDs', 'rule_message', '-1')
             config.set('IDs', 'quote_channel', '-1')
             config.set('IDs', 'backup_poll_channel', '-1')
+            config.set('IDs', 'party_role', '-1')
+            config.set('IDs', 'notification_channel', '-1')
 
             config.set('LOCKS', 'echo', '0')
 
@@ -62,6 +67,7 @@ class bot_database:
                 self.prefix = config['BASE']['prefix']
                 self.datapath = config['BASE']['datapath']
                 self.activity_name = config['BASE']['activity_name']
+                self.party_count = int(config['BASE']['party_count'])
 
                 for (ID_key, val) in config.items('IDs'):
                     self.IDs[ID_key] = int(val)

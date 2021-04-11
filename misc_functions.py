@@ -5,6 +5,7 @@ This makes everything more organized.
 import random
 from typing import List
 
+
 def get_help_msg(prefix: str) -> str:
     # Just a very raw way of generating the help message.
     # Will probably become more procedural in the future

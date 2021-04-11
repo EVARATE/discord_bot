@@ -16,6 +16,7 @@ import mathParser
 import polling
 import tictactoe
 import connect_four
+import party_notifier
 import misc_functions as misc
 from typing import List, Dict
 import os
@@ -39,6 +40,7 @@ async def on_ready():
     # Only add cogs on first init:
     bot.add_cog(polling.Poll_Commands(bot, bot_data))
     bot.add_cog(tictactoe.tic_tac_toe(bot))
+    bot.add_cog(party_notifier.Party_Notifier(bot, bot_data))
     # bot.add_cog(connect_four.connect_four(bot))
 
 
@@ -50,6 +52,50 @@ async def on_ready():
         await bot.change_presence(status=None, activity=None)
 
     print(f'Bot logged in as {bot.user}')
+
+@bot.event
+async def on_voice_state_update(member, before, after):
+    # This function looks if any channel has more than a set number of participants
+    # and if it does, sends a notification
+
+    notif_channel = bot.get_channel(bot_data.IDs['notification_channel'])
+
+
+
+    with open(bot_data.datapath + 'party_channels.txt', 'r') as file:
+        partyChannelIDs = [int(x[:-1]) for x in file.readlines()]
+
+    # CHECKS
+    # If channel has become empty, unmark it as party channel
+    if before.channel is not None and len(before.channel.members) == 0:
+        if before.channel.id in bot_data.party_channels:
+            bot_data.party_channels = bot_data.party_channels - {int(before.channel.id)}
+            await notif_channel.send(f'The party in **{before.channel.name}** has ended.')
+        return
+
+    if after.channel is None:
+        return
+
+    if after.channel.id not in partyChannelIDs:
+        return
+
+    # See if channel is already a party channel
+    if after.channel.id in bot_data.party_channels:
+        return
+    else:
+        bot_data.party_channels = bot_data.party_channels.union({int(after.channel.id)})
+
+    print(bot_data.party_channels)
+
+    if len(after.channel.members) >= bot_data.party_count:
+        # Do this weird thing to get the guild and its roles
+        this_guild = after.channel.guild
+        party_role = this_guild.get_role(bot_data.IDs['party_role'])
+
+        await notif_channel.send(f'{party_role.mention} There seems to be a party in **{after.channel.name}**')
+        return
+
+
 
 @bot.event
 async def on_message(message):
