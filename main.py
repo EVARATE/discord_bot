@@ -60,8 +60,6 @@ async def on_voice_state_update(member, before, after):
 
     notif_channel = bot.get_channel(bot_data.IDs['notification_channel'])
 
-
-
     with open(bot_data.datapath + 'party_channels.txt', 'r') as file:
         partyChannelIDs = [int(x[:-1]) for x in file.readlines()]
 
@@ -94,7 +92,6 @@ async def on_voice_state_update(member, before, after):
 
         await notif_channel.send(f'{party_role.mention} There seems to be a party in **{after.channel.name}**')
         return
-
 
 
 @bot.event

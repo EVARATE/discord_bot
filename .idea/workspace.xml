@@ -28,12 +28,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Improved /weight help text">
-      <change afterPath="$PROJECT_DIR$/party_notifier.py" afterDir="false" />
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Implemented marking of party channels and corresponding notifications.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/misc_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/misc_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/party_notifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/party_notifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,13 +109,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00037" summary="Removed wichteln commands">
-      <created>1608126449888</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1608126449888</updated>
     </task>
     <task id="LOCAL-00038" summary="Removed unused praw lib">
       <created>1608126746168</created>
@@ -455,7 +446,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616942954001</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="Implemented marking of party channels and corresponding notifications.">
+      <created>1618160898952</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1618160898953</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -486,7 +484,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added commands pollset, polladd, pollrem and corresponding functionality" />
     <MESSAGE value="View votercount in polls, new command pollmove to move polls" />
     <MESSAGE value="Changed poll message formatting" />
     <MESSAGE value="Tic Tac Toe is now in beta" />
@@ -511,6 +508,7 @@
     <MESSAGE value="Added imperial units detection" />
     <MESSAGE value="Fixed typos" />
     <MESSAGE value="Improved /weight help text" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improved /weight help text" />
+    <MESSAGE value="Implemented marking of party channels and corresponding notifications." />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented marking of party channels and corresponding notifications." />
   </component>
 </project>
