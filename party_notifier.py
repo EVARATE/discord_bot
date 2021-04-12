@@ -16,7 +16,9 @@ class Party_Notifier(commands.Cog):
         if not os.path.exists(bot_data.datapath + 'party_channels.txt'):
             os.mknod(bot_data.datapath + 'party_channels.txt')
 
-    @commands.group(brief="Enter   help party   for subcommands")
+    @commands.group(brief="[add, remove, list]",
+                    help="This does nothing on its own. Use it in combination with [add, remove, list]\n\nExample:\n"
+                         "party add channel_name_or_id")
     async def party(self, ctx):
         pass
 
