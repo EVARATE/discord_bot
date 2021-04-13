@@ -3,6 +3,7 @@ This file contains functions the bot needs but that are not part of the bot_clie
 This makes everything more organized.
 """
 import random
+from typing import List
 
 
 def get_help_msg(prefix: str) -> str:
@@ -73,3 +74,10 @@ def int_to_bool(num: int) -> bool:
         return False
     else:
         return True
+
+
+def element_in_str(lst: List, s: str) -> bool:
+    for el in lst:
+        if el in s:
+            return True
+    return False

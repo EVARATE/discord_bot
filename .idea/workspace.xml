@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="BranchesTreeState">
     <expand>
       <path>
@@ -25,9 +28,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="'echolock' status is now also written into 'config.txt'">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="added commands to manage party channels (add, remove, list)">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +56,7 @@
     <setting file="file://$PROJECT_DIR$/main.py" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProjectId" id="1kpTsoYmNVq8shPFDZfksEkc864" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -62,24 +65,25 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../test" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="discord_bot" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="C:\Users\sebas\AppData\Local\Microsoft\WindowsApps\python.exe" />
+      <option name="SDK_HOME" value="/usr/bin/python3.9" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -92,7 +96,6 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.main" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -104,230 +107,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Added Putin">
-      <created>1606465386431</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1606465386431</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Removed redundant code from misc_functions.py">
-      <created>1606467005629</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1606467005629</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Started command /help">
-      <created>1606502900277</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1606502900277</updated>
-    </task>
-    <task id="LOCAL-00010" summary="/help is now up to date">
-      <created>1606593526679</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1606593526679</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Introduced panic message. Also new command /random">
-      <created>1606679091930</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1606679091930</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Small changes">
-      <created>1606680107475</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1606680107475</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Added Lecture commands to bucket list">
-      <created>1606680347903</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1606680347903</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Added Quote to bucket list">
-      <created>1606745554124</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1606745554124</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Added 'startswithElement()' function that works with lists.">
-      <created>1606750369724</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1606750369724</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Added alternative triggers for some commands">
-      <created>1606757936117</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1606757936117</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Push for webhook test">
-      <created>1606759424836</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1606759424836</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Push for webhook test">
-      <created>1606759812141</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1606759812141</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Push for webhook test">
-      <created>1606760123961</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1606760123961</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Added niceness">
-      <created>1606766975213</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1606766975213</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Fixed bot being in love with Caro">
-      <created>1606808805073</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1606808805073</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Added /quote command. UPDATE config.txt !!!">
-      <created>1606858998439</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1606858998439</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Code cosmetics">
-      <created>1607000593516</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1607000593518</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Started /poll command. Not done yet.">
-      <created>1607287162651</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1607287162651</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Basic polling now works. No saving/loading to disk yet though.">
-      <created>1607710421169</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1607710421169</updated>
-    </task>
-    <task id="LOCAL-00026" summary="Crash fix">
-      <created>1607711209826</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1607711209826</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Updated Help Message">
-      <created>1607711567336</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1607711567336</updated>
-    </task>
-    <task id="LOCAL-00028" summary="Fixed typo in help message.">
-      <created>1607711775095</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1607711775095</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Improved Poll message formatting.">
-      <created>1607786438835</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1607786438836</updated>
-    </task>
-    <task id="LOCAL-00030" summary="Implemented &quot;wichteln&quot; commands.">
-      <created>1607793850509</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1607793850509</updated>
-    </task>
-    <task id="LOCAL-00031" summary="Polls are now saved on disk [NOT TESTED]">
-      <created>1607812825920</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1607812825920</updated>
-    </task>
-    <task id="LOCAL-00032" summary="Poll saving/loading should now work.&#10; &#10; Fixed &quot;nice&quot; recognition preventing other commands.">
-      <created>1607970307702</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1607970307702</updated>
-    </task>
-    <task id="LOCAL-00033" summary="Polls can now be closed and deleted.&#10;&#10;Fixed bugs with loading/saving polls">
-      <created>1607972475558</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1607972475558</updated>
-    </task>
-    <task id="LOCAL-00034" summary="Code cleanup">
-      <created>1607972597337</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1607972597337</updated>
-    </task>
-    <task id="LOCAL-00035" summary="Updated Help message">
-      <created>1607972777590</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1607972777590</updated>
-    </task>
-    <task id="LOCAL-00036" summary="Added echo command">
-      <created>1607973603948</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1607973603948</updated>
-    </task>
-    <task id="LOCAL-00037" summary="Removed wichteln commands">
-      <created>1608126449888</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1608126449888</updated>
-    </task>
-    <task id="LOCAL-00038" summary="Removed unused praw lib">
-      <created>1608126746168</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1608126746168</updated>
     </task>
     <task id="LOCAL-00039" summary="Code Cosmetics, Type Safety">
       <created>1608212838363</created>
@@ -448,7 +227,231 @@
       <option name="project" value="LOCAL" />
       <updated>1608662636710</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Updated README.md">
+      <created>1608664238259</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1608664238259</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Added admin command /setactivity">
+      <created>1608824337242</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1608824337243</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Changed bot standard activity status from 'idle' to 'online'">
+      <created>1608825521743</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1608825521743</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Fixed bug where people could vote multiple times">
+      <created>1610467196367</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1610467196367</updated>
+    </task>
+    <task id="LOCAL-00060" summary="When adding a quote, the original message gets deleted as well as the confirmation message after 10 seconds to reduce spamming.">
+      <created>1610530560104</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1610530560104</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Added commands pollset, polladd, pollrem and corresponding functionality">
+      <created>1610656855103</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1610656855103</updated>
+    </task>
+    <task id="LOCAL-00062" summary="View votercount in polls, new command pollmove to move polls">
+      <created>1610722674036</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1610722674036</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Changed poll message formatting">
+      <created>1610724815866</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1610724815866</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Tic Tac Toe is now in beta">
+      <created>1610746211391</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1610746211392</updated>
+    </task>
+    <task id="LOCAL-00065" summary="Updated ttt formatting">
+      <created>1610746824378</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1610746824378</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Improved ttt">
+      <created>1610817190326</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1610817190330</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Rewrote Tic Tac Toe to make it more dynamic and error resilient.">
+      <created>1610910854767</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1610910854768</updated>
+    </task>
+    <task id="LOCAL-00068" summary="TTT now has win-detection and restarts if move happens after win">
+      <created>1610912621012</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1610912621012</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Fixed bug where 'O' couldn't win. Added 'draw' detection. Improved game message.">
+      <created>1610914485867</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1610914485867</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Tiny code cleanup.">
+      <created>1610914558683</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1610914558683</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Fixed bug where ttt coordinate with number first wasnt recognized">
+      <created>1610917782138</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1610917782138</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Added tleave command and fixed bug where ttt game didn't restart after draw">
+      <created>1610974843493</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1610974843494</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Fixed message not being deleted on /tleave">
+      <created>1610975447426</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1610975447426</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Attempt faulty ttt checkWin() fix">
+      <created>1611056293571</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1611056293571</updated>
+    </task>
+    <task id="LOCAL-00075" summary="Small code cleanup">
+      <created>1611086883640</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1611086883641</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Implemented connect_four skeleton. Nothing works yet though.">
+      <created>1611092633597</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1611092633597</updated>
+    </task>
+    <task id="LOCAL-00077" summary="Added all major math functions to /calc command.">
+      <created>1611513015751</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1611513015752</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Fixed polls being reloaded on top of existing ones in case of a reconnect.">
+      <created>1611513867563</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1611513867563</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Added /weight utility command.">
+      <created>1616606599896</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1616606599896</updated>
+    </task>
+    <task id="LOCAL-00080" summary="Added better math and unit parsing for /weight">
+      <created>1616787263369</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1616787263369</updated>
+    </task>
+    <task id="LOCAL-00081" summary="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command">
+      <created>1616788247256</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1616788247256</updated>
+    </task>
+    <task id="LOCAL-00082" summary="Even better unit detection and formatting">
+      <created>1616789301257</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1616789301257</updated>
+    </task>
+    <task id="LOCAL-00083" summary="Added imperial units detection">
+      <created>1616796749083</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1616796749084</updated>
+    </task>
+    <task id="LOCAL-00084" summary="Fixed typos">
+      <created>1616942709016</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1616942709016</updated>
+    </task>
+    <task id="LOCAL-00085" summary="Improved /weight help text">
+      <created>1616942954001</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1616942954001</updated>
+    </task>
+    <task id="LOCAL-00086" summary="Implemented marking of party channels and corresponding notifications.">
+      <created>1618160898952</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1618160898953</updated>
+    </task>
+    <task id="LOCAL-00087" summary="added commands to manage party channels (add, remove, list)">
+      <created>1618167172419</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1618167172419</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -479,124 +482,31 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Polls are now saved on disk [NOT TESTED]" />
-    <MESSAGE value="Poll saving/loading should now work.&#10; &#10; Fixed &quot;nice&quot; recognition preventing other commands." />
-    <MESSAGE value="Polls can now be closed and deleted.&#10;&#10;Fixed bugs with loading/saving polls" />
-    <MESSAGE value="Code cleanup" />
-    <MESSAGE value="Updated Help message" />
-    <MESSAGE value="Added echo command" />
-    <MESSAGE value="Removed wichteln commands" />
-    <MESSAGE value="Removed unused praw lib" />
-    <MESSAGE value="Code Cosmetics, Type Safety" />
-    <MESSAGE value="added lock for /echo command" />
-    <MESSAGE value="Code cosmetics" />
-    <MESSAGE value="Implemented /countdown, fixed wrong poll message formatting" />
-    <MESSAGE value="Created 'rewrite_python' branch." />
-    <MESSAGE value="Set up config.txt reader and basic bot." />
-    <MESSAGE value="Implemented more robust /help function for existing commands." />
-    <MESSAGE value="Adapted README.md" />
-    <MESSAGE value="More commands" />
-    <MESSAGE value="Implemented /quote command" />
-    <MESSAGE value="Small code improvements" />
-    <MESSAGE value="Updated README.md" />
-    <MESSAGE value="Put all commands into a cog and started the Poll_Commands cog." />
-    <MESSAGE value="Finished poll commands" />
-    <MESSAGE value="Small code improvements and 'echo', 'echolock' commands" />
-    <MESSAGE value="Removed unused import" />
-    <MESSAGE value="'echolock' status is now also written into 'config.txt'" />
-    <option name="LAST_COMMIT_MESSAGE" value="'echolock' status is now also written into 'config.txt'" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="586" y="198" key="#Inspections" timestamp="1606999483539">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="586" y="198" key="#Inspections/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1606999483539" />
-    <state x="-1368" y="178" width="816" height="775" key="#Intentions" timestamp="1606743494640">
-      <screen x="-1920" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1368" y="178" width="816" height="775" key="#Intentions/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606743494640" />
-    <state x="552" y="178" width="816" height="730" key="#Intentions/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1606397182603" />
-    <state x="640" y="255" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1607287260306">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="640" y="255" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607287260306" />
-    <state x="707" y="374" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1608154851396">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="707" y="374" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608154851396" />
-    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1608579396173">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="740" y="274" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608579396173" />
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom" timestamp="1608662592519">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608662592519" />
-    <state width="1899" height="184" key="GridCell.Tab.0.center" timestamp="1608662592519">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608662592519" />
-    <state width="1899" height="184" key="GridCell.Tab.0.left" timestamp="1608662592519">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608662592519" />
-    <state width="1899" height="184" key="GridCell.Tab.0.right" timestamp="1608662592519">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126878352" />
-    <state width="1899" height="184" key="GridCell.Tab.0.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608662592519" />
-    <state width="1899" height="213" key="GridCell.Tab.1.bottom" timestamp="1608661189650">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.bottom/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608661189650" />
-    <state width="1899" height="213" key="GridCell.Tab.1.center" timestamp="1608661189650">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.center/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608661189650" />
-    <state width="1899" height="213" key="GridCell.Tab.1.left" timestamp="1608661189650">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.left/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608661189650" />
-    <state width="1899" height="213" key="GridCell.Tab.1.right" timestamp="1608661189650">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1899" height="347" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606430649104" />
-    <state width="1899" height="213" key="GridCell.Tab.1.right/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608661189650" />
-    <state x="753" y="222" key="RollbackChangesDialog" timestamp="1607890959401">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1167" y="222" key="RollbackChangesDialog/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606743837582" />
-    <state x="753" y="222" key="RollbackChangesDialog/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607890959401" />
-    <state x="409" y="118" width="1295" height="859" key="SettingsEditor" timestamp="1607977202647">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1691" y="102" width="1295" height="859" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606742645125" />
-    <state x="409" y="118" width="998" height="708" key="SettingsEditor/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1607977202647" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2" timestamp="1608662651352">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1848" y="252" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1608126754051" />
-    <state x="216" y="223" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608662651352" />
-    <state x="72" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197421950" />
-    <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1606848577147">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="777" y="208" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1606848577147" />
-    <state x="777" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1608408676360">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="-1143" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1920.0.1920.1040/0.0.1920.1040@-1920.0.1920.1040" timestamp="1606743814072" />
-    <state x="777" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608408676360" />
-    <state x="777" y="433" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1607197345101" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1608406365699">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1608406365699" />
+    <MESSAGE value="Changed poll message formatting" />
+    <MESSAGE value="Tic Tac Toe is now in beta" />
+    <MESSAGE value="Updated ttt formatting" />
+    <MESSAGE value="Improved ttt" />
+    <MESSAGE value="Rewrote Tic Tac Toe to make it more dynamic and error resilient." />
+    <MESSAGE value="TTT now has win-detection and restarts if move happens after win" />
+    <MESSAGE value="Fixed bug where 'O' couldn't win. Added 'draw' detection. Improved game message." />
+    <MESSAGE value="Tiny code cleanup." />
+    <MESSAGE value="Fixed bug where ttt coordinate with number first wasnt recognized" />
+    <MESSAGE value="Added tleave command and fixed bug where ttt game didn't restart after draw" />
+    <MESSAGE value="Fixed message not being deleted on /tleave" />
+    <MESSAGE value="Attempt faulty ttt checkWin() fix" />
+    <MESSAGE value="Small code cleanup" />
+    <MESSAGE value="Implemented connect_four skeleton. Nothing works yet though." />
+    <MESSAGE value="Added all major math functions to /calc command." />
+    <MESSAGE value="Fixed polls being reloaded on top of existing ones in case of a reconnect." />
+    <MESSAGE value="Added /weight utility command." />
+    <MESSAGE value="Added better math and unit parsing for /weight" />
+    <MESSAGE value="Added better unit formatting with terra/giga/kilo tons of TNT on /weight command" />
+    <MESSAGE value="Even better unit detection and formatting" />
+    <MESSAGE value="Added imperial units detection" />
+    <MESSAGE value="Fixed typos" />
+    <MESSAGE value="Improved /weight help text" />
+    <MESSAGE value="Implemented marking of party channels and corresponding notifications." />
+    <MESSAGE value="added commands to manage party channels (add, remove, list)" />
+    <option name="LAST_COMMIT_MESSAGE" value="added commands to manage party channels (add, remove, list)" />
   </component>
 </project>
