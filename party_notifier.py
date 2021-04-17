@@ -1,5 +1,6 @@
 from discord.ext import commands
 import discord
+import configparser
 import os
 
 
@@ -16,7 +17,7 @@ class Party_Notifier(commands.Cog):
         if not os.path.exists(bot_data.datapath + 'party_channels.txt'):
             os.mknod(bot_data.datapath + 'party_channels.txt')
 
-    @commands.group(brief="[add, remove, list]",
+    @commands.group(brief="[add, remove, list, ...]",
                     help="This does nothing on its own. Use it in combination with [add, remove, list]\n\nExample:\n"
                          "party add channel_name_or_id")
     async def party(self, ctx):
@@ -69,3 +70,16 @@ class Party_Notifier(commands.Cog):
 
         lstStr = '\n'.join(channelList)
         await ctx.send('**The following Channels can trigger the party notification:**\n```\n' + lstStr + '\n```')
+
+    @party.command(brief="Change participant count to trigger.")
+    async def count(self, ctx, arg: int):
+        # Update db:
+        self.bot_data.party_count = arg
+
+        # Update file:
+        config = configparser.ConfigParser()
+        config.read('config.txt')
+        config.set('BASE', 'party_count', arg)
+
+        with open('config.txt', 'w') as configfile:
+            config.write(configfile)

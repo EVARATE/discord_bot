@@ -28,8 +28,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="added commands to manage party channels (add, remove, list)">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Changed party help text">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/party_notifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/party_notifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,13 +108,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00039" summary="Code Cosmetics, Type Safety">
-      <created>1608212838363</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1608212838363</updated>
     </task>
     <task id="LOCAL-00040" summary="added lock for /echo command">
       <created>1608297665573</created>
@@ -451,7 +445,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618167172419</updated>
     </task>
-    <option name="localTasksCounter" value="88" />
+    <task id="LOCAL-00088" summary="Changed party help text">
+      <created>1618263449306</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1618263449306</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -482,7 +483,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Changed poll message formatting" />
     <MESSAGE value="Tic Tac Toe is now in beta" />
     <MESSAGE value="Updated ttt formatting" />
     <MESSAGE value="Improved ttt" />
@@ -507,6 +507,7 @@
     <MESSAGE value="Improved /weight help text" />
     <MESSAGE value="Implemented marking of party channels and corresponding notifications." />
     <MESSAGE value="added commands to manage party channels (add, remove, list)" />
-    <option name="LAST_COMMIT_MESSAGE" value="added commands to manage party channels (add, remove, list)" />
+    <MESSAGE value="Changed party help text" />
+    <option name="LAST_COMMIT_MESSAGE" value="Changed party help text" />
   </component>
 </project>
