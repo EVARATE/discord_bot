@@ -15,9 +15,11 @@ class Party_Notifier(commands.Cog):
         self.potential_channels = set() # Channels that CAN trigger the notification
         self.party_channels = set()     # Channels that currently have a party
 
+        self.pot_file_name = 'party_pot_channels.txt'
+
         # Create file if it doesn't exist
-        if not os.path.exists(bot_data.datapath + 'party_pot_channels.txt'):
-            os.mknod(bot_data.datapath + 'party_pot_channels.txt')
+        if not os.path.exists(bot_data.datapath + self.pot_file_name):
+            os.mknod(bot_data.datapath + self.pot_file_name)
 
     async def check_starting_party(self, check_channel):
         party_count = self.bot_data.party_count
@@ -82,24 +84,60 @@ class Party_Notifier(commands.Cog):
             return
 
 
-    @commands.group(brief="[mark, unmark, info, ...]",
-                    help="This does nothing on its own. Use it in combination with [mark, unmark, info, ...]\n\nExample:\n"
+    @commands.group(brief="{mark, unmark, info, setcount}",
+                    help="This does nothing on its own. Use it in combination with [mark, unmark, info, setcount]\n\nExample:\n"
                          "party mark channel name or id")
     async def party(self, ctx):
         pass
 
-    @party.command()
+    @party.command(brief="Mark channel as potential party channel",
+                   usage="channel name or id")
     async def mark(self, ctx, *, arg: discord.VoiceChannel):
-        pass
+        if arg.id not in self.potential_channels:
+            # Add channel to set:
+            self.potential_channels = self.potential_channels.union({arg.id})
 
-    @party.command()
+            # Write new set to disk:
+            with open(self.bot_data.datapath + self.pot_file_name, 'w') as file:
+                file.writelines([f'{x}\n' for x in self.potential_channels])
+
+            await ctx.send(f'**{arg.name}** was marked as a potential party channel.', delete_after=10)
+        else:
+            await ctx.send('Channel is already marked.', delete_after=10)
+
+    @party.command(brief="Unmark channel as potential party channel",
+                   usage="channel name or id")
     async def unmark(self, ctx, *, arg: discord.VoiceChannel):
-        pass
+        if arg.id in self.potential_channels:
+            self.potential_channels -= {arg.id}
 
-    @party.command()
-    async def count(self, ctx, *, arg):
-        pass
+            with open(self.bot_data.datapath + self.pot_file_name, 'w') as file:
+                file.writelines([f'{x}\n' for x in self.potential_channels])
 
-    @party.command()
+            await ctx.send(f'**{arg.name}** was unmarked as a potential party channel.', delete_after=10)
+        else:
+            await ctx.send(f'**{arg.name}** wasn\'t marked in the first place.', delete_after=10)
+
+    @party.command(brief="View or change channel member-count to trigger notification",
+                   usage="{<none>, <integer>}")
+    async def setcount(self, ctx, arg: int):
+        if arg > 0:
+            # Update db:
+            self.bot_data.party_count = arg
+
+            # Update config.txt:
+            config = configparser.ConfigParser()
+            config.read('config.txt')
+            config.set('BASE', 'party_count', str(arg))
+
+            with open('config.txt', 'w') as configfile:
+                config.write(configfile)
+
+    @party.command(brief="View party info")
     async def info(self, ctx):
-        pass
+        # Show: party_count, potential_channels, party_channels, notification_channel, notification_role
+
+        info_str = f'Trigger count: `{self.bot_data.party_count}`\n' \
+                   f'Notification channel: ``\n' \
+                   f'Notification role: ``\n' \
+                   f'' # TODO

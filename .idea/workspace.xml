@@ -28,9 +28,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Added party count command.">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Started rewrite of party feature due to bugs">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_database.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/party_notifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/party_notifier.py" afterDir="false" />
     </list>
@@ -54,6 +53,14 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/main.py" root0="SKIP_INSPECTION" />
@@ -115,13 +122,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00041" summary="Code cosmetics">
-      <created>1608402552364</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1608402552364</updated>
     </task>
     <task id="LOCAL-00042" summary="Implemented /countdown, fixed wrong poll message formatting">
       <created>1608408688129</created>
@@ -459,7 +459,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618683493603</updated>
     </task>
-    <option name="localTasksCounter" value="90" />
+    <task id="LOCAL-00090" summary="Started rewrite of party feature due to bugs">
+      <created>1618865316248</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1618865316249</updated>
+    </task>
+    <option name="localTasksCounter" value="91" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -490,7 +497,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated ttt formatting" />
     <MESSAGE value="Improved ttt" />
     <MESSAGE value="Rewrote Tic Tac Toe to make it more dynamic and error resilient." />
     <MESSAGE value="TTT now has win-detection and restarts if move happens after win" />
@@ -515,6 +521,7 @@
     <MESSAGE value="added commands to manage party channels (add, remove, list)" />
     <MESSAGE value="Changed party help text" />
     <MESSAGE value="Added party count command." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added party count command." />
+    <MESSAGE value="Started rewrite of party feature due to bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="Started rewrite of party feature due to bugs" />
   </component>
 </project>
