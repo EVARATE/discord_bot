@@ -27,7 +27,6 @@ class bot_database:
         self.IDs = {}
         self.polls = []
         self.locks = {}
-        self.party_channels = set()
 
         # 'config.txt' must be in local directory, create it if not
         if not os.path.exists('config.txt'):

@@ -12,74 +12,94 @@ class Party_Notifier(commands.Cog):
     def __init__(self, bot, bot_data):
         self.bot = bot
         self.bot_data = bot_data
+        self.potential_channels = set() # Channels that CAN trigger the notification
+        self.party_channels = set()     # Channels that currently have a party
 
         # Create file if it doesn't exist
-        if not os.path.exists(bot_data.datapath + 'party_channels.txt'):
-            os.mknod(bot_data.datapath + 'party_channels.txt')
+        if not os.path.exists(bot_data.datapath + 'party_pot_channels.txt'):
+            os.mknod(bot_data.datapath + 'party_pot_channels.txt')
 
-    @commands.group(brief="[add, remove, list, ...]",
-                    help="This does nothing on its own. Use it in combination with [add, remove, list]\n\nExample:\n"
-                         "party add channel_name_or_id")
+    async def check_starting_party(self, check_channel):
+        party_count = self.bot_data.party_count
+
+        # Check if channel can have party or has ongoing party:
+        if check_channel.id not in self.potential_channels or check_channel.id in self.party_channels:
+            return
+        # Now, check_channel is pot. party channel but has no party.
+
+        # Check if check_channel has enough members:
+        if len(check_channel.members) >= party_count:
+            # Mark as active party channel:
+            self.party_channels = self.party_channels.union({int(check_channel.id)})
+            # Send notification:
+            notification_channel = self.bot.get_channel(self.bot_data.IDs['notification_channel'])
+            party_role = check_channel.guild.get_role(self.bot_data.IDs['party_role'])
+            await notification_channel.send(
+                f'{party_role.mention} There seems to be a party in **{check_channel.name}**')
+            return
+
+    async def check_ended_party(self, check_channel):
+        # Check if channel can have party or has ongoing party:
+        if check_channel.id not in self.potential_channels or check_channel.id not in self.party_channels:
+            return
+        # Now check_channel is pot. party channel and has party.
+
+        # Check if check_channel has no members:
+        if len(check_channel.members) == 0:
+            # No members => end party.
+            self.party_channels -= {int(check_channel.id)}
+            # Send notification:
+            notification_channel = self.bot.get_channel(self.bot_data.IDs['notification_channel'])
+            await notification_channel.send(
+                f'The party in **{check_channel.name} has ended.**')
+            return
+
+    @commands.Cog.listener
+    async def on_voice_state_update(self, member, before, after):
+        """
+        Cases:
+            before.chan | after.chan | case
+            NOT VOICE   | voice      |  A
+            voice       | NOT VOICE  |  B
+            voice       | voice      |  C
+            NOT VOICE   | NOT VOICE  |  D   do nothing
+        """
+
+        # CASE A
+        if before.channel is not discord.VoiceChannel and after.channel is discord.VoiceChannel:
+            await self.check_starting_party(after.channel)
+            return
+
+        # CASE B
+        if before.channel is discord.VoiceChannel and after.channel is not discord.VoiceChannel:
+            await self.check_ended_party(before.channel)
+            return
+
+        # CASE C
+        if before.channel is discord.VoiceChannel and after.channel is discord.VoiceChannel:
+            await self.check_ended_party(before.channel)
+            await self.check_starting_party(after.channel)
+            return
+
+
+    @commands.group(brief="[mark, unmark, info, ...]",
+                    help="This does nothing on its own. Use it in combination with [mark, unmark, info, ...]\n\nExample:\n"
+                         "party mark channel name or id")
     async def party(self, ctx):
         pass
 
-    @party.command(brief='Mark a voice channel as a viable party channel')
-    async def add(self, ctx, *, arg: discord.VoiceChannel):
-        # Read existing file:
-        with open(self.bot_data.datapath + 'party_channels.txt', 'r') as file:
-            fileIDs = set([x.strip() for x in file.readlines()])
+    @party.command()
+    async def mark(self, ctx, *, arg: discord.VoiceChannel):
+        pass
 
-        # Add channel to set:
-        fileIDs = fileIDs.union({str(arg.id)})
+    @party.command()
+    async def unmark(self, ctx, *, arg: discord.VoiceChannel):
+        pass
 
-        # Write back to file:
-        with open(self.bot_data.datapath + 'party_channels.txt', 'w') as file:
-            file.writelines([f'{x}\n' for x in fileIDs])
+    @party.command()
+    async def count(self, ctx, *, arg):
+        pass
 
-        await ctx.send("Channel was marked.", delete_after=10)
-
-    @party.command(brief='Unmark a voice channel as party channel')
-    async def remove(self, ctx, *, arg: discord.VoiceChannel):
-        # Read existing file:
-        with open(self.bot_data.datapath + 'party_channels.txt', 'r') as file:
-            fileIDs = set([x.strip() for x in file.readlines()])
-
-        # Add channel to set:
-        fileIDs = fileIDs - {str(arg.id)}
-
-        # Write back to file:
-        with open(self.bot_data.datapath + 'party_channels.txt', 'w') as file:
-            file.writelines(fileIDs)
-
-        await ctx.send("Channel was unmarked.", delete_after=10)
-
-    @party.command(brief='Show list of marked party channels')
-    async def list(self, ctx):
-        with open(self.bot_data.datapath + 'party_channels.txt', 'r') as file:
-            fileIDs = set([x.strip() for x in file.readlines()])
-
-        converter = commands.VoiceChannelConverter()
-        channelList = []
-        for id in fileIDs:
-            channel = await converter.convert(ctx, id)
-            channelList.append(channel.name)
-
-        if len(channelList) == 0:
-            await ctx.send("There are no channels marked as party channels.")
-            return
-
-        lstStr = '\n'.join(channelList)
-        await ctx.send('**The following Channels can trigger the party notification:**\n```\n' + lstStr + '\n```')
-
-    @party.command(brief="Change participant count to trigger.")
-    async def count(self, ctx, arg: int):
-        # Update db:
-        self.bot_data.party_count = arg
-
-        # Update file:
-        config = configparser.ConfigParser()
-        config.read('config.txt')
-        config.set('BASE', 'party_count', arg)
-
-        with open('config.txt', 'w') as configfile:
-            config.write(configfile)
+    @party.command()
+    async def info(self, ctx):
+        pass
