@@ -28,9 +28,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Started rewrite of party feature due to bugs">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="[UNTESTED] Implemented almost all party functionality.">
       <change beforePath="$PROJECT_DIR$/party_notifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/party_notifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,13 +120,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00042" summary="Implemented /countdown, fixed wrong poll message formatting">
-      <created>1608408688129</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1608408688129</updated>
     </task>
     <task id="LOCAL-00043" summary="Created 'rewrite_python' branch.">
       <created>1608490276052</created>
@@ -466,7 +457,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618865316249</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="[UNTESTED] Implemented almost all party functionality.">
+      <created>1618867081549</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1618867081549</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -497,7 +495,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Improved ttt" />
     <MESSAGE value="Rewrote Tic Tac Toe to make it more dynamic and error resilient." />
     <MESSAGE value="TTT now has win-detection and restarts if move happens after win" />
     <MESSAGE value="Fixed bug where 'O' couldn't win. Added 'draw' detection. Improved game message." />
@@ -522,6 +519,7 @@
     <MESSAGE value="Changed party help text" />
     <MESSAGE value="Added party count command." />
     <MESSAGE value="Started rewrite of party feature due to bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Started rewrite of party feature due to bugs" />
+    <MESSAGE value="[UNTESTED] Implemented almost all party functionality." />
+    <option name="LAST_COMMIT_MESSAGE" value="[UNTESTED] Implemented almost all party functionality." />
   </component>
 </project>

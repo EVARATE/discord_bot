@@ -137,7 +137,16 @@ class Party_Notifier(commands.Cog):
     async def info(self, ctx):
         # Show: party_count, potential_channels, party_channels, notification_channel, notification_role
 
+        notification_channel = self.bot.get_channel(self.bot_data.IDs['notification_channel'])
+        party_role = ctx.guild.get_role(self.bot_data.IDs['party_role'])
+
+        pot_str = "```\n" + "\n".join([f'{x}' for x in self.potential_channels]) + "\n```"
+        active_str = "```\n" + "\n".join([f'{x}' for x in self.party_channels]) + "\n```"
+
         info_str = f'Trigger count: `{self.bot_data.party_count}`\n' \
-                   f'Notification channel: ``\n' \
-                   f'Notification role: ``\n' \
-                   f'' # TODO
+                   f'Notification channel: `{notification_channel.name}`\n' \
+                   f'Notification role: `{party_role.name}`\n' \
+                   f'\nList of parties:\n{active_str}\n' \
+                   f'\nChannels that can trigger the party notification:\n{pot_str}'
+
+        await ctx.send(info_str)
