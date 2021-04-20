@@ -3,6 +3,8 @@ import discord
 import configparser
 import os
 
+# TODO
+# - Test trigger (maybe change role)
 
 class Party_Notifier(commands.Cog):
     '''
@@ -20,6 +22,9 @@ class Party_Notifier(commands.Cog):
         # Create file if it doesn't exist
         if not os.path.exists(bot_data.datapath + self.pot_file_name):
             os.mknod(bot_data.datapath + self.pot_file_name)
+        else:
+            with open(self.bot_data.datapath + self.pot_file_name, 'r') as file:
+                self.potential_channels = set([int(x.strip()) for x in file.readlines()])
 
     async def check_starting_party(self, check_channel):
         party_count = self.bot_data.party_count
@@ -56,7 +61,7 @@ class Party_Notifier(commands.Cog):
                 f'The party in **{check_channel.name} has ended.**')
             return
 
-    @commands.Cog.listener
+    @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
         """
         Cases:
@@ -68,17 +73,17 @@ class Party_Notifier(commands.Cog):
         """
 
         # CASE A
-        if before.channel is not discord.VoiceChannel and after.channel is discord.VoiceChannel:
+        if not isinstance(before.channel, discord.VoiceChannel) and isinstance(after.channel, discord.channel.VoiceChannel):
             await self.check_starting_party(after.channel)
             return
 
         # CASE B
-        if before.channel is discord.VoiceChannel and after.channel is not discord.VoiceChannel:
+        if isinstance(before.channel, discord.VoiceChannel) and not isinstance(after.channel, discord.channel.VoiceChannel):
             await self.check_ended_party(before.channel)
             return
 
         # CASE C
-        if before.channel is discord.VoiceChannel and after.channel is discord.VoiceChannel:
+        if isinstance(before.channel, discord.VoiceChannel) and isinstance(after.channel, discord.VoiceChannel):
             await self.check_ended_party(before.channel)
             await self.check_starting_party(after.channel)
             return
@@ -109,7 +114,7 @@ class Party_Notifier(commands.Cog):
                    usage="channel name or id")
     async def unmark(self, ctx, *, arg: discord.VoiceChannel):
         if arg.id in self.potential_channels:
-            self.potential_channels -= {arg.id}
+            self.potential_channels = self.potential_channels - {arg.id}
 
             with open(self.bot_data.datapath + self.pot_file_name, 'w') as file:
                 file.writelines([f'{x}\n' for x in self.potential_channels])
@@ -133,6 +138,8 @@ class Party_Notifier(commands.Cog):
             with open('config.txt', 'w') as configfile:
                 config.write(configfile)
 
+            await ctx.send(f"Changed trigger count to `{arg}`", delete_after=10)
+
     @party.command(brief="View party info")
     async def info(self, ctx):
         # Show: party_count, potential_channels, party_channels, notification_channel, notification_role
@@ -140,13 +147,17 @@ class Party_Notifier(commands.Cog):
         notification_channel = self.bot.get_channel(self.bot_data.IDs['notification_channel'])
         party_role = ctx.guild.get_role(self.bot_data.IDs['party_role'])
 
-        pot_str = "```\n" + "\n".join([f'{x}' for x in self.potential_channels]) + "\n```"
-        active_str = "```\n" + "\n".join([f'{x}' for x in self.party_channels]) + "\n```"
+        voice_converter = commands.VoiceChannelConverter()
+        pot_channels = [await voice_converter.convert(ctx, str(x)) for x in self.potential_channels]
+        party_channels = [await voice_converter.convert(ctx, str(x)) for x in self.party_channels]
+
+        pot_str = "```\n" + "\n".join([f'{x.name}' for x in pot_channels]) + "\n```" if len(self.potential_channels) > 0 else '<none>'
+        active_str = "```\n" + "\n".join([f'{x.name}' for x in party_channels]) + "\n```" if len(self.party_channels) > 0 else '<none>'
 
         info_str = f'Trigger count: `{self.bot_data.party_count}`\n' \
                    f'Notification channel: `{notification_channel.name}`\n' \
                    f'Notification role: `{party_role.name}`\n' \
-                   f'\nList of parties:\n{active_str}\n' \
+                   f'\nList of parties:\n{active_str}' \
                    f'\nChannels that can trigger the party notification:\n{pot_str}'
 
         await ctx.send(info_str)
