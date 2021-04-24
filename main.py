@@ -262,7 +262,7 @@ class Main_Commands(commands.Cog):
             factor = 1000
         elif arg.endswith('u'):
             arg = arg[0:-1]
-            factor = 6.0221e26
+            factor =  1.0 / 6.0221e26
         elif arg.endswith('tev/c^2'):
             arg = arg[0:-7]
             factor = 5.60852495e23

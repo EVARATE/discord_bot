@@ -28,8 +28,10 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="[UNTESTED] Finished party cog.">
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Tested party system. ISSUE: Bot must be online for all channel join events for a correct count.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot_database.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot_database.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/misc_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/misc_functions.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/party_notifier.py" beforeDir="false" afterPath="$PROJECT_DIR$/party_notifier.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -78,7 +80,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -121,13 +123,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
-    </task>
-    <task id="LOCAL-00044" summary="Set up config.txt reader and basic bot.">
-      <created>1608498078587</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1608498078587</updated>
     </task>
     <task id="LOCAL-00045" summary="Implemented more robust /help function for existing commands.">
       <created>1608503875811</created>
@@ -465,7 +460,14 @@
       <option name="project" value="LOCAL" />
       <updated>1618867519618</updated>
     </task>
-    <option name="localTasksCounter" value="93" />
+    <task id="LOCAL-00093" summary="Tested party system. ISSUE: Bot must be online for all channel join events for a correct count.">
+      <created>1618922249895</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1618922249895</updated>
+    </task>
+    <option name="localTasksCounter" value="94" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -496,7 +498,6 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="TTT now has win-detection and restarts if move happens after win" />
     <MESSAGE value="Fixed bug where 'O' couldn't win. Added 'draw' detection. Improved game message." />
     <MESSAGE value="Tiny code cleanup." />
     <MESSAGE value="Fixed bug where ttt coordinate with number first wasnt recognized" />
@@ -521,6 +522,7 @@
     <MESSAGE value="Started rewrite of party feature due to bugs" />
     <MESSAGE value="[UNTESTED] Implemented almost all party functionality." />
     <MESSAGE value="[UNTESTED] Finished party cog." />
-    <option name="LAST_COMMIT_MESSAGE" value="[UNTESTED] Finished party cog." />
+    <MESSAGE value="Tested party system. ISSUE: Bot must be online for all channel join events for a correct count." />
+    <option name="LAST_COMMIT_MESSAGE" value="Tested party system. ISSUE: Bot must be online for all channel join events for a correct count." />
   </component>
 </project>

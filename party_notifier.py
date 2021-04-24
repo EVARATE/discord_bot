@@ -3,8 +3,6 @@ import discord
 import configparser
 import os
 
-# TODO
-# - Test trigger (maybe change role)
 
 class Party_Notifier(commands.Cog):
     '''

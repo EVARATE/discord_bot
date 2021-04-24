@@ -3,7 +3,6 @@ from typing import List, Dict, Set
 import polling
 import misc_functions as misc
 import os
-import glob
 import sys
 
 
