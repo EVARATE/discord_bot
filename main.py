@@ -214,7 +214,8 @@ class Main_Commands(commands.Cog):
 
     @commands.check(is_admin)
     @commands.command(brief="Change the 'Playing' status of the bot.",
-                      help = "Changes the 'Playing' status of the bot to the specified text. If no argument is given the status will be removed.")
+                      help = "Changes the 'Playing' status of the bot to the specified text. If no argument is given the status will be removed.",
+                      aliases=['setstatus'])
     async def setactivity(self, ctx, *args):
         if not args:
             await self.bot.change_presence(status=None, activity=None)
