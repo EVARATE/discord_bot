@@ -103,6 +103,25 @@ async def on_message(message):
 
     # Code goes here
 
+    if message.author == bot.user:
+        return
+    """ 
+    Random Estereggs
+    """
+
+
+    if ('Mo ' or 'Mo,' or 'Mo.' or 'Mo!' or 'Mo?') in message.content or message.content == 'Mo':
+        await message.channel.send('Habe ich etwas von meinem Meister, Herrn und Gebieter Mo gehört? :heart_eyes:', delete_after= 20)
+
+    if message.content == "Hello there!":
+        await message.channel.send("General Kenobi! You are a bold one! Hehehehe KILL HIM!")
+        await message.channel.send("https://gph.is/2pE8sbx")
+        return
+
+    if 'scrinzi' in message.content.lower():
+        await message.channel.send('Scrinzi, so ein Sack! :face_vomiting:', delete_after=5)
+        return
+
     await bot.process_commands(message)
 
 class Main_Commands(commands.Cog):
@@ -113,8 +132,7 @@ class Main_Commands(commands.Cog):
         self.bot = bot
 
     @commands.command(brief="Just for testing random stuff.",
-                 help="This function is for testing code. Don't expect any predictable behaviour from it.",
-                 aliases=["hilfe"])
+                 help="This function is for testing code. Don't expect any predictable behaviour from it.")
     async def test(self, ctx):
         pass
 
@@ -375,6 +393,33 @@ class Main_Commands(commands.Cog):
 
         text = f'{pref}This mass is equivalent to a very generous **{explosion_str} of TNT** {hir_str}. {suff}'
         await ctx.send(text)
+
+    @commands.command(brief="cry",
+                      help=" show the only emotion HAL is currently capable of")
+    async def cry(self, ctx):
+        await ctx.send(':sob:')
+        await asyncio.sleep(5)
+        await ctx.send('http://gph.is/2f4QMDC', delete_after = 10)
+
+    @commands.command(brief = 'let HAL show you his Magic')
+    async def draw_card(self, ctx):
+        await ctx.send('Your Card is the Ace of Spades', delete_after = 40)
+        await asyncio.sleep(7)
+        await ctx.send('shuffeling the deck',delete_after = 10)
+        await asyncio.sleep(3)
+        await ctx.send('trust me bro', delete_after = 3)
+        await asyncio.sleep(7)
+        await ctx.send('Was this your card:', delete_after = 23)
+        await asyncio.sleep(3)
+        await ctx.send('http://gph.is/1UPsMwn', delete_after = 20)
+        await ctx.send('The ACE OF SPADES!')
+        await asyncio.sleep(5)
+        await ctx.send('not impressed?', delete_after = 5)
+        await asyncio.sleep(5)
+        await ctx.send('https://gph.is/g/aNMKlwP', delete_after = 10)
+        await ctx.send('http://gph.is/1oKXMOp', delete_after = 10)
+
+
 
 bot.add_cog(Main_Commands(bot))
 bot.run(bot_data.token)
