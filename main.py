@@ -1,6 +1,4 @@
 """
-This is a complete rewrite of the discord bot. Before every message was scanned for commands with
-if/else statements which is kindof messy.
 The goal of this rewrite is to use the existing command framework of the discord.py library.
 
 Here is its documentation:
@@ -18,10 +16,6 @@ import tictactoe
 import connect_four
 import party_notifier
 import misc_functions as misc
-from typing import List, Dict
-import os
-import glob
-import sys
 import asyncio
 import random
 
@@ -42,7 +36,6 @@ async def on_ready():
     bot.add_cog(tictactoe.tic_tac_toe(bot))
     bot.add_cog(party_notifier.Party_Notifier(bot, bot_data))
     # bot.add_cog(connect_four.connect_four(bot))
-
 
     # Set activity:
     if bot_data.activity_name != '-1':
