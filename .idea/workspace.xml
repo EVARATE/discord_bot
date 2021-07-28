@@ -28,7 +28,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="Fixed unit conversion in /weight" />
+    <list default="true" id="943da6fb-2543-4daf-a713-cf5693f45660" name="Default Changelist" comment="added commands to manage party channels (add, remove, list)">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,14 +52,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GitSEFilterConfiguration">
-    <file-type-list>
-      <filtered-out-file-type name="LOCAL_BRANCH" />
-      <filtered-out-file-type name="REMOTE_BRANCH" />
-      <filtered-out-file-type name="TAG" />
-      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
-    </file-type-list>
-  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/main.py" root0="SKIP_INSPECTION" />
   </component>
@@ -75,12 +69,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="aDefault" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.General" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -118,6 +107,55 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606396743201</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Code Cosmetics, Type Safety">
+      <created>1608212838363</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1608212838363</updated>
+    </task>
+    <task id="LOCAL-00040" summary="added lock for /echo command">
+      <created>1608297665573</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1608297665573</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Code cosmetics">
+      <created>1608402552364</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1608402552364</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Implemented /countdown, fixed wrong poll message formatting">
+      <created>1608408688129</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1608408688129</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Created 'rewrite_python' branch.">
+      <created>1608490276052</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1608490276052</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Set up config.txt reader and basic bot.">
+      <created>1608498078587</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1608498078587</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Implemented more robust /help function for existing commands.">
+      <created>1608503875811</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1608503875811</updated>
     </task>
     <task id="LOCAL-00046" summary="Adapted README.md">
       <created>1608503985866</created>
@@ -413,56 +451,7 @@
       <option name="project" value="LOCAL" />
       <updated>1618167172419</updated>
     </task>
-    <task id="LOCAL-00088" summary="Changed party help text">
-      <created>1618263449306</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
-      <option name="project" value="LOCAL" />
-      <updated>1618263449306</updated>
-    </task>
-    <task id="LOCAL-00089" summary="Added party count command.">
-      <created>1618683493603</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
-      <option name="project" value="LOCAL" />
-      <updated>1618683493603</updated>
-    </task>
-    <task id="LOCAL-00090" summary="Started rewrite of party feature due to bugs">
-      <created>1618865316248</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1618865316249</updated>
-    </task>
-    <task id="LOCAL-00091" summary="[UNTESTED] Implemented almost all party functionality.">
-      <created>1618867081549</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
-      <option name="project" value="LOCAL" />
-      <updated>1618867081549</updated>
-    </task>
-    <task id="LOCAL-00092" summary="[UNTESTED] Finished party cog.">
-      <created>1618867519618</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1618867519618</updated>
-    </task>
-    <task id="LOCAL-00093" summary="Tested party system. ISSUE: Bot must be online for all channel join events for a correct count.">
-      <created>1618922249895</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
-      <option name="project" value="LOCAL" />
-      <updated>1618922249895</updated>
-    </task>
-    <task id="LOCAL-00094" summary="Fixed unit conversion in /weight">
-      <created>1619291467890</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
-      <option name="project" value="LOCAL" />
-      <updated>1619291467891</updated>
-    </task>
-    <option name="localTasksCounter" value="95" />
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -493,6 +482,13 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="Changed poll message formatting" />
+    <MESSAGE value="Tic Tac Toe is now in beta" />
+    <MESSAGE value="Updated ttt formatting" />
+    <MESSAGE value="Improved ttt" />
+    <MESSAGE value="Rewrote Tic Tac Toe to make it more dynamic and error resilient." />
+    <MESSAGE value="TTT now has win-detection and restarts if move happens after win" />
+    <MESSAGE value="Fixed bug where 'O' couldn't win. Added 'draw' detection. Improved game message." />
     <MESSAGE value="Tiny code cleanup." />
     <MESSAGE value="Fixed bug where ttt coordinate with number first wasnt recognized" />
     <MESSAGE value="Added tleave command and fixed bug where ttt game didn't restart after draw" />
@@ -511,13 +507,6 @@
     <MESSAGE value="Improved /weight help text" />
     <MESSAGE value="Implemented marking of party channels and corresponding notifications." />
     <MESSAGE value="added commands to manage party channels (add, remove, list)" />
-    <MESSAGE value="Changed party help text" />
-    <MESSAGE value="Added party count command." />
-    <MESSAGE value="Started rewrite of party feature due to bugs" />
-    <MESSAGE value="[UNTESTED] Implemented almost all party functionality." />
-    <MESSAGE value="[UNTESTED] Finished party cog." />
-    <MESSAGE value="Tested party system. ISSUE: Bot must be online for all channel join events for a correct count." />
-    <MESSAGE value="Fixed unit conversion in /weight" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed unit conversion in /weight" />
+    <option name="LAST_COMMIT_MESSAGE" value="added commands to manage party channels (add, remove, list)" />
   </component>
 </project>

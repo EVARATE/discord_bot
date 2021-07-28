@@ -1,4 +1,7 @@
 # About
+
+bla bla bla
+
 This repository contains the code to my discord bot. The bot can be added to any server but is mainly designed to
 fit the needs of the server I'm on.
 
